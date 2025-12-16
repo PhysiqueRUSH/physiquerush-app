@@ -1,1 +1,366 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>PhysiqueRUSH</title>
+    <meta name="theme-color" content="#000000">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <style>
+        :root {
+            --primary-red: #D32F2F; /* Rouge agressif mais lisible */
+            --accent-red: #FF0000; /* Rouge vif pour alertes/CTA */
+            --bg-black: #0a0a0a;
+            --bg-card: #1c1c1c;
+            --text-white: #ffffff;
+            --text-gray: #b0b0b0;
+        }
 
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-black);
+            color: var(--text-white);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; /* Empêche le scroll global pour effet app native */
+        }
+
+        /* HEADER */
+        header {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid #333;
+            background-color: var(--bg-black);
+            z-index: 10;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-style: italic;
+        }
+
+        .logo span {
+            color: var(--accent-red);
+        }
+
+        /* MAIN CONTENT AREA */
+        main {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            position: relative;
+        }
+
+        /* VIEWS (Pages) */
+        .view {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .view.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* DASHBOARD STYLES */
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        .subtitle {
+            color: var(--text-gray);
+            font-size: 0.9rem;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background-color: var(--bg-card);
+            padding: 20px;
+            border-radius: 4px; /* Coins carrés pour aspect agressif */
+            border-left: 4px solid var(--primary-red);
+            margin-bottom: 20px;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .stat-label {
+            color: var(--text-gray);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .cta-button {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            background-color: var(--primary-red);
+            color: white;
+            padding: 18px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(211, 47, 47, 0.4);
+            transition: transform 0.1s;
+        }
+
+        .cta-button:active {
+            transform: scale(0.98);
+        }
+
+        /* WORKOUT VIEW STYLES */
+        .timer-display {
+            font-size: 4rem;
+            font-weight: 900;
+            text-align: center;
+            margin: 20px 0;
+            font-variant-numeric: tabular-nums;
+            color: var(--accent-red);
+        }
+
+        .exercise-title {
+            text-align: center;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        .video-placeholder {
+            width: 100%;
+            height: 200px;
+            background-color: #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            color: #666;
+            font-weight: bold;
+        }
+
+        /* INPUTS */
+        input[type="number"] {
+            width: 100%;
+            padding: 15px;
+            background-color: var(--bg-card);
+            border: 1px solid #444;
+            color: white;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+
+        /* NAVIGATION BAR */
+        nav {
+            background-color: var(--bg-card);
+            border-top: 1px solid #333;
+            padding: 10px 0;
+            padding-bottom: env(safe-area-inset-bottom); /* Pour iPhone X+ */
+        }
+
+        .nav-list {
+            display: flex;
+            justify-content: space-around;
+            list-style: none;
+        }
+
+        .nav-item {
+            color: var(--text-gray);
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            text-align: center;
+            cursor: pointer;
+            padding: 10px;
+        }
+
+        .nav-item.active {
+            color: var(--primary-red);
+            font-weight: bold;
+        }
+
+        .nav-icon {
+            font-size: 1.5rem;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">Physique<span>RUSH</span></div>
+    </header>
+
+    <main>
+        <div id="view-dashboard" class="view active">
+            <h1>Massive Impact</h1>
+            <p class="subtitle">Programme Semaine 1 • Jour 1</p>
+
+            <div class="stat-card">
+                <div class="stat-value">0</div>
+                <div class="stat-label">Séances terminées</div>
+            </div>
+
+            <button class="cta-button" onclick="startWorkout()">
+                Lancer le Rush (8:00)
+            </button>
+
+            <div style="margin-top: 30px;">
+                <h3 style="margin-bottom: 10px; font-size: 1rem;">Dernière perf</h3>
+                <div style="background: #1c1c1c; padding: 15px; border-radius: 4px; color: #888;">
+                    Aucune donnée enregistrée.
+                </div>
+            </div>
+        </div>
+
+        <div id="view-workout" class="view">
+            <div class="exercise-title">DOS : TENSION MAX</div>
+            
+            <div class="video-placeholder">
+                [VIDEO EXPLICATION]
+            </div>
+
+            <div class="timer-display" id="timer">08:00</div>
+
+            <p style="text-align: center; color: #888; margin-bottom: 20px;">
+                Objectif : Max de répétitions en 8 min.<br>Repos libre mais court.
+            </p>
+
+            <button class="cta-button" style="background-color: #333;" onclick="stopWorkout()">
+                Abandonner
+            </button>
+            <br>
+            <button class="cta-button" onclick="finishWorkout()">
+                Terminer & Noter
+            </button>
+        </div>
+
+        <div id="view-save" class="view">
+            <h1>Résultat</h1>
+            <p class="subtitle">Enregistre ta performance</p>
+
+            <label style="display:block; margin-bottom: 10px; color: #aaa;">Nombre total de répétitions :</label>
+            <input type="number" id="rep-input" placeholder="Ex: 45">
+
+            <label style="display:block; margin-bottom: 10px; color: #aaa;">Ressenti (1-10) :</label>
+            <input type="number" id="rpe-input" placeholder="Ex: 8">
+
+            <button class="cta-button" onclick="saveData()">
+                Valider
+            </button>
+        </div>
+    </main>
+
+    <nav>
+        <ul class="nav-list">
+            <li class="nav-item active" onclick="switchView('view-dashboard', this)">
+                <span class="nav-icon">■</span>
+                Accueil
+            </li>
+            <li class="nav-item" onclick="switchView('view-workout', this)">
+                <span class="nav-icon">▲</span>
+                Workout
+            </li>
+            <li class="nav-item">
+                <span class="nav-icon">≡</span>
+                Profil
+            </li>
+        </ul>
+    </nav>
+
+    <script>
+        // NAVIGATION SIMPLE
+        function switchView(viewId, navElement) {
+            // Cacher toutes les vues
+            document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
+            // Afficher la vue demandée
+            document.getElementById(viewId).classList.add('active');
+
+            // Gérer la classe active du menu
+            if(navElement) {
+                document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+                navElement.classList.add('active');
+            }
+        }
+
+        // TIMER LOGIC (BASIQUE)
+        let timerInterval;
+        let timeLeft = 480; // 8 minutes en secondes
+
+        function startWorkout() {
+            switchView('view-workout');
+            // Reset timer si besoin ou reprendre ? Pour l'instant on reset
+            timeLeft = 480; 
+            updateTimerDisplay();
+            
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay();
+                if(timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    alert("TEMPS ÉCOULÉ ! STOP !");
+                    finishWorkout();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            document.getElementById('timer').innerText = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function stopWorkout() {
+            clearInterval(timerInterval);
+            if(confirm("Arrêter la séance ?")) {
+                switchView('view-dashboard');
+            } else {
+                // Si on annule, il faudrait relancer le timer (MVP: on laisse en pause)
+            }
+        }
+
+        function finishWorkout() {
+            clearInterval(timerInterval);
+            switchView('view-save');
+        }
+
+        function saveData() {
+            const reps = document.getElementById('rep-input').value;
+            if(!reps) {
+                alert("Entre ton score !");
+                return;
+            }
+            // Ici, on sauvegardera dans le LocalStorage plus tard
+            alert(`Score de ${reps} reps enregistré ! (Simulation)`);
+            switchView('view-dashboard');
+        }
+    </script>
+</body>
+</html>
