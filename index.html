@@ -161,9 +161,9 @@
             default: () => ({
                 stats: { Pectoraux: 1, Jambes: 1, Dos: 1, Triceps: 1, Biceps: 1 },
                 history: { originalStats: { Pectoraux: 1, Jambes: 1, Dos: 1, Triceps: 1, Biceps: 1 } },
-                sessions: {}, // Format: "day1": { validated: true, score: 50 }
-                records: {}, // "day1": 40
-                bossBeaten: {}, // "boss1": 2
+                sessions: {}, 
+                records: {}, 
+                bossBeaten: {}, 
                 furyCount: 0
             })
         };
@@ -368,8 +368,9 @@
                 };
 
                 let content = "";
-                let primaryMuscleLvl = 1; // To determine boss
+                let primaryMuscleLvl = 1;
 
+                // --- DAY 1 & 5: PECTORAUX ---
                 if(dayId === 1 || dayId === 5) { 
                     primaryMuscleLvl = getLvl('Pectoraux');
                     const lvl = getCatCode(primaryMuscleLvl);
@@ -378,6 +379,8 @@
                     if(lvl === 'adv') content = "Pompes Décalage Pliométriques > Pompes Horloge > Pompes Dead-Stop > Pompes Jambe Traversante";
                     if(lvl === 'exp') content = "Pompes Archer Unilatérales > Pompes Diamant > Pompes Décalage Pliométriques > Pompes Horloge";
                 }
+                
+                // --- DAY 2: JAMBES POLYARTICULAIRE ---
                 else if(dayId === 2) { 
                     primaryMuscleLvl = getLvl('Jambes');
                     const lvl = getCatCode(primaryMuscleLvl);
@@ -386,26 +389,43 @@
                     if(lvl === 'adv') content = "8' Single Leg Landmines";
                     if(lvl === 'exp') content = "8' Levitation Squat Unilateral";
                 }
+                
+                // --- DAY 3 & 7: DOS ---
                 else if(dayId === 3 || dayId === 7) { 
                     primaryMuscleLvl = getLvl('Dos');
                     const lvl = getCatCode(primaryMuscleLvl);
-                    const rc = (dayId === 7 && Object.keys(data.sessions).length >= 7) ? "RC" : "Rowing Corner";
-                    if(lvl === 'beg') content = `${rc} Coudes Écartés > Chandelier > Superman Row Supination > Snow Angels`;
-                    if(lvl === 'int') content = `${rc} Coudes Tendus > ${rc} Coudes Écartés > Chandelier > Superman Row Supination`;
-                    if(lvl === 'adv') content = `${rc} Champion > ${rc} Coudes Tendus > ${rc} Coudes Écartés > Chandelier`;
-                    if(lvl === 'exp') content = `${rc} Coudes Serrés > ${rc} Champion > ${rc} Coudes Tendus > ${rc} Coudes Écartés`;
+                    let rowName = "Rowing Corner";
+                    // Simplification for Day 7: if it is day 7, use RC.
+                    if(dayId === 7) rowName = "RC";
+
+                    if(lvl === 'beg') content = `${rowName} Coudes Écartés > Chandelier > Superman Row Supination > Snow Angels`;
+                    if(lvl === 'int') content = `${rowName} Coudes Tendus > ${rowName} Coudes Écartés > Chandelier > Superman Row Supination`;
+                    if(lvl === 'adv') content = `${rowName} Champion > ${rowName} Coudes Tendus > ${rowName} Coudes Écartés > Chandelier`;
+                    if(lvl === 'exp') content = `${rowName} Coudes Serrés > ${rowName} Champion > ${rowName} Coudes Tendus > ${rowName} Coudes Écartés`;
                 }
+                
+                // --- DAY 4: TRICEPS / BICEPS ---
                 else if(dayId === 4) { 
-                    primaryMuscleLvl = getLvl('Triceps'); // Base boss on Triceps for this mixed day
+                    primaryMuscleLvl = getLvl('Triceps'); // Boss determined by Triceps
                     const lTri = getCatCode(primaryMuscleLvl);
                     const lBi = getCatCode(getLvl('Biceps'));
                     
-                    let triEx="", biEx="";
-                    if(lTri === 'beg') triEx = "Wall Triceps Extension"; else if(lTri === 'int') triEx = "Pompes du Sphinx"; else if(lTri === 'adv') triEx = "Pompes Tigre Genoux"; else triEx = "Pompes Tigre";
-                    if(lBi === 'beg') biEx = "Sock Drag Curl"; else if(lBi === 'int') biEx = "Corner Curl Unilatéral"; else if(lBi === 'adv') biEx = "Drag Curl au sol"; else biEx = "Rotation Drag Curl Unilatéral";
+                    let triEx=""; 
+                    if(lTri === 'beg') triEx = "Wall Triceps Extension"; 
+                    else if(lTri === 'int') triEx = "Pompes du Sphinx"; 
+                    else if(lTri === 'adv') triEx = "Pompes Tigre sur les Genoux"; 
+                    else triEx = "Pompes Tigre";
+
+                    let biEx="";
+                    if(lBi === 'beg') biEx = "Sock Drag Curl"; 
+                    else if(lBi === 'int') biEx = "Corner Curl Unilatéral"; 
+                    else if(lBi === 'adv') biEx = "Drag Curl au sol"; 
+                    else biEx = "Rotation Drag Curl Unilatéral";
                     
-                    content = `Triceps (4'): ${triEx} <br> Biceps (4'): ${biEx}`;
+                    content = `Triceps (4'): ${triEx} <br><br> Biceps (4'): ${biEx}`;
                 }
+                
+                // --- DAY 6: JAMBES ISOLATION ---
                 else if(dayId === 6) { 
                     primaryMuscleLvl = getLvl('Jambes');
                     const lvl = getCatCode(primaryMuscleLvl);
@@ -415,7 +435,7 @@
                     if(lvl === 'exp') content = "4' Sissy Squat Partiel Bas > 4' Leg Curl Glissé Unilatéral";
                 }
 
-                // Determine Boss Image based on Difficulty Index (1-4)
+                // Determine Boss Image based on Difficulty Index (1-4) of the primary muscle group
                 const diffIdx = training.getDifficultyIndex(primaryMuscleLvl);
                 const bossImg = `btb${diffIdx}.png`;
 
@@ -423,14 +443,12 @@
             },
 
             selectedDay: null,
-            currentBossId: null, // 1, 2, 3 or 4
+            currentBossId: null,
 
             init: () => {
                 const grid = document.getElementById('week-grid');
                 grid.innerHTML = '';
-                let nextDay = 1;
-                // Logic to find first unvalidated day or loop
-                // Simplified: Just render 1-7
+                // Render Days 1-7
                 training.days.forEach(d => {
                     const el = document.createElement('div');
                     el.className = 'day-box';
@@ -462,7 +480,6 @@
                 const prevRecord = data.records[dayKey] || 0;
                 const bossTarget = 100; // Placeholder
                 
-                // Boss Badge Name in Trophy Room (boss1, boss2...)
                 const bossBadgeName = "boss" + training.currentBossId;
 
                 let msg = "Séance validée.";
