@@ -45,9 +45,6 @@
         .trophy-item { width: 80px; cursor: pointer; text-align: center; }
         .trophy-item img { width: 60px; height: 60px; object-fit: contain; }
         
-        /* Modal / Tooltip logic simple */
-        .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #333; padding: 10px 20px; border-radius: 20px; border: 1px solid var(--accent-yellow); display: none; z-index: 100; }
-
         .whatsapp-icon { width: 20px; vertical-align: middle; margin-left: 10px; }
     </style>
 </head>
@@ -55,7 +52,7 @@
 
     <div id="screen-menu" class="container">
         <div id="char-display">
-            <img id="char-img" src="https://via.placeholder.com/150x200?text=Perso" alt="Character">
+            <img id="char-img" src="evo1.png" alt="Character" onerror="this.src='https://via.placeholder.com/150x200?text=Perso+Manquant'">
             <div id="global-level-badge">Niveau 5</div>
         </div>
         
@@ -127,9 +124,9 @@
         
         <div class="boss-section" style="border: 1px solid #444; padding: 10px; border-radius: 8px; margin-bottom: 15px;">
             <h4>Beat The Boss</h4>
-            <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
-                <img id="boss-img-preview" src="https://via.placeholder.com/50?text=Boss" style="border-radius: 50%;">
-                <span id="boss-score-target">Score à battre: 100</span>
+            <div style="display: flex; align-items: center; justify-content: center; gap: 15px;">
+                <img id="boss-img-preview" src="" style="width: 80px; height: 80px; object-fit: contain; border-radius: 10px;" onerror="this.src='https://via.placeholder.com/80?text=BTB'">
+                <span id="boss-score-target" style="font-weight: bold; color: var(--accent-red);">Score à battre: ???</span>
             </div>
         </div>
 
@@ -143,7 +140,7 @@
         <div style="margin-bottom: 30px;">
             <img id="trophy-char-img" src="" style="width: 100px; margin: 0 auto; display: block;">
             <div style="display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 10px;">
-                <img src="assets/record.png" onerror="this.src='https://via.placeholder.com/50?text=Rec'" style="width: 40px;">
+                <img src="record.png" onerror="this.src='https://via.placeholder.com/50?text=Rec'" style="width: 40px;">
                 <span id="total-records" style="font-size: 1.5em; font-weight: bold;">0</span>
             </div>
         </div>
@@ -153,7 +150,6 @@
         <div id="fury-container" class="trophy-grid" style="margin-top: 20px;">
              </div>
 
-        <div id="tooltip-text" class="toast">Info Trophée</div>
         <button class="btn" style="margin-top: 30px;" onclick="nav.to('screen-menu')">Retour</button>
     </div>
 
@@ -168,8 +164,7 @@
                 sessions: {}, // Format: "day1": { validated: true, score: 50 }
                 records: {}, // "day1": 40
                 bossBeaten: {}, // "boss1": 2
-                furyCount: 0,
-                consecutiveDays: 0
+                furyCount: 0
             })
         };
 
@@ -192,26 +187,23 @@
                 return sum;
             },
             getCharImage: (level) => {
-                // Mapping logic
-                if(level <= 10) return 'assets/evo1.png';
-                if(level <= 15) return 'assets/evo2.png';
-                if(level <= 19) return 'assets/evo3.png';
-                if(level <= 23) return 'assets/evo4.png';
-                if(level <= 26) return 'assets/evo5.png';
-                if(level <= 29) return 'assets/evo6.png';
-                if(level <= 32) return 'assets/evo7.png';
-                if(level <= 34) return 'assets/evo8.png';
-                if(level <= 36) return 'assets/evo9.png';
-                if(level <= 38) return 'assets/evo10.png';
-                if(level === 39) return 'assets/evo11.png';
-                return 'assets/evo12.png';
+                if(level <= 10) return 'evo1.png';
+                if(level <= 15) return 'evo2.png';
+                if(level <= 19) return 'evo3.png';
+                if(level <= 23) return 'evo4.png';
+                if(level <= 26) return 'evo5.png';
+                if(level <= 29) return 'evo6.png';
+                if(level <= 32) return 'evo7.png';
+                if(level <= 34) return 'evo8.png';
+                if(level <= 36) return 'evo9.png';
+                if(level <= 38) return 'evo10.png';
+                if(level === 39) return 'evo11.png';
+                return 'evo12.png';
             },
             updateCharacter: () => {
                 const lvl = app.getGlobalLevel();
                 const imgName = app.getCharImage(lvl);
-                // Fallback for demo if assets don't exist
                 document.getElementById('char-img').src = imgName; 
-                document.getElementById('char-img').onerror = function(){ this.src = `https://via.placeholder.com/150x200?text=Lvl+${lvl}`; };
                 document.getElementById('global-level-badge').innerText = "Niveau " + lvl;
             },
             getLevelColor: (val) => {
@@ -222,10 +214,9 @@
             }
         };
 
-        // --- LEVELS ROOM: TESTS ---
+        // --- LEVELS ROOM ---
         const tests = {
             currentTest: null,
-            timer: null,
             interval: null,
             currentPalier: 1,
             
@@ -261,20 +252,15 @@
                 tests.interval = setInterval(() => {
                     totalSeconds--;
                     secondsInMinute--;
-
-                    // Update Display
                     let min = Math.floor(totalSeconds / 60);
                     let sec = totalSeconds % 60;
                     document.getElementById('timer-display').innerText = `0${min}:${sec < 10 ? '0'+sec : sec}`;
 
-                    // Check Minute / Palier
                     if (secondsInMinute <= 0) {
                         if (totalSeconds <= 0) {
-                            tests.finish(8); // Max reached
+                            tests.finish(8); 
                             return;
                         }
-                        // Next Palier
-                        // Beep sound placeholder: console.log("BEEP");
                         palier++;
                         reps += 2;
                         secondsInMinute = 60;
@@ -282,14 +268,10 @@
                         document.getElementById('reps-target').innerText = "Objectif: " + reps + " reps";
                         tests.currentPalier = palier;
                     }
-                }, 1000); // 1000ms = 1s. For debug use 100.
+                }, 1000); 
             },
 
             fail: () => {
-                // If user fails during palier 3, he validated palier 2.
-                // Logic: if currentPalier is 1, result is 1. If > 1, result is currentPalier - 1 ? 
-                // Prompt implies: "S'il échoue... le dernier palier validé est enregistré". 
-                // Assuming failure happens *during* the attempt for currentPalier.
                 let validated = tests.currentPalier > 1 ? tests.currentPalier - 1 : 1;
                 tests.finish(validated);
             },
@@ -308,7 +290,7 @@
             }
         };
 
-        // --- EVOLUTION LAB (RADAR) ---
+        // --- EVOLUTION LAB ---
         const evoLab = {
             chart: null,
             init: () => {
@@ -326,10 +308,7 @@
             },
             render: (statsObj) => {
                 const ctx = document.getElementById('radarChart').getContext('2d');
-                const labels = ['Pectoraux', 'Jambes', 'Dos', 'Triceps', 'Biceps'];
                 const values = [statsObj.Pectoraux, statsObj.Jambes, statsObj.Dos, statsObj.Triceps, statsObj.Biceps];
-                
-                // Custom colors per point
                 const pointColors = values.map(v => app.getLevelColor(v));
 
                 if(evoLab.chart) evoLab.chart.destroy();
@@ -337,9 +316,8 @@
                 evoLab.chart = new Chart(ctx, {
                     type: 'radar',
                     data: {
-                        labels: labels,
+                        labels: ['Pectoraux', 'Jambes', 'Dos', 'Triceps', 'Biceps'],
                         datasets: [{
-                            label: 'Niveau',
                             data: values,
                             backgroundColor: 'rgba(255, 255, 255, 0.2)',
                             borderColor: '#fff',
@@ -351,8 +329,7 @@
                     options: {
                         scales: {
                             r: {
-                                min: 0,
-                                max: 8,
+                                min: 0, max: 8,
                                 ticks: { stepSize: 1, backdropColor: 'transparent', color: '#666' },
                                 grid: { color: '#333' },
                                 pointLabels: { color: '#fff' }
@@ -376,89 +353,89 @@
                 { id: 7, name: 'Dos' }
             ],
             
-            // Logic to get exercises string based on Level
+            getDifficultyIndex: (lvl) => {
+                if(lvl<=2) return 1; // Beg
+                if(lvl<=4) return 2; // Int
+                if(lvl<=6) return 3; // Adv
+                return 4;            // Exp
+            },
+
             getExercises: (dayId) => {
-                // Helpers
-                const getLvl = (muscle) => data.stats[muscle] || 1;
-                const getCat = (lvl) => {
-                    if(lvl<=2) return 'beg'; if(lvl<=4) return 'int'; if(lvl<=6) return 'adv'; return 'exp';
+                const getLvl = (m) => data.stats[m] || 1;
+                const getCatCode = (lvl) => {
+                    const idx = training.getDifficultyIndex(lvl);
+                    return idx === 1 ? 'beg' : idx === 2 ? 'int' : idx === 3 ? 'adv' : 'exp';
                 };
 
                 let content = "";
-                let bossScore = 100; // Default
+                let primaryMuscleLvl = 1; // To determine boss
 
-                if(dayId === 1 || dayId === 5) { // Pecs
-                    const lvl = getCat(getLvl('Pectoraux'));
+                if(dayId === 1 || dayId === 5) { 
+                    primaryMuscleLvl = getLvl('Pectoraux');
+                    const lvl = getCatCode(primaryMuscleLvl);
                     if(lvl === 'beg') content = "2' Pompes Excentrique > 2' Pompes Genoux Partielles > 2' Pompes Genoux Excentriques > 2' Pompes Corner";
                     if(lvl === 'int') content = "Pompes Dead-Stop > Pompes Jambe Traversante > Pompes Excentriques > Pompes Genoux Partielles";
                     if(lvl === 'adv') content = "Pompes Décalage Pliométriques > Pompes Horloge > Pompes Dead-Stop > Pompes Jambe Traversante";
                     if(lvl === 'exp') content = "Pompes Archer Unilatérales > Pompes Diamant > Pompes Décalage Pliométriques > Pompes Horloge";
                 }
-                else if(dayId === 2) { // Jambes Poly
-                    const lvl = getCat(getLvl('Jambes'));
+                else if(dayId === 2) { 
+                    primaryMuscleLvl = getLvl('Jambes');
+                    const lvl = getCatCode(primaryMuscleLvl);
                     if(lvl === 'beg') content = "4' Fentes Arrières Basses > 4' Frog Jumps";
                     if(lvl === 'int') content = "4' Fentes Sautées > 4' Fentes Arrières Basses";
                     if(lvl === 'adv') content = "8' Single Leg Landmines";
                     if(lvl === 'exp') content = "8' Levitation Squat Unilateral";
                 }
-                else if(dayId === 3 || dayId === 7) { // Dos
-                    const lvl = getCat(getLvl('Dos'));
-                    // Abbreviation check
+                else if(dayId === 3 || dayId === 7) { 
+                    primaryMuscleLvl = getLvl('Dos');
+                    const lvl = getCatCode(primaryMuscleLvl);
                     const rc = (dayId === 7 && Object.keys(data.sessions).length >= 7) ? "RC" : "Rowing Corner";
-                    
                     if(lvl === 'beg') content = `${rc} Coudes Écartés > Chandelier > Superman Row Supination > Snow Angels`;
                     if(lvl === 'int') content = `${rc} Coudes Tendus > ${rc} Coudes Écartés > Chandelier > Superman Row Supination`;
                     if(lvl === 'adv') content = `${rc} Champion > ${rc} Coudes Tendus > ${rc} Coudes Écartés > Chandelier`;
                     if(lvl === 'exp') content = `${rc} Coudes Serrés > ${rc} Champion > ${rc} Coudes Tendus > ${rc} Coudes Écartés`;
                 }
-                else if(dayId === 4) { // Tri/Bi
-                    const lTri = getCat(getLvl('Triceps'));
-                    const lBi = getCat(getLvl('Biceps'));
-                    let triEx = ""; let biEx = "";
+                else if(dayId === 4) { 
+                    primaryMuscleLvl = getLvl('Triceps'); // Base boss on Triceps for this mixed day
+                    const lTri = getCatCode(primaryMuscleLvl);
+                    const lBi = getCatCode(getLvl('Biceps'));
                     
-                    if(lTri === 'beg') triEx = "Wall Triceps Extension";
-                    if(lTri === 'int') triEx = "Pompes du Sphinx";
-                    if(lTri === 'adv') triEx = "Pompes Tigre sur les Genoux";
-                    if(lTri === 'exp') triEx = "Pompes Tigre";
-
-                    if(lBi === 'beg') biEx = "Sock Drag Curl";
-                    if(lBi === 'int') biEx = "Corner Curl Unilatéral";
-                    if(lBi === 'adv') biEx = "Drag Curl au sol";
-                    if(lBi === 'exp') biEx = "Rotation Drag Curl Unilatéral";
-
+                    let triEx="", biEx="";
+                    if(lTri === 'beg') triEx = "Wall Triceps Extension"; else if(lTri === 'int') triEx = "Pompes du Sphinx"; else if(lTri === 'adv') triEx = "Pompes Tigre Genoux"; else triEx = "Pompes Tigre";
+                    if(lBi === 'beg') biEx = "Sock Drag Curl"; else if(lBi === 'int') biEx = "Corner Curl Unilatéral"; else if(lBi === 'adv') biEx = "Drag Curl au sol"; else biEx = "Rotation Drag Curl Unilatéral";
+                    
                     content = `Triceps (4'): ${triEx} <br> Biceps (4'): ${biEx}`;
                 }
-                else if(dayId === 6) { // Jambes Iso
-                    const lvl = getCat(getLvl('Jambes'));
+                else if(dayId === 6) { 
+                    primaryMuscleLvl = getLvl('Jambes');
+                    const lvl = getCatCode(primaryMuscleLvl);
                     if(lvl === 'beg') content = "4' Leg Extension de l'Ours > 4' Pont Piétinement";
                     if(lvl === 'int') content = "4' Corner Sissy Squat > 4' Leg Curl Glissé Alterné";
                     if(lvl === 'adv') content = "4' Sissy Squat > 4' Leg Curl Glissé";
                     if(lvl === 'exp') content = "4' Sissy Squat Partiel Bas > 4' Leg Curl Glissé Unilatéral";
                 }
 
-                return { desc: content, bossTarget: bossScore };
+                // Determine Boss Image based on Difficulty Index (1-4)
+                const diffIdx = training.getDifficultyIndex(primaryMuscleLvl);
+                const bossImg = `btb${diffIdx}.png`;
+
+                return { desc: content, bossTarget: 100, bossImg: bossImg, bossId: diffIdx };
             },
 
             selectedDay: null,
+            currentBossId: null, // 1, 2, 3 or 4
 
             init: () => {
                 const grid = document.getElementById('week-grid');
                 grid.innerHTML = '';
-                // Check next day logic
                 let nextDay = 1;
-                for(let i=1; i<=7; i++) {
-                    if(data.sessions['day'+i]) nextDay = i+1;
-                }
-                if(nextDay > 7) nextDay = 1; // Loop or reset logic can be added here
-
+                // Logic to find first unvalidated day or loop
+                // Simplified: Just render 1-7
                 training.days.forEach(d => {
                     const el = document.createElement('div');
                     el.className = 'day-box';
                     el.innerText = `J${d.id}\n${d.name}`;
-                    
                     if(data.sessions['day'+d.id]) el.classList.add('done');
-                    else if(d.id === nextDay) el.classList.add('active');
-
                     el.onclick = () => training.openDay(d.id);
                     grid.appendChild(el);
                 });
@@ -472,11 +449,9 @@
                 document.getElementById('workout-list').innerHTML = workoutData.desc;
                 document.getElementById('boss-score-target').innerText = "Score à battre: " + workoutData.bossTarget;
                 
-                // Determine Boss Image based on palier of main muscle (simplified logic for demo)
-                // Using global level / 10 as boss ID roughly
-                const bossId = Math.ceil(app.getGlobalLevel()/10);
-                document.getElementById('boss-img-preview').src = `assets/boss${bossId}.png`;
-                document.getElementById('boss-img-preview').onerror = function(){this.src='https://via.placeholder.com/50?text=Boss';};
+                // Set Boss Image for Workout Screen (btb1, btb2, etc)
+                document.getElementById('boss-img-preview').src = workoutData.bossImg;
+                training.currentBossId = workoutData.bossId;
 
                 nav.to('screen-workout');
             },
@@ -485,23 +460,22 @@
                 const score = parseInt(document.getElementById('workout-score').value) || 0;
                 const dayKey = 'day' + training.selectedDay;
                 const prevRecord = data.records[dayKey] || 0;
-                const bossTarget = 100; // Fixed for demo, should be dynamic
-                const bossId = "boss" + Math.ceil(app.getGlobalLevel()/10);
+                const bossTarget = 100; // Placeholder
+                
+                // Boss Badge Name in Trophy Room (boss1, boss2...)
+                const bossBadgeName = "boss" + training.currentBossId;
 
                 let msg = "Séance validée.";
 
-                // Record Check
                 if(score > prevRecord && prevRecord > 0) {
                     msg += "\nRECORD BATTU ! (+1 Trophée)";
-                    // Logic to store trophy count not explicitly detailed in object but implied
                 }
                 data.records[dayKey] = score;
 
-                // Boss Check
                 if(score > bossTarget) {
                     msg += "\nBOSS BATTU !";
-                    if(!data.bossBeaten[bossId]) data.bossBeaten[bossId] = 0;
-                    data.bossBeaten[bossId]++;
+                    if(!data.bossBeaten[bossBadgeName]) data.bossBeaten[bossBadgeName] = 0;
+                    data.bossBeaten[bossBadgeName]++;
                 }
 
                 data.sessions[dayKey] = { validated: true, score: score };
@@ -515,38 +489,33 @@
         // --- TROPHY GALLERY ---
         const gallery = {
             render: () => {
-                // Character
                 document.getElementById('trophy-char-img').src = app.getCharImage(app.getGlobalLevel());
-                
-                // Count Records (Records beaten)
-                // Simplification: Counting non-zero records doesn't mean beaten. 
-                // Since prompt says "number of times a record has been beaten", 
-                // we would need a separate counter in DB. 
-                // For this V1, I will count # of recorded sessions as "Trophies" approx.
                 const recordCount = Object.keys(data.records).length; 
                 document.getElementById('total-records').innerText = recordCount;
 
-                // Bosses
                 const bossContainer = document.getElementById('boss-trophy-container');
                 bossContainer.innerHTML = '';
-                for(let bKey in data.bossBeaten) {
-                    const div = document.createElement('div');
-                    div.className = 'trophy-item';
-                    div.innerHTML = `
-                        <img src="assets/${bKey}.png" onerror="this.src='https://via.placeholder.com/60?text=BossW'">
-                        <div>x${data.bossBeaten[bKey]}</div>
-                    `;
-                    div.onclick = () => alert("Badge Tueur de Boss: " + bKey);
-                    bossContainer.appendChild(div);
-                }
+                
+                // Check for boss1, boss2, boss3, boss4
+                ['boss1','boss2','boss3','boss4'].forEach(bKey => {
+                    if(data.bossBeaten[bKey] && data.bossBeaten[bKey] > 0) {
+                         const div = document.createElement('div');
+                        div.className = 'trophy-item';
+                        div.innerHTML = `
+                            <img src="${bKey}.png" onerror="this.src='https://via.placeholder.com/60?text=Win'">
+                            <div>x${data.bossBeaten[bKey]}</div>
+                        `;
+                        div.onclick = () => alert("Tueur de Boss (Niveau " + bKey.replace('boss','') + ")");
+                        bossContainer.appendChild(div);
+                    }
+                });
 
-                // Fury
                 const furyContainer = document.getElementById('fury-container');
                 furyContainer.innerHTML = '';
                 if(data.furyCount > 0) {
                     furyContainer.innerHTML = `
                         <div class="trophy-item">
-                            <img src="assets/fury.png" onerror="this.src='https://via.placeholder.com/60?text=Fury'">
+                            <img src="fury.png" onerror="this.src='https://via.placeholder.com/60?text=Fury'">
                             <div>x${data.furyCount}</div>
                         </div>
                     `;
@@ -554,10 +523,8 @@
             }
         };
 
-        // Init
         document.getElementById('screen-menu').classList.remove('hidden');
         app.updateCharacter();
-        // Hook gallery render
         document.querySelector('button[onclick="nav.to(\'screen-trophy\')"]').onclick = () => {
             gallery.render();
             nav.to('screen-trophy');
