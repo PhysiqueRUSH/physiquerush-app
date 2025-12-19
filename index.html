@@ -170,15 +170,6 @@
 
         let data = db.load();
 
-        // --- NAVIGATION ---
-        const nav = {
-            to: (id) => {
-                document.querySelectorAll('.container').forEach(d => d.classList.add('hidden'));
-                document.getElementById(id).classList.remove('hidden');
-                if(id === 'screen-menu') app.updateCharacter();
-            }
-        };
-
         // --- CORE LOGIC ---
         const app = {
             getGlobalLevel: () => {
@@ -540,12 +531,33 @@
             }
         };
 
+        // --- NAVIGATION (CORRIGÉE) ---
+        const nav = {
+            to: (id) => {
+                // 1. On cache tous les écrans
+                document.querySelectorAll('.container').forEach(d => d.classList.add('hidden'));
+                
+                // 2. On affiche l'écran demandé
+                document.getElementById(id).classList.remove('hidden');
+                
+                // 3. LOGIQUE D'INITIALISATION AUTOMATIQUE
+                // Si on va au menu, on met à jour le perso
+                if(id === 'screen-menu') app.updateCharacter();
+                
+                // Si on va au Training Camp, on construit la grille des jours !
+                if(id === 'screen-training') training.init();
+                
+                // Si on va aux Trophées, on affiche les badges à jour
+                if(id === 'screen-trophy') gallery.render();
+            }
+        };
+
+        // --- INIT ---
         document.getElementById('screen-menu').classList.remove('hidden');
         app.updateCharacter();
-        document.querySelector('button[onclick="nav.to(\'screen-trophy\')"]').onclick = () => {
-            gallery.render();
-            nav.to('screen-trophy');
-        };
+
+        // Hook manuel pour le bouton trophée du menu (bien que géré par nav.to maintenant)
+        // La fonction nav.to gère tout désormais.
 
     </script>
 </body>
