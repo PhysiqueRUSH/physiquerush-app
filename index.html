@@ -34,10 +34,10 @@
             border-radius: 15px;
         }
 
-        /* MODIF: Réduction taille logo principal à 70% */
+        /* MODIF: Logo encore plus petit (40%) */
         .logo-reduced {
-            width: 70%; 
-            max-width: 70%;
+            width: 40%; 
+            max-width: 150px;
         }
         
         .glow-effect {
@@ -53,8 +53,10 @@
 
         /* Header / Character */
         #char-display { margin-bottom: 20px; margin-top: 10px; }
-        /* MODIF: Augmentation taille perso principal (+20% => 180px) */
-        #char-img { max-width: 180px; display: block; margin: 0 auto; }
+        
+        /* MODIF: Personnage encore plus gros (250px max) */
+        #char-img { max-width: 250px; display: block; margin: 0 auto; }
+        
         #global-level-badge { font-size: 1.4em; font-weight: bold; margin-top: 10px; color: var(--accent-yellow); text-shadow: 0 0 5px rgba(0,0,0,0.5); }
 
         /* Levels Room */
@@ -86,7 +88,7 @@
         <img src="MIAH.png" class="main-img glow-effect" alt="MIAH" onerror="this.style.display='none'">
 
         <div id="char-display">
-            <img id="char-img" src="evo1.png" alt="Character" onerror="this.src='https://via.placeholder.com/180x220?text=Perso+Manquant'">
+            <img id="char-img" src="evo1.png" alt="Character" onerror="this.src='https://via.placeholder.com/250x300?text=Perso+Manquant'">
             <div id="global-level-badge">Niveau 5 / 40</div>
         </div>
         
@@ -172,7 +174,7 @@
     <div id="screen-trophy" class="container hidden">
         <h2>Galerie des Trophées</h2>
         <div style="margin-bottom: 30px; background: #1a1a1a; padding: 20px; border-radius: 15px;">
-            <img id="trophy-char-img" src="" style="width: 120px; margin: 0 auto; display: block;">
+            <img id="trophy-char-img" src="" style="width: 200px; margin: 0 auto; display: block;">
             <div style="display: flex; align-items: center; justify-content: center; gap: 15px; margin-top: 15px;">
                 <img src="record.png" onerror="this.src='https://via.placeholder.com/80?text=Rec'" style="width: 80px; height: 80px; object-fit: contain;">
                 <span id="total-records" style="font-size: 2.5em; font-weight: bold; color: var(--accent-yellow);">0</span>
