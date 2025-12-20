@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PhysiqueRush - Massive Impact</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#ffeb3b">
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg-color: #121212;
+            --text-color: #ffffff;
+            --accent-pink: #ff6ec7;   /* Débutant */
+            --accent-green: #4caf50;  /* Intermédiaire */
+            --accent-yellow: #ffeb3b; /* Avancé */
+            --accent-red: #f44336;    /* Expert */
+            --card-bg: #1e1e1e;
+        }
+        body { margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg-color); color: var(--text-color); display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+        
+        /* Utility Classes */
+        .hidden { display: none !important; }
+        .btn { display: block; width: 100%; padding: 15px; margin: 10px 0; background: var(--card-bg); color: white; border: 1px solid #333; cursor: pointer; text-align: center; font-weight: bold; text-transform: uppercase; border-radius: 8px; transition: 0.2s; }
+        .btn:hover { background: #333; }
+        .btn-red { background: var(--accent-red); color: black; border: none; }
+        .container { width: 95%; max-width: 500px; padding: 20px; text-align: center; }
+        
+        /* --- DESIGN IMAGES & GLOW --- */
+        .main-img {
+            display: block;
+            margin: 0 auto 15px auto;
+            border-radius: 15px;
+        }
+
+        /* MODIF: Logo encore plus petit (40%) */
+        .logo-reduced {
+            width: 40%; 
+            max-width: 150px;
+        }
+        
+        .glow-effect {
+            width: 100%; max-width: 100%;
+            animation: redPulse 2s infinite ease-in-out;
+        }
+
+        @keyframes redPulse {
+            0% { box-shadow: 0 0 5px rgba(244, 67, 54, 0.3); }
+            50% { box-shadow: 0 0 25px rgba(244, 67, 54, 0.8), 0 0 10px rgba(244, 67, 54, 0.6); }
+            100% { box-shadow: 0 0 5px rgba(244, 67, 54, 0.3); }
+        }
+
+        /* Header / Character */
+        #char-display { margin-bottom: 20px; margin-top: 10px; }
+        
+        /* MODIF: Personnage encore plus gros (250px max) */
+        #char-img { max-width: 250px; display: block; margin: 0 auto; }
+        
+        #global-level-badge { font-size: 1.4em; font-weight: bold; margin-top: 10px; color: var(--accent-yellow); text-shadow: 0 0 5px rgba(0,0,0,0.5); }
+
+        /* Levels Room */
+        #radar-container { position: relative; width: 100%; height: 300px; margin-bottom: 20px; background: #000; border-radius: 10px; border: 1px solid #333; }
+        canvas { display: block; width: 100%; height: 100%; }
+
+        /* Training Camp */
+        .week-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; margin-bottom: 20px; }
+        .day-box { background: #333; padding: 10px 2px; font-size: 0.8em; border-radius: 4px; cursor: pointer; opacity: 0.5; }
+        .day-box.active { border: 2px solid var(--accent-yellow); opacity: 1; }
+        .day-box.done { background: var(--accent-green); color: black; opacity: 1; }
+        
+        /* Inputs & Boss Section */
+        input[type="number"] { width: 80px; padding: 10px; text-align: center; border-radius: 5px; border: none; font-size: 1.2em; }
+        
+        /* Galerie Trophées */
+        .trophy-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; margin-top: 20px; }
+        .trophy-item { width: 130px; cursor: pointer; text-align: center; background: #1a1a1a; padding: 10px; border-radius: 10px; border: 1px solid #333; }
+        .trophy-item img { width: 110px; height: 110px; object-fit: contain; display: block; margin: 0 auto; }
+        .trophy-count { font-size: 1.2em; font-weight: bold; color: var(--accent-yellow); margin-top: 5px; display: block; }
+        
+        .whatsapp-icon { width: 24px; vertical-align: middle; margin-left: 10px; }
+    </style>
+</head>
+<body>
+
+    <div id="screen-menu" class="container">
+        <img src="physiquerush.png" class="main-img logo-reduced" alt="Logo PhysiqueRush" onerror="this.style.display='none'">
+        <img src="MIAH.png" class="main-img glow-effect" alt="MIAH" onerror="this.style.display='none'">
+
+        <div id="char-display">
+            <img id="char-img" src="evo1.png" alt="Character" onerror="this.src='https://via.placeholder.com/250x300?text=Perso+Manquant'">
+            <div id="global-level-badge">Niveau 5 / 40</div>
+        </div>
+        
+        <button class="btn" onclick="nav.to('screen-levels')">LEVELS ROOM</button>
+        <button class="btn" onclick="nav.to('screen-training')">TRAINING CAMP</button>
+        <button class="btn" onclick="alert('Module Nutri-Rush bientôt disponible.')">NUTRI-RUSH</button>
+        <button class="btn" onclick="nav.to('screen-trophy')">Galerie des Trophées</button>
+        <button class="btn" onclick="window.location.href='https://wa.me/'">La Team PhysiqueRush <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" class="whatsapp-icon"></button>
+        <button class="btn btn-red" onclick="window.close(); window.location.href='about:blank';">Quitter</button>
+    </div>
+
+    <div id="screen-levels" class="container hidden">
+        <h2>LEVELS ROOM</h2>
+        <button class="btn" onclick="evoLab.init()">Evolution Lab</button>
+        <button class="btn" onclick="tests.start('Pectoraux')">Test Pectoraux</button>
+        <button class="btn" onclick="tests.start('Jambes')">Test Jambes</button>
+        <button class="btn" onclick="tests.start('Dos')">Test Dos</button>
+        <button class="btn" onclick="tests.start('Triceps')">Test Triceps</button>
+        <button class="btn" onclick="tests.start('Biceps')">Test Biceps</button>
+        <button class="btn" onclick="nav.to('screen-menu')">Retour</button>
+    </div>
+
+    <div id="screen-evolab" class="container hidden">
+        <h3>Evolution Lab</h3>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <button onclick="evoLab.showOriginal()" style="background:none; border:none; color: white; cursor: pointer; font-size:1.1em;">◄ Origine</button>
+            <span id="evolab-title" style="font-weight:bold;">Actuel</span>
+            <button onclick="evoLab.showCurrent()" style="background:none; border:none; color: white; cursor: pointer; font-size:1.1em;">Actuel ►</button>
+        </div>
+        <div id="radar-container">
+            <canvas id="radarChart"></canvas>
+        </div>
+        <div id="evolab-global" style="font-size: 1.2em; color: var(--accent-yellow); font-weight: bold; margin-bottom: 15px;">Niveau Global: 5 / 40</div>
+        <button class="btn" onclick="nav.to('screen-levels')">Retour</button>
+    </div>
+
+    <div id="screen-test" class="container hidden">
+        <h2 id="test-name">Test</h2>
+        <div style="background: #000; height: 150px; display: flex; align-items: center; justify-content: center; margin-bottom: 15px; color: #555; border: 1px solid #333;">
+            [VIDEO VIMEO PLACEHOLDER]
+        </div>
+        <h3 id="test-exercise-name" style="color: var(--accent-pink);">Exercice</h3>
+        <div id="timer-display" style="font-size: 3.5em; font-weight: bold; margin: 20px 0;">00:00</div>
+        <div id="reps-target" style="color: var(--accent-yellow); font-size: 1.4em;">Objectif: 10 reps</div>
+        <div id="current-palier" style="margin-bottom: 20px; font-size: 1.2em;">Palier 1</div>
+        
+        <button id="btn-start-test" class="btn btn-red" onclick="tests.run()">LANCER LE TEST</button>
+        <button id="btn-fail-test" class="btn hidden" onclick="tests.fail()">Echec / Fin</button>
+        <button class="btn" onclick="tests.quit()">Retour</button>
+    </div>
+
+    <div id="screen-training" class="container hidden">
+        <h2>TRAINING CAMP</h2>
+        <div class="week-grid" id="week-grid">
+            </div>
+        <div id="training-info" style="margin-top: 20px;">
+            Sélectionnez un jour.
+        </div>
+        <button class="btn" onclick="nav.to('screen-menu')">Retour</button>
+    </div>
+
+    <div id="screen-workout" class="container hidden">
+        <h2 id="workout-day-title">Jour X</h2>
+        <div style="background: #000; height: 150px; display: flex; align-items: center; justify-content: center; margin-bottom: 15px; color: #555; border: 1px solid #333;">
+            [VIDEO VIMEO SEANCE]
+        </div>
+        <div id="workout-list" style="text-align: left; margin-bottom: 20px; line-height: 1.6;">
+            </div>
+        
+        <div class="boss-section" style="border: 2px solid #444; padding: 15px; border-radius: 12px; margin-bottom: 20px; background: #151515;">
+            <h4 style="margin-top:0; color: var(--accent-red);">Beat The Boss</h4>
+            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;">
+                <img id="boss-img-preview" src="" style="width: 120px; height: 120px; object-fit: contain; border-radius: 10px; border: 1px solid #555;" onerror="this.src='https://via.placeholder.com/120?text=BTB'">
+                <span id="boss-score-target" style="font-size: 1.2em; font-weight: bold; color: white;">Score à battre: ???</span>
+            </div>
+        </div>
+
+        <input type="number" id="workout-score" placeholder="Score">
+        <button class="btn btn-red" onclick="training.validateSession()">VALIDER LA SEANCE</button>
+        <button class="btn" onclick="nav.to('screen-training')">Retour</button>
+    </div>
+
+    <div id="screen-trophy" class="container hidden">
+        <h2>Galerie des Trophées</h2>
+        <div style="margin-bottom: 30px; background: #1a1a1a; padding: 20px; border-radius: 15px;">
+            <img id="trophy-char-img" src="" style="width: 200px; margin: 0 auto; display: block;">
+            <div style="display: flex; align-items: center; justify-content: center; gap: 15px; margin-top: 15px;">
+                <img src="record.png" onerror="this.src='https://via.placeholder.com/80?text=Rec'" style="width: 80px; height: 80px; object-fit: contain;">
+                <span id="total-records" style="font-size: 2.5em; font-weight: bold; color: var(--accent-yellow);">0</span>
+            </div>
+            <div style="font-size: 0.9em; color: #888; margin-top: 5px;">Records battus</div>
+        </div>
+        
+        <h3 style="border-bottom: 1px solid #333; padding-bottom: 10px;">Boss Vaincus</h3>
+        <div id="boss-trophy-container" class="trophy-grid">
+            </div>
+
+        <h3 style="border-bottom: 1px solid #333; padding-bottom: 10px; margin-top: 30px;">Mode Fury</h3>
+        <div id="fury-container" class="trophy-grid">
+             </div>
+
+        <button class="btn" style="margin-top: 30px;" onclick="nav.to('screen-menu')">Retour</button>
+    </div>
+
+    <script>
+        // --- DATA & STATE MANAGEMENT ---
+        const db = {
+            load: () => JSON.parse(localStorage.getItem('physiqueRushDB')) || db.default(),
+            save: (data) => localStorage.setItem('physiqueRushDB', JSON.stringify(data)),
+            default: () => ({
+                stats: { Pectoraux: 1, Jambes: 1, Dos: 1, Triceps: 1, Biceps: 1 },
+                history: { originalStats: { Pectoraux: 1, Jambes: 1, Dos: 1, Triceps: 1, Biceps: 1 } },
+                sessions: {}, 
+                records: {}, 
+                bossBeaten: {}, 
+                furyCount: 0
+            })
+        };
+
+        let data = db.load();
+
+        // --- CORE LOGIC ---
+        const app = {
+            getGlobalLevel: () => {
+                let sum = 0;
+                for(let k in data.stats) sum += data.stats[k];
+                return sum;
+            },
+            getCharImage: (level) => {
+                if(level <= 10) return 'evo1.png';
+                if(level <= 15) return 'evo2.png';
+                if(level <= 19) return 'evo3.png';
+                if(level <= 23) return 'evo4.png';
+                if(level <= 26) return 'evo5.png';
+                if(level <= 29) return 'evo6.png';
+                if(level <= 32) return 'evo7.png';
+                if(level <= 34) return 'evo8.png';
+                if(level <= 36) return 'evo9.png';
+                if(level <= 38) return 'evo10.png';
+                if(level === 39) return 'evo11.png';
+                return 'evo12.png';
+            },
+            updateCharacter: () => {
+                const lvl = app.getGlobalLevel();
+                const imgName = app.getCharImage(lvl);
+                document.getElementById('char-img').src = imgName; 
+                document.getElementById('global-level-badge').innerText = "Niveau " + lvl + " / 40";
+            },
+            getLevelColor: (val) => {
+                if(val <= 2) return '#ff6ec7'; // Debutant
+                if(val <= 4) return '#4caf50'; // Inter
+                if(val <= 6) return '#ffeb3b'; // Avancé
+                return '#f44336'; // Expert
+            }
+        };
+
+        // --- LEVELS ROOM ---
+        const tests = {
+            currentTest: null,
+            interval: null,
+            currentPalier: 1,
+            
+            config: {
+                'Pectoraux': 'Pompes Dead-Stop',
+                'Jambes': 'Fentes Sautées',
+                'Dos': 'Rowing Corner Coudes Écartés',
+                'Triceps': 'Dips Chaise Jambes Tendues',
+                'Biceps': 'Drag Curl au Sol'
+            },
+
+            start: (muscle) => {
+                tests.currentTest = muscle;
+                tests.currentPalier = 1;
+                document.getElementById('test-name').innerText = "Test " + muscle;
+                document.getElementById('test-exercise-name').innerText = tests.config[muscle];
+                document.getElementById('timer-display').innerText = "08:00";
+                document.getElementById('reps-target').innerText = "Objectif: 10 reps";
+                document.getElementById('current-palier').innerText = "Palier 1";
+                document.getElementById('btn-start-test').classList.remove('hidden');
+                document.getElementById('btn-fail-test').classList.add('hidden');
+                nav.to('screen-test');
+            },
+            
+            run: () => {
+                document.getElementById('btn-start-test').classList.add('hidden');
+                document.getElementById('btn-fail-test').classList.remove('hidden');
+                let totalSeconds = 8 * 60;
+                let secondsInMinute = 60;
+                let palier = 1;
+                let reps = 10;
+
+                tests.interval = setInterval(() => {
+                    totalSeconds--;
+                    secondsInMinute--;
+                    let min = Math.floor(totalSeconds / 60);
+                    let sec = totalSeconds % 60;
+                    document.getElementById('timer-display').innerText = `0${min}:${sec < 10 ? '0'+sec : sec}`;
+
+                    if (secondsInMinute <= 0) {
+                        if (totalSeconds <= 0) {
+                            tests.finish(8); 
+                            return;
+                        }
+                        palier++;
+                        reps += 2;
+                        secondsInMinute = 60;
+                        document.getElementById('current-palier').innerText = "Palier " + palier;
+                        document.getElementById('reps-target').innerText = "Objectif: " + reps + " reps";
+                        tests.currentPalier = palier;
+                    }
+                }, 1000); 
+            },
+
+            fail: () => {
+                let validated = tests.currentPalier > 1 ? tests.currentPalier - 1 : 1;
+                tests.finish(validated);
+            },
+
+            finish: (score) => {
+                clearInterval(tests.interval);
+                data.stats[tests.currentTest] = score;
+                db.save(data);
+                alert(`Test terminé. Palier validé : ${score}`);
+                nav.to('screen-levels');
+            },
+
+            quit: () => {
+                clearInterval(tests.interval);
+                nav.to('screen-levels');
+            }
+        };
+
+        // --- EVOLUTION LAB ---
+        const evoLab = {
+            chart: null,
+            init: () => {
+                nav.to('screen-evolab');
+                evoLab.render(data.stats);
+                document.getElementById('evolab-title').innerText = "Actuel";
+                document.getElementById('evolab-global').innerText = "Niveau Global: " + app.getGlobalLevel() + " / 40";
+            },
+            showOriginal: () => {
+                evoLab.render(data.history.originalStats);
+                document.getElementById('evolab-title').innerText = "Origine";
+            },
+            showCurrent: () => {
+                evoLab.init();
+            },
+            render: (statsObj) => {
+                const ctx = document.getElementById('radarChart').getContext('2d');
+                const values = [statsObj.Pectoraux, statsObj.Jambes, statsObj.Dos, statsObj.Triceps, statsObj.Biceps];
+                const pointColors = values.map(v => app.getLevelColor(v));
+
+                if(evoLab.chart) evoLab.chart.destroy();
+
+                evoLab.chart = new Chart(ctx, {
+                    type: 'radar',
+                    data: {
+                        labels: ['Pectoraux', 'Jambes', 'Dos', 'Triceps', 'Biceps'],
+                        datasets: [{
+                            data: values,
+                            backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                            borderColor: '#fff',
+                            pointBackgroundColor: pointColors,
+                            pointBorderColor: '#fff',
+                            pointRadius: 6 
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            r: {
+                                min: 0, max: 8,
+                                ticks: { stepSize: 1, backdropColor: 'transparent', color: '#888', font: {size: 10} },
+                                grid: { color: '#444' },
+                                pointLabels: { color: '#fff', font: {size: 12, weight:'bold'} }
+                            }
+                        },
+                        plugins: { legend: { display: false } }
+                    }
+                });
+            }
+        };
+
+        // --- TRAINING CAMP ---
+        const training = {
+            days: [
+                { id: 1, name: 'Pectoraux' },
+                { id: 2, name: 'Jambes (Poly)' },
+                { id: 3, name: 'Dos' },
+                { id: 4, name: 'Tri/Bi' },
+                { id: 5, name: 'Pectoraux' },
+                { id: 6, name: 'Jambes (Iso)' },
+                { id: 7, name: 'Dos' }
+            ],
+            
+            getDifficultyIndex: (lvl) => {
+                if(lvl<=2) return 1; 
+                if(lvl<=4) return 2; 
+                if(lvl<=6) return 3; 
+                return 4;            
+            },
+
+            getExercises: (dayId) => {
+                const getLvl = (m) => data.stats[m] || 1;
+                const getCatCode = (lvl) => {
+                    const idx = training.getDifficultyIndex(lvl);
+                    return idx === 1 ? 'beg' : idx === 2 ? 'int' : idx === 3 ? 'adv' : 'exp';
+                };
+
+                let content = "";
+                let primaryMuscleLvl = 1;
+
+                if(dayId === 1 || dayId === 5) { 
+                    primaryMuscleLvl = getLvl('Pectoraux');
+                    const lvl = getCatCode(primaryMuscleLvl);
+                    if(lvl === 'beg') content = "2' Pompes Excentrique > 2' Pompes Genoux Partielles > 2' Pompes Genoux Excentriques > 2' Pompes Corner";
+                    if(
