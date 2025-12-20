@@ -3,7 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PhysiqueRush</title>
+    <title>PhysiqueRush - Massive Impact</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#ffeb3b">
+    
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
@@ -24,16 +27,21 @@
         .btn-red { background: var(--accent-red); color: black; border: none; }
         .container { width: 95%; max-width: 500px; padding: 20px; text-align: center; }
         
-        /* --- NOUVEAU DESIGN IMAGES & GLOW --- */
+        /* --- DESIGN IMAGES & GLOW --- */
         .main-img {
-            width: 100%;
-            max-width: 100%;
             display: block;
             margin: 0 auto 15px auto;
-            border-radius: 15px; /* Légèrement arrondi pour l'effet glow */
+            border-radius: 15px;
+        }
+
+        /* MODIF: Réduction taille logo principal à 70% */
+        .logo-reduced {
+            width: 70%; 
+            max-width: 70%;
         }
         
         .glow-effect {
+            width: 100%; max-width: 100%;
             animation: redPulse 2s infinite ease-in-out;
         }
 
@@ -45,7 +53,8 @@
 
         /* Header / Character */
         #char-display { margin-bottom: 20px; margin-top: 10px; }
-        #char-img { max-width: 160px; display: block; margin: 0 auto; }
+        /* MODIF: Augmentation taille perso principal (+20% => 180px) */
+        #char-img { max-width: 180px; display: block; margin: 0 auto; }
         #global-level-badge { font-size: 1.4em; font-weight: bold; margin-top: 10px; color: var(--accent-yellow); text-shadow: 0 0 5px rgba(0,0,0,0.5); }
 
         /* Levels Room */
@@ -61,7 +70,7 @@
         /* Inputs & Boss Section */
         input[type="number"] { width: 80px; padding: 10px; text-align: center; border-radius: 5px; border: none; font-size: 1.2em; }
         
-        /* Galerie Trophées - Grosses images */
+        /* Galerie Trophées */
         .trophy-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; margin-top: 20px; }
         .trophy-item { width: 130px; cursor: pointer; text-align: center; background: #1a1a1a; padding: 10px; border-radius: 10px; border: 1px solid #333; }
         .trophy-item img { width: 110px; height: 110px; object-fit: contain; display: block; margin: 0 auto; }
@@ -73,11 +82,11 @@
 <body>
 
     <div id="screen-menu" class="container">
-        <img src="physiquerush.png" class="main-img glow-effect" alt="Logo PhysiqueRush" onerror="this.style.display='none'">
+        <img src="physiquerush.png" class="main-img logo-reduced" alt="Logo PhysiqueRush" onerror="this.style.display='none'">
         <img src="MIAH.png" class="main-img glow-effect" alt="MIAH" onerror="this.style.display='none'">
 
         <div id="char-display">
-            <img id="char-img" src="evo1.png" alt="Character" onerror="this.src='https://via.placeholder.com/150x200?text=Perso+Manquant'">
+            <img id="char-img" src="evo1.png" alt="Character" onerror="this.src='https://via.placeholder.com/180x220?text=Perso+Manquant'">
             <div id="global-level-badge">Niveau 5 / 40</div>
         </div>
         
@@ -86,7 +95,7 @@
         <button class="btn" onclick="alert('Module Nutri-Rush bientôt disponible.')">NUTRI-RUSH</button>
         <button class="btn" onclick="nav.to('screen-trophy')">Galerie des Trophées</button>
         <button class="btn" onclick="window.location.href='https://wa.me/'">La Team PhysiqueRush <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" class="whatsapp-icon"></button>
-        <button class="btn btn-red" onclick="window.close()">Quitter</button>
+        <button class="btn btn-red" onclick="window.close(); window.location.href='about:blank';">Quitter</button>
     </div>
 
     <div id="screen-levels" class="container hidden">
@@ -224,7 +233,6 @@
                 const lvl = app.getGlobalLevel();
                 const imgName = app.getCharImage(lvl);
                 document.getElementById('char-img').src = imgName; 
-                // Ajout de " / 40" ici
                 document.getElementById('global-level-badge').innerText = "Niveau " + lvl + " / 40";
             },
             getLevelColor: (val) => {
@@ -318,7 +326,6 @@
                 nav.to('screen-evolab');
                 evoLab.render(data.stats);
                 document.getElementById('evolab-title').innerText = "Actuel";
-                // Ajout de " / 40"
                 document.getElementById('evolab-global').innerText = "Niveau Global: " + app.getGlobalLevel() + " / 40";
             },
             showOriginal: () => {
@@ -345,7 +352,7 @@
                             borderColor: '#fff',
                             pointBackgroundColor: pointColors,
                             pointBorderColor: '#fff',
-                            pointRadius: 6 // Points un peu plus gros
+                            pointRadius: 6 
                         }]
                     },
                     options: {
@@ -512,7 +519,6 @@
                 const bossContainer = document.getElementById('boss-trophy-container');
                 bossContainer.innerHTML = '';
                 
-                // --- Logique Standardisation Texte ---
                 ['boss1','boss2','boss3','boss4'].forEach(bKey => {
                     if(data.bossBeaten[bKey] && data.bossBeaten[bKey] > 0) {
                          const div = document.createElement('div');
@@ -553,10 +559,18 @@
             }
         };
 
-        // --- INIT ---
+        // --- INIT & PWA ---
         document.getElementById('screen-menu').classList.remove('hidden');
         app.updateCharacter();
 
+        // Enregistrement du Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => console.log('Service Worker registered!', reg))
+                    .catch(err => console.log('Service Worker registration failed', err));
+            });
+        }
     </script>
 </body>
 </html>
