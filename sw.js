@@ -1,12 +1,13 @@
-// Nom du cache. Changez 'v1' en 'v2', 'v3'... pour forcer la mise à jour chez les utilisateurs.
-const CACHE_NAME = 'physiquerush-v1';
+// NOM DU CACHE : Changé en 'v2' pour forcer la prise en compte de la nouvelle icône
+const CACHE_NAME = 'physiquerush-v2';
 
 // Liste de tous les fichiers à mettre en cache pour le mode hors ligne
 const ASSETS_TO_CACHE = [
     './',
     './index.html',
     './manifest.json',
-    './physiquerush.png',
+    './physiquerush.png', // La bannière d'accueil
+    './icon-512.png',     // La nouvelle icône carrée pour l'app
     './MIAH.png',
     './record.png',
     './fury.png',
@@ -23,16 +24,17 @@ const ASSETS_TO_CACHE = [
 
 // Installation du Service Worker (mise en cache initiale)
 self.addEventListener('install', (event) => {
+    self.skipWaiting(); // Force l'activation immédiate du nouveau SW
     event.waitUntil(
         caches.open(CACHE_NAME)
             .then((cache) => {
-                console.log('Caching assets');
+                console.log('Caching assets V2');
                 return cache.addAll(ASSETS_TO_CACHE);
             })
     );
 });
 
-// Activation (nettoyage des vieux caches si le nom a changé)
+// Activation (nettoyage des vieux caches v1)
 self.addEventListener('activate', (event) => {
     event.waitUntil(
         caches.keys().then((keyList) => {
@@ -42,7 +44,7 @@ self.addEventListener('activate', (event) => {
                     return caches.delete(key);
                 }
             }));
-        })
+        }).then(() => self.clients.claim()) // Prend le contrôle immédiat des pages
     );
 });
 
