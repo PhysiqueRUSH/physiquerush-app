@@ -18,7 +18,53 @@
             --accent-red: #f44336;
             --card-bg: #1e1e1e;
         }
-        body { margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg-color); color: var(--text-color); display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding-bottom: 50px; }
+        
+        /* Structure des calques (Layers) pour l'effet Eclair */
+        body { 
+            margin: 0; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            color: var(--text-color); 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            min-height: 100vh; 
+            padding-bottom: 50px; 
+            background: transparent; /* Transparent pour laisser voir les calques fixes */
+        }
+
+        /* Calque -2 : Le fond noir uni */
+        #app-background {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: var(--bg-color);
+            z-index: -2;
+        }
+
+        /* Calque -1 : Les éclairs */
+        #lightning-container {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            pointer-events: none;
+            overflow: hidden; /* Coupe l'image si elle dépasse */
+        }
+        
+        .lightning-flash {
+            position: absolute;
+            max-width: none; /* Permet à l'image d'être grande */
+            opacity: 0.8;
+            pointer-events: none;
+        }
+
+        /* Calque 1 : Le contenu (Doit être en relatif pour passer au dessus de z-index -1) */
+        .container { 
+            width: 95%; 
+            max-width: 500px; 
+            padding: 20px; 
+            text-align: center; 
+            position: relative; 
+            z-index: 1; 
+        }
         
         .hidden { display: none !important; }
         .btn { display: block; width: 100%; padding: 15px; margin: 10px 0; background: var(--card-bg); color: white; border: 1px solid #333; cursor: pointer; text-align: center; font-weight: bold; text-transform: uppercase; border-radius: 8px; transition: 0.2s; }
@@ -26,7 +72,6 @@
         .btn-red { background: var(--accent-red); color: black; border: none; }
         .btn-outline { background: transparent; border: 1px solid var(--accent-red); color: var(--accent-red); }
         .btn-danger-zone { margin-top: 30px; border: 1px solid var(--accent-red); color: var(--accent-red); opacity: 0.7; font-size: 0.8em; }
-        .container { width: 95%; max-width: 500px; padding: 20px; text-align: center; }
         
         /* IMAGES */
         .main-img { display: block; margin: 0 auto 15px auto; border-radius: 15px; }
@@ -43,51 +88,24 @@
         #char-img { max-width: 250px; display: block; margin: 0 auto; transition: transform 0.3s; }
         #global-level-badge { font-size: 1.4em; font-weight: bold; margin-top: 10px; color: var(--accent-yellow); text-shadow: 0 0 5px rgba(0,0,0,0.5); }
 
-        /* VIDEO PLACEHOLDER */
+        /* VIDEO */
         .video-box {
-            background: #000; 
-            height: 150px; /* Hauteur fixe pour éviter les sauts */
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            margin: 0 0 20px 0; 
-            color: #555; 
-            border: 1px solid #333; 
-            font-size: 0.8em;
-            width: 100%;
+            background: #000; height: 150px; display: flex; align-items: center; justify-content: center; margin: 0 0 20px 0; color: #555; border: 1px solid #333; font-size: 0.8em; width: 100%;
         }
 
         /* RADAR */
         #radar-container { 
-            position: relative; 
-            width: 100%; 
-            height: 350px; 
-            margin: 0 auto 20px auto; 
-            background: #000; 
-            border-radius: 10px; 
-            border: 1px solid #333;
+            position: relative; width: 100%; height: 350px; margin: 0 auto 20px auto; background: #000; border-radius: 10px; border: 1px solid #333;
             display: flex; align-items: center; justify-content: center;
         }
         canvas { max-width: 100%; max-height: 100%; }
 
         /* TRAINING GRID */
         .week-grid { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); 
-            gap: 10px; 
-            margin-bottom: 20px; 
-            justify-content: center;
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); gap: 10px; margin-bottom: 20px; justify-content: center;
         }
         .day-box { 
-            aspect-ratio: 1 / 1; 
-            background: #333; 
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            font-size: 0.9em; 
-            border-radius: 8px; 
-            cursor: pointer; 
-            opacity: 0.6; 
-            transition: all 0.2s;
-            border: 1px solid #444;
+            aspect-ratio: 1 / 1; background: #333; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 0.9em; border-radius: 8px; cursor: pointer; opacity: 0.6; transition: all 0.2s; border: 1px solid #444;
         }
         .day-box:hover { transform: scale(1.05); opacity: 0.8; }
         .day-box.active { border: 2px solid var(--accent-yellow); opacity: 1; background: #2a2a2a; box-shadow: 0 0 10px rgba(255, 235, 59, 0.2); }
@@ -95,8 +113,7 @@
         
         /* TIMER UI */
         .timer-overlay {
-            background: #000; padding: 20px; border-radius: 10px; border: 1px solid #333; margin-bottom: 20px;
-            display: flex; flex-direction: column; align-items: center;
+            background: #000; padding: 20px; border-radius: 10px; border: 1px solid #333; margin-bottom: 20px; display: flex; flex-direction: column; align-items: center;
         }
         .timer-digits { font-size: 3.5em; font-weight: bold; font-family: monospace; }
         .timer-state { font-size: 1.2em; color: var(--accent-pink); margin-bottom: 5px; min-height: 1.5em; }
@@ -107,7 +124,6 @@
         input[type="number"] { width: 80px; padding: 10px; text-align: center; border-radius: 5px; border: none; font-size: 1.2em; background: #333; color: white; }
         
         .boss-section { border: 2px solid #444; padding: 15px; border-radius: 12px; margin-bottom: 20px; background: #151515; }
-        /* MODIF: Taille boss x1.5 (150px * 1.5 = 225px) */
         #boss-img-preview { width: 225px; height: 225px; object-fit: contain; } 
 
         /* TROPHY GALLERY */
@@ -120,6 +136,9 @@
     </style>
 </head>
 <body>
+
+    <div id="app-background"></div>
+    <div id="lightning-container"></div>
 
     <div id="screen-menu" class="container">
         <img src="physiquerush.png" class="main-img logo-reduced" alt="Logo" onerror="this.style.display='none'">
@@ -151,30 +170,24 @@
 
     <div id="screen-evolab" class="container hidden">
         <h3>Evolution Lab</h3>
-        
         <div id="radar-container">
             <canvas id="radarChart"></canvas>
         </div>
         <div id="evolab-global" style="font-size: 1.2em; color: var(--accent-yellow); font-weight: bold; margin-bottom: 15px;"></div>
-        
         <button class="btn" onclick="nav.to('screen-levels')">Retour</button>
-        
         <button class="btn btn-danger-zone" onclick="evoLab.resetTests()">⚠️ RÉINITIALISER MES TESTS</button>
     </div>
 
     <div id="screen-test" class="container hidden">
         <h2 id="test-name">Test</h2>
         <div class="video-box">[VIDEO VIMEO PLACEHOLDER]</div>
-
         <div class="timer-overlay">
             <div id="test-instruction-state" class="timer-state">Prêt ?</div>
             <div id="timer-display" class="timer-digits">08:00</div>
             <div id="current-palier" style="margin-top: 10px; font-size: 1.2em; color:#888;">Palier 1</div>
         </div>
-        
         <h3 id="test-exercise-name" style="color: var(--accent-pink);">Exercice</h3>
         <div id="reps-target" style="color: var(--accent-yellow); font-size: 1.4em; margin-bottom: 20px;">Objectif: 10 reps</div>
-        
         <button id="btn-start-test" class="btn btn-red" onclick="tests.run()" style="font-weight:900;">LANCER LE TEST</button>
         <button id="btn-fail-test" class="btn hidden" onclick="tests.fail()">J'ai échoué / Fin</button>
         <button class="btn" onclick="tests.quit()">Retour</button>
@@ -182,8 +195,7 @@
 
     <div id="screen-training" class="container hidden">
         <h2 style="font-size: 2em; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 30px;">Training Camp</h2>
-        <div class="week-grid" id="week-grid">
-            </div>
+        <div class="week-grid" id="week-grid"></div>
         <div id="training-info" style="margin-top: 20px; color: #888;">
             Sélectionnez votre séance du jour.
         </div>
@@ -192,18 +204,14 @@
 
     <div id="screen-workout" class="container hidden">
         <h2 id="workout-day-title">Jour X</h2>
-        
         <div class="video-box">[VIDEO VIMEO SEANCE]</div>
-
         <div id="workout-chrono-panel" class="timer-overlay hidden">
             <div id="workout-timer-state" class="timer-state">Exercice 1/4</div>
             <div id="workout-timer-digits" class="timer-digits">00:00</div>
             <button class="btn btn-outline" onclick="training.stopTimer()" style="margin-top:10px; padding:5px;">Arrêter Chrono</button>
         </div>
         <button id="btn-start-workout-timer" class="btn" onclick="training.startSmartTimer()">⏱️ LANCER CHRONO SÉANCE</button>
-
         <div id="workout-list" style="text-align: left; margin-bottom: 20px; line-height: 1.6; font-size: 0.95em;"></div>
-        
         <div class="boss-section">
             <h4 style="margin-top:0; color: var(--accent-red);">Beat The Boss</h4>
             <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;">
@@ -211,13 +219,11 @@
                 <span id="boss-score-target" style="font-size: 1.2em; font-weight: bold; color: white;">Score à battre: ???</span>
             </div>
         </div>
-
         <div id="validation-zone">
             <input type="number" id="workout-score" placeholder="Score">
             <button class="btn btn-red" onclick="training.validateSession()">VALIDER LA SEANCE</button>
         </div>
         <button id="btn-cancel-session" class="btn hidden" style="background: #333; color: #f44336; border: 1px solid #f44336;" onclick="training.cancelSession()">ANNULER / INVALIDER</button>
-
         <button class="btn" onclick="training.quit()">Retour</button>
     </div>
 
@@ -225,24 +231,21 @@
         <h2>Galerie des Trophées</h2>
         <div style="margin-bottom: 30px; background: #1a1a1a; padding: 20px; border-radius: 15px;">
             <img id="trophy-char-img" src="" style="width: 200px; margin: 0 auto; display: block;">
-            
-            <div id="trophy-next-evo" style="color: #aaa; font-size: 0.9em; margin-top: 10px; font-style: italic;">
-                </div>
-
+            <div id="trophy-next-evo" style="color: #aaa; font-size: 0.9em; margin-top: 10px; font-style: italic;"></div>
             <div style="display: flex; align-items: center; justify-content: center; gap: 15px; margin-top: 15px;">
                 <img src="record.png" onerror="this.src='https://via.placeholder.com/80?text=Rec'" style="width: 80px; height: 80px; object-fit: contain;">
                 <span id="total-records" style="font-size: 2.5em; font-weight: bold; color: var(--accent-yellow);">0</span>
             </div>
             <div style="font-size: 0.9em; color: #888; margin-top: 5px;">Records battus</div>
         </div>
-        
         <h3 style="border-bottom: 1px solid #333; padding-bottom: 10px;">Boss Vaincus</h3>
         <div id="boss-trophy-container" class="trophy-grid"></div>
-
         <h3 style="border-bottom: 1px solid #333; padding-bottom: 10px; margin-top: 30px;">Mode Fury</h3>
         <div id="fury-container" class="trophy-grid"></div>
-
+        
         <button class="btn" style="margin-top: 30px;" onclick="nav.to('screen-menu')">Retour</button>
+        
+        <button class="btn btn-danger-zone" onclick="gallery.resetTrophies()">⚠️ EFFACER TOUTES LES RÉCOMPENSES</button>
     </div>
 
     <script>
@@ -271,6 +274,47 @@
                     osc.start();
                     osc.stop(audio.ctx.currentTime + 0.1);
                 }
+            }
+        };
+
+        // --- BACKGROUND LIGHTNING FX ---
+        const lightning = {
+            container: document.getElementById('lightning-container'),
+            images: ['eclair1.png', 'eclair2.png', 'eclair3.png'],
+            init: () => {
+                lightning.schedule();
+            },
+            schedule: () => {
+                // Intervalle aléatoire entre 0.3s (300ms) et 5s (5000ms)
+                const delay = Math.random() * (5000 - 300) + 300;
+                setTimeout(() => {
+                    lightning.flash();
+                    lightning.schedule();
+                }, delay);
+            },
+            flash: () => {
+                const imgName = lightning.images[Math.floor(Math.random() * lightning.images.length)];
+                const img = document.createElement('img');
+                img.src = imgName;
+                img.className = 'lightning-flash';
+                
+                // Positionnement spécifique
+                if (imgName === 'eclair1.png') {
+                    // Eclair 1 : Bord gauche collé, hauteur aléatoire
+                    img.style.left = '0px';
+                    img.style.top = (Math.random() * 80) + '%'; // 80% pour éviter qu'il commence trop bas
+                } else {
+                    // Eclair 2 et 3 : Bord supérieur collé, horizontal aléatoire
+                    img.style.top = '0px';
+                    img.style.left = (Math.random() * 80) + '%'; 
+                }
+
+                lightning.container.appendChild(img);
+                
+                // Disparition très rapide (< 0.3s) -> 150ms
+                setTimeout(() => {
+                    img.remove();
+                }, 150);
             }
         };
 
@@ -721,7 +765,6 @@
                 } else if (lvl >= 40) {
                     evoText = "Niveau Maximum atteint !";
                 } else {
-                    // Fallback si jamais on est dans un cas limite
                     evoText = "Continuez l'entraînement !";
                 }
                 document.getElementById('trophy-next-evo').innerText = evoText;
@@ -755,6 +798,16 @@
                 } else {
                     furyContainer.innerHTML = "<div style='color:#666; font-style:italic;'>Pas encore de mode Fury activé</div>";
                 }
+            },
+            resetTrophies: () => {
+                if(confirm("ATTENTION : Voulez-vous vraiment effacer TOUTES vos récompenses (Boss vaincus, Records, Mode Fury) ?\nCela n'affectera pas votre niveau de tests.")) {
+                    data.bossBeaten = {};
+                    data.records = {};
+                    data.furyCount = 0;
+                    db.save(data);
+                    gallery.render();
+                    alert("Toutes les récompenses ont été effacées.");
+                }
             }
         };
 
@@ -772,6 +825,7 @@
         // --- INIT ---
         document.getElementById('screen-menu').classList.remove('hidden');
         app.updateCharacter();
+        lightning.init(); // Lancement des éclairs
 
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
