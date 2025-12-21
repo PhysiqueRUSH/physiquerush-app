@@ -29,8 +29,8 @@
             flex-direction: column; 
             align-items: center; 
             min-height: 100vh; 
-            height: 100vh; /* Hauteur fixe écran */
-            overflow: hidden; /* Coupe tout dépassement */
+            height: 100vh;
+            overflow: hidden; 
             background: transparent;
         }
 
@@ -38,28 +38,20 @@
         #lightning-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; overflow: hidden; }
         .lightning-flash { position: absolute; max-width: none; opacity: 0.8; pointer-events: none; }
 
-        /* CONTENEUR PRINCIPAL */
         .container { 
-            width: 95%; 
-            max-width: 500px; 
-            padding: 10px; 
-            text-align: center; 
-            position: relative; 
-            z-index: 1; 
-            display: flex; 
-            flex-direction: column; 
-            height: 100%; /* Prend toute la hauteur */
-            box-sizing: border-box;
+            width: 95%; max-width: 500px; padding: 10px; text-align: center; 
+            position: relative; z-index: 1; 
+            display: flex; flex-direction: column; 
+            height: 100%; 
+            box-sizing: border-box; 
         }
         
         .hidden { display: none !important; }
         .scrollable-content { overflow-y: auto; display: block; height: 100%; padding-bottom: 20px; }
 
         /* --- STYLES MENU PRINCIPAL (FLEXBOX STRICT) --- */
-        
-        /* Zone du haut (Logos + Perso) */
         .menu-header {
-            flex: 0 0 auto; /* Taille naturelle, ne s'étire pas */
+            flex: 0 0 auto;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -67,13 +59,12 @@
             padding-bottom: 5px;
         }
 
-        /* Logos Header */
         .logo-reduced { width: 20%; max-width: 80px; margin-bottom: 5px; }
         .glow-effect { width: 100%; max-width: 250px; margin-bottom: 5px; animation: redPulse 2s infinite ease-in-out; }
         
         #char-display { margin: 0; }
         #char-img { 
-            height: 20vh; /* Hauteur relative à l'écran */
+            height: 18vh; 
             max-height: 180px;
             width: auto; 
             display: block; 
@@ -82,12 +73,12 @@
         }
         #global-level-badge { font-size: 1.1em; font-weight: bold; margin-top: 2px; color: var(--accent-yellow); text-shadow: 0 0 5px rgba(0,0,0,0.5); }
 
-        /* Zone des Boutons (Prend tout l'espace restant) */
+        /* Zone des Boutons */
         .menu-buttons-container {
             flex: 1; 
             display: flex;
             flex-direction: column;
-            justify-content: space-evenly; /* Espacement égal automatique */
+            justify-content: space-evenly; 
             align-items: center;
             width: 100%;
             padding-bottom: 10px;
@@ -97,12 +88,12 @@
         .menu-btn-img {
             display: block;
             width: auto;
-            max-width: 90%; /* Ne dépasse pas en largeur */
+            max-width: 90%; 
             height: auto;
-            max-height: 7vh; /* Contrainte de hauteur pour que les 6 rentrent */
+            max-height: 7vh; 
             cursor: pointer;
             transition: transform 0.1s;
-            filter: drop-shadow(0 4px 3px rgba(0,0,0,0.6)); /* Ombre pour effet bouton */
+            filter: drop-shadow(0 4px 3px rgba(0,0,0,0.6));
         }
         .menu-btn-img:active { transform: scale(0.95); filter: drop-shadow(0 2px 2px rgba(0,0,0,0.8)); }
 
@@ -110,10 +101,23 @@
         .screen-title {
             display: block;
             margin: 0 auto 15px auto;
-            max-width: 90%; /* Ne sort pas de l'écran */
+            max-width: 90%; 
             height: auto;
             max-height: 70px;
             object-fit: contain;
+        }
+        
+        /* Fallback si image manquante */
+        .fallback-title {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: var(--accent-yellow);
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            border: 2px solid var(--accent-yellow);
+            padding: 10px;
+            border-radius: 8px;
+            display: inline-block;
         }
 
         /* --- ELEMENTS UI STANDARD --- */
@@ -182,17 +186,17 @@
         </div>
 
         <div class="menu-buttons-container">
-            <img src="salledestests.png" class="menu-btn-img" onclick="nav.to('screen-levels')" alt="SALLE DES TESTS" onerror="this.style.background='#333'">
-            <img src="trainingarea.png" class="menu-btn-img" onclick="nav.to('screen-training')" alt="TRAINING AREA" onerror="this.style.background='#333'">
-            <img src="nutrirush.png" class="menu-btn-img" onclick="ui.alert('Patience...', 'Le Module Nutri-Rush sera bientôt disponible !')" alt="NUTRI RUSH" onerror="this.style.background='#333'">
-            <img src="galerie.png" class="menu-btn-img" onclick="nav.to('screen-trophy')" alt="GALERIE" onerror="this.style.background='#333'">
-            <img src="teamphysiquerush.png" class="menu-btn-img" onclick="window.location.href='https://wa.me/'" alt="TEAM WHATSAPP" onerror="this.style.background='#333'">
-            <img src="quitterlejeu.png" class="menu-btn-img" onclick="window.close(); window.location.href='about:blank';" alt="QUITTER" onerror="this.style.background='#f44336'">
+            <img src="salledestests.png" class="menu-btn-img" onclick="nav.to('screen-levels')" alt="SALLE DES TESTS" onerror="this.outerHTML='<button class=\'btn\' onclick=\'nav.to(\'screen-levels\')\'>LEVELS ROOM</button>'">
+            <img src="trainingarea.png" class="menu-btn-img" onclick="nav.to('screen-training')" alt="TRAINING AREA" onerror="this.outerHTML='<button class=\'btn\' onclick=\'nav.to(\'screen-training\')\'>TRAINING CAMP</button>'">
+            <img src="nutrirush.png" class="menu-btn-img" onclick="ui.alert('Patience...', 'Le Module Nutri-Rush sera bientôt disponible !')" alt="NUTRI RUSH" onerror="this.outerHTML='<button class=\'btn\' onclick=\'ui.alert()\'>NUTRI RUSH</button>'">
+            <img src="galerie.png" class="menu-btn-img" onclick="nav.to('screen-trophy')" alt="GALERIE" onerror="this.outerHTML='<button class=\'btn\' onclick=\'nav.to(\'screen-trophy\')\'>GALERIE</button>'">
+            <img src="teamphysiquerush.png" class="menu-btn-img" onclick="window.location.href='https://wa.me/'" alt="TEAM WHATSAPP" onerror="this.outerHTML='<button class=\'btn\'>LA TEAM</button>'">
+            <img src="quitterlejeu.png" class="menu-btn-img" onclick="window.close(); window.location.href='about:blank';" alt="QUITTER" onerror="this.outerHTML='<button class=\'btn btn-red\'>QUITTER</button>'">
         </div>
     </div>
 
     <div id="screen-levels" class="container hidden scrollable-content">
-        <img src="salledestests.png" class="screen-title" alt="SALLE DES TESTS" onerror="this.style.display='none'; document.write('<h2>LEVELS ROOM</h2>')">
+        <img src="salledestests.png" class="screen-title" alt="SALLE DES TESTS" onerror="this.outerHTML='<h2 class=\'fallback-title\'>LEVELS ROOM</h2>'">
         
         <button class="btn" onclick="evoLab.init()">Evolution Lab</button>
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
@@ -231,7 +235,7 @@
     </div>
 
     <div id="screen-training" class="container hidden scrollable-content">
-        <img src="trainingarea.png" class="screen-title" alt="TRAINING AREA" onerror="this.style.display='none'; document.write('<h2>TRAINING CAMP</h2>')">
+        <img src="trainingarea.png" class="screen-title" alt="TRAINING AREA" onerror="this.outerHTML='<h2 class=\'fallback-title\'>TRAINING CAMP</h2>'">
         
         <div class="week-grid" id="week-grid"></div>
         <div id="training-info" style="margin-top: 20px; color: #888;">
@@ -266,7 +270,7 @@
     </div>
 
     <div id="screen-trophy" class="container hidden scrollable-content">
-        <img src="galerie.png" class="screen-title" alt="GALERIE" onerror="this.style.display='none'; document.write('<h2>GALERIE TROPHEES</h2>')">
+        <img src="galerie.png" class="screen-title" alt="GALERIE" onerror="this.outerHTML='<h2 class=\'fallback-title\'>GALERIE TROPHEES</h2>'">
         
         <div style="margin-bottom: 30px; background: #1a1a1a; padding: 20px; border-radius: 15px;">
             <img id="trophy-char-img" src="" style="width: 200px; margin: 0 auto; display: block;">
