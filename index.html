@@ -17,10 +17,10 @@
             --accent-yellow: #ffeb3b;
             --accent-red: #f44336;
             --card-bg: #1e1e1e;
-            --modal-bg: rgba(0, 0, 0, 0.85);
+            --modal-bg: rgba(0, 0, 0, 0.9);
         }
         
-        /* GENERAL */
+        /* --- LAYOUT GENERAL --- */
         body { 
             margin: 0; 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
@@ -29,8 +29,8 @@
             flex-direction: column; 
             align-items: center; 
             min-height: 100vh; 
-            height: 100vh;
-            overflow: hidden; 
+            height: 100vh; /* Force la hauteur écran */
+            overflow: hidden; /* Coupe tout dépassement global */
             background: transparent;
         }
 
@@ -38,20 +38,30 @@
         #lightning-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; overflow: hidden; }
         .lightning-flash { position: absolute; max-width: none; opacity: 0.8; pointer-events: none; }
 
+        /* Conteneur générique */
         .container { 
-            width: 95%; max-width: 500px; padding: 10px; text-align: center; 
-            position: relative; z-index: 1; 
-            display: flex; flex-direction: column; 
+            width: 95%; 
+            max-width: 500px; 
+            padding: 10px; 
+            text-align: center; 
+            position: relative; 
+            z-index: 1; 
+            display: none; /* Caché par défaut */
+            flex-direction: column; 
             height: 100%; 
-            box-sizing: border-box; 
+            box-sizing: border-box;
         }
         
-        .hidden { display: none !important; }
-        .scrollable-content { overflow-y: auto; display: block; height: 100%; padding-bottom: 20px; }
+        /* L'écran menu s'affiche en flex */
+        #screen-menu { display: flex; }
 
-        /* --- STYLES MENU PRINCIPAL (FLEXBOX STRICT) --- */
+        .hidden { display: none !important; }
+        
+        /* --- DESIGN DU MENU PRINCIPAL (NO SCROLL) --- */
+        
+        /* Partie Haute : Logo + Perso */
         .menu-header {
-            flex: 0 0 auto;
+            flex: 0 0 auto; /* Ne s'étire pas */
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -59,13 +69,40 @@
             padding-bottom: 5px;
         }
 
-        .logo-reduced { width: 20%; max-width: 80px; margin-bottom: 5px; }
-        .glow-effect { width: 100%; max-width: 250px; margin-bottom: 5px; animation: redPulse 2s infinite ease-in-out; }
+        /* Partie Basse : Les Boutons Images */
+        .menu-buttons-list {
+            flex: 1; /* Prend tout l'espace restant */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-evenly; /* Espacement égal automatique */
+            align-items: center;
+            width: 100%;
+            padding-bottom: 10px;
+        }
+
+        /* Style des images boutons du menu */
+        .menu-img-btn {
+            display: block;
+            height: 7vh; /* Hauteur relative à l'écran (environ 7%) */
+            max-height: 65px; /* Limite pour grands écrans */
+            min-height: 40px; /* Limite pour très petits écrans */
+            width: auto; /* Largeur automatique pour garder le ratio */
+            max-width: 90%; /* Ne dépasse pas en largeur */
+            object-fit: contain;
+            cursor: pointer;
+            transition: transform 0.1s;
+            filter: drop-shadow(0 4px 3px rgba(0,0,0,0.5));
+        }
+        .menu-img-btn:active { transform: scale(0.95); filter: drop-shadow(0 2px 2px rgba(0,0,0,0.8)); }
+
+        /* HEADER IMAGES */
+        .logo-reduced { width: 20%; max-width: 80px; margin-bottom: 5px; display: block; }
+        .glow-effect { width: 100%; max-width: 250px; margin-bottom: 5px; display: block; animation: redPulse 2s infinite ease-in-out; }
         
         #char-display { margin: 0; }
         #char-img { 
-            height: 18vh; 
-            max-height: 180px;
+            height: 18vh; /* Hauteur relative */
+            max-height: 200px;
             width: auto; 
             display: block; 
             margin: 0 auto; 
@@ -73,61 +110,29 @@
         }
         #global-level-badge { font-size: 1.1em; font-weight: bold; margin-top: 2px; color: var(--accent-yellow); text-shadow: 0 0 5px rgba(0,0,0,0.5); }
 
-        /* Zone des Boutons */
-        .menu-buttons-container {
-            flex: 1; 
-            display: flex;
-            flex-direction: column;
-            justify-content: space-evenly; 
-            align-items: center;
-            width: 100%;
-            padding-bottom: 10px;
-        }
+        /* --- DESIGN DES SOUS-ECRANS --- */
+        
+        /* Contenu avec scroll si nécessaire */
+        .scrollable-content { overflow-y: auto; display: block; height: 100%; padding-bottom: 20px; }
 
-        /* Images Boutons du Menu */
-        .menu-btn-img {
-            display: block;
-            width: auto;
-            max-width: 90%; 
-            height: auto;
-            max-height: 7vh; 
-            cursor: pointer;
-            transition: transform 0.1s;
-            filter: drop-shadow(0 4px 3px rgba(0,0,0,0.6));
-        }
-        .menu-btn-img:active { transform: scale(0.95); filter: drop-shadow(0 2px 2px rgba(0,0,0,0.8)); }
-
-        /* --- IMAGES TITRES (SOUS-ECRANS) --- */
-        .screen-title {
+        /* Titres Images dans les sous-écrans */
+        .screen-title-img {
             display: block;
             margin: 0 auto 15px auto;
-            max-width: 90%; 
+            max-width: 90%; /* Ne dépasse jamais l'écran */
             height: auto;
-            max-height: 70px;
+            max-height: 60px; /* Hauteur max raisonnable */
             object-fit: contain;
         }
-        
-        /* Fallback si image manquante */
-        .fallback-title {
-            font-size: 1.8em;
-            font-weight: bold;
-            color: var(--accent-yellow);
-            text-transform: uppercase;
-            margin-bottom: 20px;
-            border: 2px solid var(--accent-yellow);
-            padding: 10px;
-            border-radius: 8px;
-            display: inline-block;
-        }
 
-        /* --- ELEMENTS UI STANDARD --- */
+        /* UI ELEMENTS */
         .btn { display: block; width: 100%; padding: 15px; margin: 10px 0; background: var(--card-bg); color: white; border: 1px solid #333; cursor: pointer; text-align: center; font-weight: bold; text-transform: uppercase; border-radius: 8px; transition: 0.2s; }
         .btn:hover { background: #333; }
         .btn-red { background: var(--accent-red); color: black; border: none; }
         .btn-outline { background: transparent; border: 1px solid var(--accent-red); color: var(--accent-red); }
         .btn-danger-zone { margin-top: 30px; border: 1px solid var(--accent-red); color: var(--accent-red); opacity: 0.7; font-size: 0.8em; }
 
-        .video-box { background: #000; height: 150px; display: flex; align-items: center; justify-content: center; margin: 0 0 20px 0; color: #555; border: 1px solid #333; font-size: 0.8em; width: 100%; }
+        .video-box { background: #000; height: 150px; display: flex; align-items: center; justify-content: center; margin: 0 0 20px 0; color: #555; border: 1px solid #333; font-size: 0.8em; width: 100%; flex: 0 0 auto; }
         #radar-container { position: relative; width: 100%; height: 350px; margin: 0 auto 20px auto; background: #000; border-radius: 10px; border: 1px solid #333; display: flex; align-items: center; justify-content: center; }
         canvas { max-width: 100%; max-height: 100%; }
         
@@ -140,6 +145,7 @@
         .timer-digits { font-size: 3.5em; font-weight: bold; font-family: monospace; }
         .timer-state { font-size: 1.2em; color: var(--accent-pink); margin-bottom: 5px; min-height: 1.5em; }
         .timer-warning { animation: flashWarning 0.5s infinite; color: var(--accent-red) !important; }
+        
         @keyframes flashWarning { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
         @keyframes redPulse { 0% { box-shadow: 0 0 5px rgba(244, 67, 54, 0.3); } 50% { box-shadow: 0 0 25px rgba(244, 67, 54, 0.8), 0 0 10px rgba(244, 67, 54, 0.6); } 100% { box-shadow: 0 0 5px rgba(244, 67, 54, 0.3); } }
 
@@ -150,7 +156,9 @@
         .trophy-item { width: 130px; cursor: pointer; text-align: center; background: #1a1a1a; padding: 10px; border-radius: 10px; border: 1px solid #333; }
         .trophy-item img { width: 110px; height: 110px; object-fit: contain; display: block; margin: 0 auto; }
         .trophy-count { font-size: 1.4em; font-weight: bold; color: var(--accent-yellow); margin-top: 5px; display: block; }
-        
+        .whatsapp-icon { width: 24px; vertical-align: middle; margin-left: 10px; }
+
+        /* MODAL */
         #custom-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--modal-bg); z-index: 9999; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
         .modal-content { background: #1a1a1a; border: 2px solid #444; padding: 30px; border-radius: 15px; width: 85%; max-width: 400px; text-align: center; box-shadow: 0 0 20px rgba(0,0,0,0.8); animation: modalPop 0.3s ease-out; }
         @keyframes modalPop { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
@@ -160,6 +168,17 @@
         .modal-btn { padding: 10px 20px; border-radius: 5px; cursor: pointer; border: none; font-weight: bold; text-transform: uppercase; }
         .btn-modal-confirm { background: var(--accent-green); color: black; }
         .btn-modal-cancel { background: #333; color: white; border: 1px solid #555; }
+        
+        /* Fallback Styles (Si images manquantes) */
+        .fallback-btn {
+            display: none; /* Caché par défaut */
+            width: 100%; padding: 15px; background: #333; color: white; border: 1px solid #555;
+            text-align: center; font-weight: bold; border-radius: 8px; cursor: pointer; text-transform: uppercase;
+        }
+        .fallback-title-text {
+            display: none; font-size: 1.5em; font-weight: bold; color: var(--accent-yellow);
+            text-transform: uppercase; border-bottom: 2px solid var(--accent-yellow); margin-bottom: 15px;
+        }
     </style>
 </head>
 <body>
@@ -180,113 +199,141 @@
             <img src="physiquerush.png" class="logo-reduced" alt="Logo" onerror="this.style.display='none'">
             <img src="MIAH.png" class="glow-effect" alt="MIAH" onerror="this.style.display='none'">
             <div id="char-display">
-                <img id="char-img" src="evo1.png" alt="Perso" onerror="this.src='https://via.placeholder.com/200x250?text=Perso'">
+                <img id="char-img" src="evo1.png" alt="Perso" onerror="this.src='https://via.placeholder.com/200x250?text=?'">
                 <div id="global-level-badge">Niveau 0 / 40</div>
             </div>
         </div>
 
-        <div class="menu-buttons-container">
-            <img src="salledestests.png" class="menu-btn-img" onclick="nav.to('screen-levels')" alt="SALLE DES TESTS" onerror="this.outerHTML='<button class=\'btn\' onclick=\'nav.to(\'screen-levels\')\'>LEVELS ROOM</button>'">
-            <img src="trainingarea.png" class="menu-btn-img" onclick="nav.to('screen-training')" alt="TRAINING AREA" onerror="this.outerHTML='<button class=\'btn\' onclick=\'nav.to(\'screen-training\')\'>TRAINING CAMP</button>'">
-            <img src="nutrirush.png" class="menu-btn-img" onclick="ui.alert('Patience...', 'Le Module Nutri-Rush sera bientôt disponible !')" alt="NUTRI RUSH" onerror="this.outerHTML='<button class=\'btn\' onclick=\'ui.alert()\'>NUTRI RUSH</button>'">
-            <img src="galerie.png" class="menu-btn-img" onclick="nav.to('screen-trophy')" alt="GALERIE" onerror="this.outerHTML='<button class=\'btn\' onclick=\'nav.to(\'screen-trophy\')\'>GALERIE</button>'">
-            <img src="teamphysiquerush.png" class="menu-btn-img" onclick="window.location.href='https://wa.me/'" alt="TEAM WHATSAPP" onerror="this.outerHTML='<button class=\'btn\'>LA TEAM</button>'">
-            <img src="quitterlejeu.png" class="menu-btn-img" onclick="window.close(); window.location.href='about:blank';" alt="QUITTER" onerror="this.outerHTML='<button class=\'btn btn-red\'>QUITTER</button>'">
+        <div class="menu-buttons-list">
+            
+            <img src="salledestests.png" class="menu-img-btn" onclick="nav.to('screen-levels')" alt="SALLE DES TESTS" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+            <div class="fallback-btn" onclick="nav.to('screen-levels')">LEVELS ROOM</div>
+
+            <img src="trainingarea.png" class="menu-img-btn" onclick="nav.to('screen-training')" alt="TRAINING AREA" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+            <div class="fallback-btn" onclick="nav.to('screen-training')">TRAINING CAMP</div>
+
+            <img src="nutrirush.png" class="menu-img-btn" onclick="ui.alert('Patience...', 'Le Module Nutri-Rush sera bientôt disponible !')" alt="NUTRI-RUSH" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+            <div class="fallback-btn" onclick="ui.alert('Patience...', 'Bientôt !')">NUTRI-RUSH</div>
+
+            <img src="galerie.png" class="menu-img-btn" onclick="nav.to('screen-trophy')" alt="GALERIE" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+            <div class="fallback-btn" onclick="nav.to('screen-trophy')">GALERIE</div>
+
+            <img src="teamphysiquerush.png" class="menu-img-btn" onclick="window.location.href='https://wa.me/'" alt="TEAM" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+            <div class="fallback-btn" onclick="window.location.href='https://wa.me/'">LA TEAM</div>
+
+            <img src="quitterlejeu.png" class="menu-img-btn" onclick="window.close(); window.location.href='about:blank';" alt="QUITTER" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'; this.nextElementSibling.style.background='#f44336';">
+            <div class="fallback-btn" style="background:#f44336;" onclick="window.close()">QUITTER</div>
+
         </div>
     </div>
 
-    <div id="screen-levels" class="container hidden scrollable-content">
-        <img src="salledestests.png" class="screen-title" alt="SALLE DES TESTS" onerror="this.outerHTML='<h2 class=\'fallback-title\'>LEVELS ROOM</h2>'">
+    <div id="screen-levels" class="container hidden">
+        <img src="salledestests.png" class="screen-title-img" alt="LEVELS ROOM" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
+        <h2 class="fallback-title-text">LEVELS ROOM</h2>
         
-        <button class="btn" onclick="evoLab.init()">Evolution Lab</button>
-        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-            <button class="btn" onclick="tests.start('Pectoraux')">Test Pecs</button>
-            <button class="btn" onclick="tests.start('Jambes')">Test Jambes</button>
-            <button class="btn" onclick="tests.start('Dos')">Test Dos</button>
-            <button class="btn" onclick="tests.start('Triceps')">Test Triceps</button>
-            <button class="btn" onclick="tests.start('Biceps')">Test Biceps</button>
+        <div class="scrollable-content">
+            <button class="btn" onclick="evoLab.init()">Evolution Lab</button>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                <button class="btn" onclick="tests.start('Pectoraux')">Test Pecs</button>
+                <button class="btn" onclick="tests.start('Jambes')">Test Jambes</button>
+                <button class="btn" onclick="tests.start('Dos')">Test Dos</button>
+                <button class="btn" onclick="tests.start('Triceps')">Test Triceps</button>
+                <button class="btn" onclick="tests.start('Biceps')">Test Biceps</button>
+            </div>
+            <button class="btn" onclick="nav.to('screen-menu')" style="margin-top:20px;">Retour</button>
         </div>
-        <button class="btn" onclick="nav.to('screen-menu')" style="margin-top:20px;">Retour</button>
     </div>
 
-    <div id="screen-evolab" class="container hidden scrollable-content">
+    <div id="screen-evolab" class="container hidden">
         <h3>Evolution Lab</h3>
-        <div id="radar-container">
-            <canvas id="radarChart"></canvas>
+        <div class="scrollable-content">
+            <div id="radar-container">
+                <canvas id="radarChart"></canvas>
+            </div>
+            <div id="evolab-global" style="font-size: 1.2em; color: var(--accent-yellow); font-weight: bold; margin-bottom: 15px;"></div>
+            <button class="btn" onclick="nav.to('screen-levels')">Retour</button>
+            <button class="btn btn-danger-zone" onclick="evoLab.resetTests()">⚠️ RÉINITIALISER MES TESTS</button>
         </div>
-        <div id="evolab-global" style="font-size: 1.2em; color: var(--accent-yellow); font-weight: bold; margin-bottom: 15px;"></div>
-        <button class="btn" onclick="nav.to('screen-levels')">Retour</button>
-        <button class="btn btn-danger-zone" onclick="evoLab.resetTests()">⚠️ RÉINITIALISER MES TESTS</button>
     </div>
 
-    <div id="screen-test" class="container hidden scrollable-content">
+    <div id="screen-test" class="container hidden">
         <h2 id="test-name">Test</h2>
-        <div class="video-box">[VIDEO VIMEO PLACEHOLDER]</div>
-        <div class="timer-overlay">
-            <div id="test-instruction-state" class="timer-state">Prêt ?</div>
-            <div id="timer-display" class="timer-digits">08:00</div>
-            <div id="current-palier" style="margin-top: 10px; font-size: 1.2em; color:#888;">Palier 1</div>
+        <div class="scrollable-content">
+            <div class="video-box">[VIDEO VIMEO PLACEHOLDER]</div>
+            <div class="timer-overlay">
+                <div id="test-instruction-state" class="timer-state">Prêt ?</div>
+                <div id="timer-display" class="timer-digits">08:00</div>
+                <div id="current-palier" style="margin-top: 10px; font-size: 1.2em; color:#888;">Palier 1</div>
+            </div>
+            <h3 id="test-exercise-name" style="color: var(--accent-pink);">Exercice</h3>
+            <div id="reps-target" style="color: var(--accent-yellow); font-size: 1.4em; margin-bottom: 20px;">Objectif: 10 reps</div>
+            <button id="btn-start-test" class="btn btn-red" onclick="tests.run()" style="font-weight:900;">LANCER LE TEST</button>
+            <button id="btn-fail-test" class="btn hidden" onclick="tests.fail()">J'ai échoué / Fin</button>
+            <button class="btn" onclick="tests.quit()">Retour</button>
         </div>
-        <h3 id="test-exercise-name" style="color: var(--accent-pink);">Exercice</h3>
-        <div id="reps-target" style="color: var(--accent-yellow); font-size: 1.4em; margin-bottom: 20px;">Objectif: 10 reps</div>
-        <button id="btn-start-test" class="btn btn-red" onclick="tests.run()" style="font-weight:900;">LANCER LE TEST</button>
-        <button id="btn-fail-test" class="btn hidden" onclick="tests.fail()">J'ai échoué / Fin</button>
-        <button class="btn" onclick="tests.quit()">Retour</button>
     </div>
 
-    <div id="screen-training" class="container hidden scrollable-content">
-        <img src="trainingarea.png" class="screen-title" alt="TRAINING AREA" onerror="this.outerHTML='<h2 class=\'fallback-title\'>TRAINING CAMP</h2>'">
+    <div id="screen-training" class="container hidden">
+        <img src="trainingarea.png" class="screen-title-img" alt="TRAINING AREA" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
+        <h2 class="fallback-title-text">TRAINING CAMP</h2>
         
-        <div class="week-grid" id="week-grid"></div>
-        <div id="training-info" style="margin-top: 20px; color: #888;">
-            Sélectionnez votre séance du jour.
+        <div class="scrollable-content">
+            <div class="week-grid" id="week-grid"></div>
+            <div id="training-info" style="margin-top: 20px; color: #888;">
+                Sélectionnez votre séance du jour.
+            </div>
+            <button class="btn" onclick="nav.to('screen-menu')" style="margin-top: 30px;">Retour</button>
         </div>
-        <button class="btn" onclick="nav.to('screen-menu')" style="margin-top: 30px;">Retour</button>
     </div>
 
-    <div id="screen-workout" class="container hidden scrollable-content">
+    <div id="screen-workout" class="container hidden">
         <h2 id="workout-day-title">Jour X</h2>
-        <div class="video-box">[VIDEO VIMEO SEANCE]</div>
-        <div id="workout-chrono-panel" class="timer-overlay hidden">
-            <div id="workout-timer-state" class="timer-state">Exercice 1/4</div>
-            <div id="workout-timer-digits" class="timer-digits">00:00</div>
-            <button class="btn btn-outline" onclick="training.stopTimer()" style="margin-top:10px; padding:5px;">Arrêter Chrono</button>
-        </div>
-        <button id="btn-start-workout-timer" class="btn" onclick="training.startSmartTimer()">⏱️ LANCER CHRONO SÉANCE</button>
-        <div id="workout-list" style="text-align: left; margin-bottom: 20px; line-height: 1.6; font-size: 0.95em;"></div>
-        <div class="boss-section">
-            <h4 style="margin-top:0; color: var(--accent-red);">Beat The Boss</h4>
-            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;">
-                <img id="boss-img-preview" src="" onerror="this.src='https://via.placeholder.com/225?text=BTB'">
-                <span id="boss-score-target" style="font-size: 1.2em; font-weight: bold; color: white;">Score à battre: ???</span>
+        <div class="scrollable-content">
+            <div class="video-box">[VIDEO VIMEO SEANCE]</div>
+            <div id="workout-chrono-panel" class="timer-overlay hidden">
+                <div id="workout-timer-state" class="timer-state">Exercice 1/4</div>
+                <div id="workout-timer-digits" class="timer-digits">00:00</div>
+                <button class="btn btn-outline" onclick="training.stopTimer()" style="margin-top:10px; padding:5px;">Arrêter Chrono</button>
             </div>
+            <button id="btn-start-workout-timer" class="btn" onclick="training.startSmartTimer()">⏱️ LANCER CHRONO SÉANCE</button>
+            <div id="workout-list" style="text-align: left; margin-bottom: 20px; line-height: 1.6; font-size: 0.95em;"></div>
+            <div class="boss-section">
+                <h4 style="margin-top:0; color: var(--accent-red);">Beat The Boss</h4>
+                <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;">
+                    <img id="boss-img-preview" src="" onerror="this.src='https://via.placeholder.com/225?text=BTB'">
+                    <span id="boss-score-target" style="font-size: 1.2em; font-weight: bold; color: white;">Score à battre: ???</span>
+                </div>
+            </div>
+            <div id="validation-zone">
+                <input type="number" id="workout-score" placeholder="Score">
+                <button class="btn btn-red" onclick="training.validateSession()">VALIDER LA SEANCE</button>
+            </div>
+            <button id="btn-cancel-session" class="btn hidden" style="background: #333; color: #f44336; border: 1px solid #f44336;" onclick="training.cancelSession()">ANNULER / INVALIDER</button>
+            <button class="btn" onclick="training.quit()">Retour</button>
         </div>
-        <div id="validation-zone">
-            <input type="number" id="workout-score" placeholder="Score">
-            <button class="btn btn-red" onclick="training.validateSession()">VALIDER LA SEANCE</button>
-        </div>
-        <button id="btn-cancel-session" class="btn hidden" style="background: #333; color: #f44336; border: 1px solid #f44336;" onclick="training.cancelSession()">ANNULER / INVALIDER</button>
-        <button class="btn" onclick="training.quit()">Retour</button>
     </div>
 
-    <div id="screen-trophy" class="container hidden scrollable-content">
-        <img src="galerie.png" class="screen-title" alt="GALERIE" onerror="this.outerHTML='<h2 class=\'fallback-title\'>GALERIE TROPHEES</h2>'">
+    <div id="screen-trophy" class="container hidden">
+        <img src="galerie.png" class="screen-title-img" alt="GALERIE" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
+        <h2 class="fallback-title-text">GALERIE TROPHEES</h2>
         
-        <div style="margin-bottom: 30px; background: #1a1a1a; padding: 20px; border-radius: 15px;">
-            <img id="trophy-char-img" src="" style="width: 200px; margin: 0 auto; display: block;">
-            <div id="trophy-next-evo" style="color: #aaa; font-size: 0.9em; margin-top: 10px; font-style: italic;"></div>
-            <div style="display: flex; align-items: center; justify-content: center; gap: 15px; margin-top: 15px;">
-                <img src="record.png" onerror="this.src='https://via.placeholder.com/80?text=Rec'" style="width: 80px; height: 80px; object-fit: contain;">
-                <span id="total-records" style="font-size: 2.5em; font-weight: bold; color: var(--accent-yellow);">0</span>
+        <div class="scrollable-content">
+            <div style="margin-bottom: 30px; background: #1a1a1a; padding: 20px; border-radius: 15px;">
+                <img id="trophy-char-img" src="" style="width: 200px; margin: 0 auto; display: block;">
+                <div id="trophy-next-evo" style="color: #aaa; font-size: 0.9em; margin-top: 10px; font-style: italic;"></div>
+                <div style="display: flex; align-items: center; justify-content: center; gap: 15px; margin-top: 15px;">
+                    <img src="record.png" onerror="this.src='https://via.placeholder.com/80?text=Rec'" style="width: 80px; height: 80px; object-fit: contain;">
+                    <span id="total-records" style="font-size: 2.5em; font-weight: bold; color: var(--accent-yellow);">0</span>
+                </div>
+                <div style="font-size: 0.9em; color: #888; margin-top: 5px;">Records battus</div>
             </div>
-            <div style="font-size: 0.9em; color: #888; margin-top: 5px;">Records battus</div>
+            <h3 style="border-bottom: 1px solid #333; padding-bottom: 10px;">Boss Vaincus</h3>
+            <div id="boss-trophy-container" class="trophy-grid"></div>
+            <h3 style="border-bottom: 1px solid #333; padding-bottom: 10px; margin-top: 30px;">Mode Fury</h3>
+            <div id="fury-container" class="trophy-grid"></div>
+            <button class="btn" style="margin-top: 30px;" onclick="nav.to('screen-menu')">Retour</button>
+            <button class="btn btn-danger-zone" onclick="gallery.resetTrophies()">⚠️ EFFACER TOUTES LES RÉCOMPENSES</button>
         </div>
-        <h3 style="border-bottom: 1px solid #333; padding-bottom: 10px;">Boss Vaincus</h3>
-        <div id="boss-trophy-container" class="trophy-grid"></div>
-        <h3 style="border-bottom: 1px solid #333; padding-bottom: 10px; margin-top: 30px;">Mode Fury</h3>
-        <div id="fury-container" class="trophy-grid"></div>
-        <button class="btn" style="margin-top: 30px;" onclick="nav.to('screen-menu')">Retour</button>
-        <button class="btn btn-danger-zone" onclick="gallery.resetTrophies()">⚠️ EFFACER TOUTES LES RÉCOMPENSES</button>
     </div>
 
     <script>
@@ -872,16 +919,35 @@
         // --- NAVIGATION ---
         const nav = {
             to: (id) => {
-                document.querySelectorAll('.container').forEach(d => d.classList.add('hidden'));
-                document.getElementById(id).classList.remove('hidden');
-                if(id === 'screen-menu') app.updateCharacter();
-                if(id === 'screen-training') training.init();
-                if(id === 'screen-trophy') gallery.render();
+                // Masquer les autres
+                document.querySelectorAll('.container').forEach(d => {
+                    if(d.id !== id) {
+                        d.style.display = 'none'; // Important pour cacher le flex
+                        d.classList.add('hidden');
+                    }
+                });
+                
+                // Afficher la cible
+                const target = document.getElementById(id);
+                target.classList.remove('hidden');
+                
+                // Gestion spécifique du display pour le menu (flex) vs les autres (block)
+                if(id === 'screen-menu') {
+                    target.style.display = 'flex';
+                    app.updateCharacter();
+                } else {
+                    target.style.display = 'flex'; // Container est flex column
+                    if(id === 'screen-training') training.init();
+                    if(id === 'screen-trophy') gallery.render();
+                }
             }
         };
 
         // --- INIT ---
+        // Force l'affichage du menu au démarrage
         document.getElementById('screen-menu').classList.remove('hidden');
+        document.getElementById('screen-menu').style.display = 'flex';
+        
         app.updateCharacter();
         lightning.init(); 
 
