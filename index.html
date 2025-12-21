@@ -20,7 +20,7 @@
             --modal-bg: rgba(0, 0, 0, 0.85);
         }
         
-        /* LAYERS & GENERAL */
+        /* GENERAL */
         body { 
             margin: 0; 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
@@ -29,7 +29,8 @@
             flex-direction: column; 
             align-items: center; 
             min-height: 100vh; 
-            overflow-x: hidden; /* Empêche le scroll horizontal */
+            height: 100vh; /* Force la hauteur écran pour éviter le scroll */
+            overflow: hidden; /* Coupe tout dépassement */
             background: transparent;
         }
 
@@ -37,69 +38,94 @@
         #lightning-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; overflow: hidden; }
         .lightning-flash { position: absolute; max-width: none; opacity: 0.8; pointer-events: none; }
 
-        .container { width: 95%; max-width: 500px; padding: 15px; text-align: center; position: relative; z-index: 1; }
+        .container { width: 95%; max-width: 500px; padding: 10px; text-align: center; position: relative; z-index: 1; display: flex; flex-direction: column; height: 100%; box-sizing: border-box; }
+        
         .hidden { display: none !important; }
         
-        /* STANDARD BUTTONS (Pour l'intérieur des écrans) */
-        .btn { display: block; width: 100%; padding: 15px; margin: 10px 0; background: var(--card-bg); color: white; border: 1px solid #333; cursor: pointer; text-align: center; font-weight: bold; text-transform: uppercase; border-radius: 8px; transition: 0.2s; }
-        .btn:hover { background: #333; }
-        .btn-red { background: var(--accent-red); color: black; border: none; }
-        .btn-outline { background: transparent; border: 1px solid var(--accent-red); color: var(--accent-red); }
-        .btn-danger-zone { margin-top: 30px; border: 1px solid var(--accent-red); color: var(--accent-red); opacity: 0.7; font-size: 0.8em; }
-        
-        /* IMAGES MENU PRINCIPAL (NOUVEAU) */
-        .menu-wrapper {
+        /* MENU PRINCIPAL STRUCTURE (Flexbox Vertical) */
+        /* 1. HEADER GROUP */
+        .menu-header-group {
+            flex: 0 0 auto; /* Ne grandit pas, ne rétrécit pas */
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            gap: 10px; /* Espace entre les boutons images */
-            margin-top: 10px;
+            padding-bottom: 10px;
         }
 
+        /* 2. NAVIGATION GROUP (Prend tout l'espace disponible) */
+        .menu-nav-group {
+            flex: 1 1 auto; /* Grandit pour remplir le vide */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-evenly; /* Espacement égal entre les boutons */
+            align-items: center;
+            width: 100%;
+            padding: 5px 0;
+        }
+
+        /* 3. FOOTER GROUP (Quitter) */
+        .menu-footer-group {
+            flex: 0 0 auto;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            padding-bottom: 10px; /* Marge du bas */
+        }
+
+        /* STYLE DES IMAGES DU MENU (Hauteur fixe, largeur auto) */
         .menu-btn-img {
             display: block;
-            width: 90%;
-            max-width: 350px;
-            height: auto;
-            max-height: 55px; /* Contrainte pour éviter le scroll sur petit écran */
+            height: 5.5vh; /* Hauteur relative à l'écran (environ 5.5%) */
+            min-height: 35px; /* Minimum de sécurité */
+            max-height: 60px; /* Maximum pour grands écrans */
+            width: auto; /* Largeur s'adapte */
+            max-width: 90%; /* Ne dépasse pas la largeur écran */
             object-fit: contain;
             cursor: pointer;
+            filter: drop-shadow(0 4px 4px rgba(0,0,0,0.5));
             transition: transform 0.1s;
-            filter: drop-shadow(0 2px 3px rgba(0,0,0,0.5));
         }
-        
         .menu-btn-img:active { transform: scale(0.95); }
 
-        /* IMAGES TITRES (NOUVEAU) */
-        .title-img {
-            display: block;
-            width: 80%;
-            max-width: 300px;
-            height: auto;
-            margin: 0 auto 20px auto;
+        /* HEADER IMAGES */
+        .logo-reduced { width: auto; height: 4vh; max-height: 50px; display: block; margin-bottom: 5px; }
+        .glow-effect { width: 100%; max-width: 250px; animation: redPulse 2s infinite ease-in-out; display: block; margin-bottom: 5px; }
+        
+        /* CHAR DISPLAY */
+        #char-display { margin: 0; }
+        #char-img { 
+            height: 22vh; /* Hauteur du perso relative à l'écran */
+            width: auto; 
+            max-width: 100%; 
+            display: block; 
+            margin: 0 auto; 
             object-fit: contain;
         }
+        #global-level-badge { font-size: 1.1em; font-weight: bold; margin-top: 2px; color: var(--accent-yellow); text-shadow: 0 0 5px rgba(0,0,0,0.5); }
 
-        /* HEADER & LOGO */
-        .main-img { display: block; margin: 0 auto 10px auto; border-radius: 15px; }
-        .logo-reduced { width: 20%; max-width: 80px; }
-        .glow-effect { width: 100%; max-width: 100%; animation: redPulse 2s infinite ease-in-out; }
         @keyframes redPulse {
             0% { box-shadow: 0 0 5px rgba(244, 67, 54, 0.3); }
             50% { box-shadow: 0 0 25px rgba(244, 67, 54, 0.8), 0 0 10px rgba(244, 67, 54, 0.6); }
             100% { box-shadow: 0 0 5px rgba(244, 67, 54, 0.3); }
         }
 
-        /* CHAR DISPLAY */
-        #char-display { margin-bottom: 10px; margin-top: 5px; }
-        #char-img { max-width: 200px; height: auto; display: block; margin: 0 auto; transition: transform 0.3s; }
-        /* Ajustement taille max perso pour laisser place au menu image */
-        @media (max-height: 700px) { #char-img { max-width: 160px; } }
+        /* --- STYLES INTERNES (AUTRES ÉCRANS) --- */
+        /* On garde le scroll pour les écrans internes si besoin, via overflow-y:auto sur container */
+        .scrollable-content {
+            overflow-y: auto;
+            height: 100%;
+            display: block; /* Reset flex */
+        }
 
-        #global-level-badge { font-size: 1.2em; font-weight: bold; margin-top: 5px; color: var(--accent-yellow); text-shadow: 0 0 5px rgba(0,0,0,0.5); }
+        .title-img { display: block; width: auto; height: 50px; margin: 0 auto 20px auto; object-fit: contain; }
+        
+        /* Boutons standard */
+        .btn { display: block; width: 100%; padding: 15px; margin: 10px 0; background: var(--card-bg); color: white; border: 1px solid #333; cursor: pointer; text-align: center; font-weight: bold; text-transform: uppercase; border-radius: 8px; transition: 0.2s; }
+        .btn-red { background: var(--accent-red); color: black; border: none; }
+        .btn-outline { background: transparent; border: 1px solid var(--accent-red); color: var(--accent-red); }
+        .btn-danger-zone { margin-top: 30px; border: 1px solid var(--accent-red); color: var(--accent-red); opacity: 0.7; font-size: 0.8em; }
 
-        /* ELEMENTS */
+        /* Elements */
         .video-box { background: #000; height: 150px; display: flex; align-items: center; justify-content: center; margin: 0 0 20px 0; color: #555; border: 1px solid #333; font-size: 0.8em; width: 100%; }
         #radar-container { position: relative; width: 100%; height: 350px; margin: 0 auto 20px auto; background: #000; border-radius: 10px; border: 1px solid #333; display: flex; align-items: center; justify-content: center; }
         canvas { max-width: 100%; max-height: 100%; }
@@ -149,27 +175,32 @@
     </div>
 
     <div id="screen-menu" class="container">
-        <img src="physiquerush.png" class="main-img logo-reduced" alt="Logo" onerror="this.style.display='none'">
-        <img src="MIAH.png" class="main-img glow-effect" alt="MIAH" onerror="this.style.display='none'">
         
-        <div id="char-display">
-            <img id="char-img" src="evo1.png" alt="Perso" onerror="this.src='https://via.placeholder.com/200x250?text=Perso'">
-            <div id="global-level-badge">Niveau 0 / 40</div>
+        <div class="menu-header-group">
+            <img src="physiquerush.png" class="logo-reduced" alt="Logo" onerror="this.style.display='none'">
+            <img src="MIAH.png" class="glow-effect" alt="MIAH" onerror="this.style.display='none'">
+            
+            <div id="char-display">
+                <img id="char-img" src="evo1.png" alt="Perso" onerror="this.src='https://via.placeholder.com/200x250?text=Perso'">
+                <div id="global-level-badge">Niveau 0 / 40</div>
+            </div>
         </div>
 
-        <div class="menu-wrapper">
+        <div class="menu-nav-group">
             <img src="levelsroom.png" class="menu-btn-img" onclick="nav.to('screen-levels')" onerror="this.style.background='#333'; this.alt='LEVELS ROOM'">
             <img src="trainingcamp.png" class="menu-btn-img" onclick="nav.to('screen-training')" onerror="this.style.background='#333'; this.alt='TRAINING CAMP'">
             <img src="nutri-rush.png" class="menu-btn-img" onclick="ui.alert('Patience...', 'Le Module Nutri-Rush sera bientôt disponible !')" onerror="this.style.background='#333'; this.alt='NUTRI-RUSH'">
             <img src="galeriedestrophees.png" class="menu-btn-img" onclick="nav.to('screen-trophy')" onerror="this.style.background='#333'; this.alt='GALERIE TROPHEES'">
             <img src="lateamphysiquerush.png" class="menu-btn-img" onclick="window.location.href='https://wa.me/'" onerror="this.style.background='#333'; this.alt='LA TEAM'">
+        </div>
+
+        <div class="menu-footer-group">
             <img src="quitter.png" class="menu-btn-img" onclick="window.close(); window.location.href='about:blank';" onerror="this.style.background='#f44336'; this.alt='QUITTER'">
         </div>
     </div>
 
-    <div id="screen-levels" class="container hidden">
+    <div id="screen-levels" class="container hidden scrollable-content">
         <img src="levelsroom.png" class="title-img" onerror="this.style.display='none'; document.write('<h2>LEVELS ROOM</h2>')">
-        
         <button class="btn" onclick="evoLab.init()">Evolution Lab</button>
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
             <button class="btn" onclick="tests.start('Pectoraux')">Test Pecs</button>
@@ -181,7 +212,7 @@
         <button class="btn" onclick="nav.to('screen-menu')" style="margin-top:20px;">Retour</button>
     </div>
 
-    <div id="screen-evolab" class="container hidden">
+    <div id="screen-evolab" class="container hidden scrollable-content">
         <h3>Evolution Lab</h3>
         <div id="radar-container">
             <canvas id="radarChart"></canvas>
@@ -191,7 +222,7 @@
         <button class="btn btn-danger-zone" onclick="evoLab.resetTests()">⚠️ RÉINITIALISER MES TESTS</button>
     </div>
 
-    <div id="screen-test" class="container hidden">
+    <div id="screen-test" class="container hidden scrollable-content">
         <h2 id="test-name">Test</h2>
         <div class="video-box">[VIDEO VIMEO PLACEHOLDER]</div>
         <div class="timer-overlay">
@@ -206,9 +237,8 @@
         <button class="btn" onclick="tests.quit()">Retour</button>
     </div>
 
-    <div id="screen-training" class="container hidden">
+    <div id="screen-training" class="container hidden scrollable-content">
         <img src="trainingcamp.png" class="title-img" onerror="this.style.display='none'; document.write('<h2>TRAINING CAMP</h2>')">
-        
         <div class="week-grid" id="week-grid"></div>
         <div id="training-info" style="margin-top: 20px; color: #888;">
             Sélectionnez votre séance du jour.
@@ -216,7 +246,7 @@
         <button class="btn" onclick="nav.to('screen-menu')" style="margin-top: 30px;">Retour</button>
     </div>
 
-    <div id="screen-workout" class="container hidden">
+    <div id="screen-workout" class="container hidden scrollable-content">
         <h2 id="workout-day-title">Jour X</h2>
         <div class="video-box">[VIDEO VIMEO SEANCE]</div>
         <div id="workout-chrono-panel" class="timer-overlay hidden">
@@ -241,7 +271,7 @@
         <button class="btn" onclick="training.quit()">Retour</button>
     </div>
 
-    <div id="screen-trophy" class="container hidden">
+    <div id="screen-trophy" class="container hidden scrollable-content">
         <img src="galeriedestrophees.png" class="title-img" onerror="this.style.display='none'; document.write('<h2>GALERIE TROPHEES</h2>')">
         
         <div style="margin-bottom: 30px; background: #1a1a1a; padding: 20px; border-radius: 15px;">
@@ -262,7 +292,7 @@
     </div>
 
     <script>
-        // --- UI MANAGER (CUSTOM MODAL) ---
+        // --- UI MANAGER ---
         const ui = {
             modal: document.getElementById('custom-modal'),
             title: document.getElementById('modal-title'),
@@ -273,22 +303,16 @@
                 ui.title.innerText = title;
                 ui.msg.innerHTML = message;
                 ui.actions.innerHTML = '';
-                
                 buttons.forEach(btn => {
                     const b = document.createElement('button');
                     b.className = 'modal-btn ' + (btn.class || '');
                     b.innerText = btn.text;
-                    b.onclick = () => {
-                        ui.hide();
-                        if(btn.onClick) btn.onClick();
-                    };
+                    b.onclick = () => { ui.hide(); if(btn.onClick) btn.onClick(); };
                     ui.actions.appendChild(b);
                 });
                 ui.modal.classList.remove('hidden');
             },
-            hide: () => {
-                ui.modal.classList.add('hidden');
-            },
+            hide: () => { ui.modal.classList.add('hidden'); },
             alert: (title, message, callback) => {
                 ui.show(title, message, [{ text: 'OK', class: 'btn-modal-confirm', onClick: callback }]);
             },
@@ -304,13 +328,7 @@
                 if(score >= 3) { rank = "INTERMÉDIAIRE"; color = "#4caf50"; }
                 if(score >= 5) { rank = "AVANCÉ"; color = "#ffeb3b"; }
                 if(score >= 7) { rank = "EXPERT"; color = "#f44336"; }
-                
-                const html = `
-                    <div style="font-size:3em; font-weight:bold; margin-bottom:10px;">${score}</div>
-                    <div style="font-size:1.5em; font-weight:bold; color:${color}; border:2px solid ${color}; padding:10px; border-radius:10px; display:inline-block;">${rank}</div>
-                    <div style="margin-top:15px; font-style:italic;">Palier validé</div>
-                `;
-                
+                const html = `<div style="font-size:3em; font-weight:bold; margin-bottom:10px;">${score}</div><div style="font-size:1.5em; font-weight:bold; color:${color}; border:2px solid ${color}; padding:10px; border-radius:10px; display:inline-block;">${rank}</div><div style="margin-top:15px; font-style:italic;">Palier validé</div>`;
                 ui.show("RÉSULTAT DU TEST", html, [{ text: 'CONTINUER', class: 'btn-modal-confirm', onClick: callback }]);
             }
         };
@@ -318,9 +336,7 @@
         // --- AUDIO ---
         const audio = {
             ctx: null,
-            init: () => {
-                if (!audio.ctx) audio.ctx = new (window.AudioContext || window.webkitAudioContext)();
-            },
+            init: () => { if (!audio.ctx) audio.ctx = new (window.AudioContext || window.webkitAudioContext)(); },
             beep: (type) => { 
                 audio.init();
                 const osc = audio.ctx.createOscillator();
@@ -381,7 +397,7 @@
         };
         let data = db.load();
 
-        // --- CORE LOGIC ---
+        // --- LOGIC ---
         const app = {
             getGlobalLevel: () => {
                 let sum = 0;
@@ -424,6 +440,7 @@
         // --- TESTS ---
         const tests = {
             currentTest: null,
+            timer: null,
             interval: null,
             config: {
                 'Pectoraux': 'Pompes Dead-Stop',
@@ -465,11 +482,10 @@
                     document.getElementById('timer-display').innerText = `0${min}:${sec < 10 ? '0'+sec : sec}`;
 
                     const stateDiv = document.getElementById('test-instruction-state');
-                    // MODIF: Alerte à 10 secondes
                     if(secondsInMinute <= 10 && secondsInMinute > 0) {
                         stateDiv.innerText = "PRÉPAREZ-VOUS !";
                         stateDiv.classList.add('timer-warning');
-                        audio.beep('short'); // Bip à chaque seconde pendant les 10 dernières
+                        audio.beep('short'); 
                     } else {
                         stateDiv.classList.remove('timer-warning');
                         stateDiv.innerText = "En cours...";
@@ -499,7 +515,6 @@
                 clearInterval(tests.interval);
                 data.stats[tests.currentTest] = score;
                 db.save(data);
-                // MODIF: Utilisation de la modale visuelle
                 ui.showResult(score, () => nav.to('screen-levels'));
             },
             quit: () => {
