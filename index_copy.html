@@ -49,7 +49,6 @@
         
         /* IMAGES */
         .main-img { display: block; margin: 0 auto 15px auto; border-radius: 15px; }
-        /* MODIF: Réduction de moitié (40% -> 20%) */
         .logo-reduced { width: 20%; max-width: 80px; }
         .glow-effect { width: 100%; max-width: 100%; animation: redPulse 2s infinite ease-in-out; }
         @keyframes redPulse {
@@ -137,16 +136,18 @@
             <img id="char-img" src="evo1.png" alt="Perso" onerror="this.src='https://via.placeholder.com/250x300?text=Perso'">
             <div id="global-level-badge">Niveau 0 / 40</div>
         </div>
-        <button class="btn" onclick="nav.to('screen-levels')">LEVELS ROOM</button>
-        <button class="btn" onclick="nav.to('screen-training')">TRAINING CAMP</button>
+        
+        <button class="btn" onclick="nav.to('screen-levels')">SALLE DES TESTS</button>
+        <button class="btn" onclick="nav.to('screen-training')">ZONE D'ENTRAÎNEMENT</button>
         <button class="btn" onclick="ui.alert('Patience...', 'Le Module Nutri-Rush sera bientôt disponible !')">NUTRI-RUSH</button>
-        <button class="btn" onclick="nav.to('screen-trophy')">Galerie des Trophées</button>
+        <button class="btn" onclick="nav.to('screen-trophy')">RÉCOMPENSES ET STATS</button>
+        
         <button class="btn" onclick="window.location.href='https://wa.me/'">La Team PhysiqueRush <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" class="whatsapp-icon"></button>
-        <button class="btn btn-red" onclick="window.close(); window.location.href='about:blank';">Quitter</button>
+        <button class="btn btn-red" onclick="window.close(); window.location.href='about:blank';">QUITTER</button>
     </div>
 
     <div id="screen-levels" class="container hidden">
-        <h2>LEVELS ROOM</h2>
+        <h2>SALLE DES TESTS</h2>
         <button class="btn" onclick="evoLab.init()">Evolution Lab</button>
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
             <button class="btn" onclick="tests.start('Pectoraux')">Test Pecs</button>
@@ -184,7 +185,7 @@
     </div>
 
     <div id="screen-training" class="container hidden">
-        <h2 style="font-size: 2em; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 30px;">Training Camp</h2>
+        <h2 style="font-size: 2em; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 30px;">ZONE D'ENTRAÎNEMENT</h2>
         <div class="week-grid" id="week-grid"></div>
         <div id="training-info" style="margin-top: 20px; color: #888;">
             Sélectionnez votre séance du jour.
@@ -218,7 +219,7 @@
     </div>
 
     <div id="screen-trophy" class="container hidden">
-        <h2>Galerie des Trophées</h2>
+        <h2>RÉCOMPENSES ET STATS</h2>
         <div style="margin-bottom: 30px; background: #1a1a1a; padding: 20px; border-radius: 15px;">
             <img id="trophy-char-img" src="" style="width: 200px; margin: 0 auto; display: block;">
             <div id="trophy-next-evo" style="color: #aaa; font-size: 0.9em; margin-top: 10px; font-style: italic;"></div>
@@ -400,6 +401,7 @@
         // --- TESTS ---
         const tests = {
             currentTest: null,
+            timer: null,
             interval: null,
             config: {
                 'Pectoraux': 'Pompes Dead-Stop',
