@@ -20,7 +20,7 @@
             --modal-bg: rgba(0, 0, 0, 0.9);
         }
         
-        /* --- LAYOUT GENERAL --- */
+        /* GENERAL */
         body { 
             margin: 0; 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
@@ -30,15 +30,15 @@
             align-items: center; 
             min-height: 100vh; 
             height: 100vh; /* Force la hauteur écran */
-            overflow: hidden; /* Coupe tout dépassement global */
-            background: transparent;
+            overflow: hidden; /* Coupe tout dépassement */
+            background-color: var(--bg-color); /* Sécurité couleur fond */
         }
 
         #app-background { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--bg-color); z-index: -2; }
         #lightning-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; overflow: hidden; }
         .lightning-flash { position: absolute; max-width: none; opacity: 0.8; pointer-events: none; }
 
-        /* Conteneur générique */
+        /* CONTENEUR */
         .container { 
             width: 95%; 
             max-width: 500px; 
@@ -46,86 +46,108 @@
             text-align: center; 
             position: relative; 
             z-index: 1; 
-            display: none; /* Caché par défaut */
+            display: none; /* Caché par défaut, géré par JS */
             flex-direction: column; 
             height: 100%; 
             box-sizing: border-box;
         }
         
-        /* L'écran menu s'affiche en flex */
+        /* Force l'affichage du menu */
         #screen-menu { display: flex; }
 
         .hidden { display: none !important; }
+        .scrollable-content { overflow-y: auto; display: block; height: 100%; padding-bottom: 20px; flex: 1; }
+
+        /* --- MENU PRINCIPAL (FLEXBOX) --- */
         
-        /* --- DESIGN DU MENU PRINCIPAL (NO SCROLL) --- */
-        
-        /* Partie Haute : Logo + Perso */
+        /* HEADER (Logo + Perso) */
         .menu-header {
-            flex: 0 0 auto; /* Ne s'étire pas */
+            flex: 0 0 auto;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             padding-bottom: 5px;
         }
+        .logo-reduced { width: 20%; max-width: 80px; margin-bottom: 5px; display: block; }
+        .glow-effect { width: 100%; max-width: 250px; margin-bottom: 5px; display: block; animation: redPulse 2s infinite ease-in-out; }
+        #char-img { height: 18vh; max-height: 180px; width: auto; display: block; margin: 0 auto; object-fit: contain; }
+        #global-level-badge { font-size: 1.1em; font-weight: bold; margin-top: 2px; color: var(--accent-yellow); text-shadow: 0 0 5px rgba(0,0,0,0.5); }
 
-        /* Partie Basse : Les Boutons Images */
+        /* NAVIGATION (Boutons Images) */
         .menu-buttons-list {
-            flex: 1; /* Prend tout l'espace restant */
+            flex: 1; 
             display: flex;
             flex-direction: column;
-            justify-content: space-evenly; /* Espacement égal automatique */
+            justify-content: space-evenly; 
             align-items: center;
             width: 100%;
             padding-bottom: 10px;
         }
 
-        /* Style des images boutons du menu */
+        /* Container intelligent pour chaque bouton */
+        .btn-wrapper {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 40px; /* Réserve la place */
+            cursor: pointer;
+        }
+
+        /* L'IMAGE DU BOUTON */
         .menu-img-btn {
             display: block;
-            height: 7vh; /* Hauteur relative à l'écran (environ 7%) */
-            max-height: 65px; /* Limite pour grands écrans */
-            min-height: 40px; /* Limite pour très petits écrans */
-            width: auto; /* Largeur automatique pour garder le ratio */
-            max-width: 90%; /* Ne dépasse pas en largeur */
+            width: auto;
+            max-width: 90%; 
+            height: 7vh; 
+            max-height: 70px;
             object-fit: contain;
             cursor: pointer;
+            filter: drop-shadow(0 4px 3px rgba(0,0,0,0.6));
             transition: transform 0.1s;
-            filter: drop-shadow(0 4px 3px rgba(0,0,0,0.5));
         }
         .menu-img-btn:active { transform: scale(0.95); filter: drop-shadow(0 2px 2px rgba(0,0,0,0.8)); }
 
-        /* HEADER IMAGES */
-        .logo-reduced { width: 20%; max-width: 80px; margin-bottom: 5px; display: block; }
-        .glow-effect { width: 100%; max-width: 250px; margin-bottom: 5px; display: block; animation: redPulse 2s infinite ease-in-out; }
-        
-        #char-display { margin: 0; }
-        #char-img { 
-            height: 18vh; /* Hauteur relative */
-            max-height: 200px;
-            width: auto; 
-            display: block; 
-            margin: 0 auto; 
-            object-fit: contain;
+        /* LE BOUTON DE SECOURS (Caché si l'image marche) */
+        .fallback-btn {
+            display: none; 
+            width: 100%;
+            padding: 15px;
+            background: #333;
+            color: white;
+            border: 1px solid #555;
+            text-align: center;
+            font-weight: bold;
+            text-transform: uppercase;
+            border-radius: 8px;
+            cursor: pointer;
         }
-        #global-level-badge { font-size: 1.1em; font-weight: bold; margin-top: 2px; color: var(--accent-yellow); text-shadow: 0 0 5px rgba(0,0,0,0.5); }
 
-        /* --- DESIGN DES SOUS-ECRANS --- */
-        
-        /* Contenu avec scroll si nécessaire */
-        .scrollable-content { overflow-y: auto; display: block; height: 100%; padding-bottom: 20px; }
-
-        /* Titres Images dans les sous-écrans */
+        /* --- TITRES ECRANS --- */
+        .screen-title-wrapper {
+            margin-bottom: 15px;
+            min-height: 40px;
+            display: flex; justify-content: center; align-items: center;
+            flex: 0 0 auto;
+        }
         .screen-title-img {
             display: block;
-            margin: 0 auto 15px auto;
-            max-width: 90%; /* Ne dépasse jamais l'écran */
+            max-width: 90%; 
             height: auto;
-            max-height: 60px; /* Hauteur max raisonnable */
+            max-height: 60px;
             object-fit: contain;
         }
+        .fallback-title {
+            display: none;
+            font-size: 1.5em;
+            font-weight: bold;
+            color: var(--accent-yellow);
+            text-transform: uppercase;
+            border-bottom: 2px solid var(--accent-yellow);
+        }
 
-        /* UI ELEMENTS */
+        /* --- UI ELEMENTS --- */
         .btn { display: block; width: 100%; padding: 15px; margin: 10px 0; background: var(--card-bg); color: white; border: 1px solid #333; cursor: pointer; text-align: center; font-weight: bold; text-transform: uppercase; border-radius: 8px; transition: 0.2s; }
         .btn:hover { background: #333; }
         .btn-red { background: var(--accent-red); color: black; border: none; }
@@ -145,7 +167,6 @@
         .timer-digits { font-size: 3.5em; font-weight: bold; font-family: monospace; }
         .timer-state { font-size: 1.2em; color: var(--accent-pink); margin-bottom: 5px; min-height: 1.5em; }
         .timer-warning { animation: flashWarning 0.5s infinite; color: var(--accent-red) !important; }
-        
         @keyframes flashWarning { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
         @keyframes redPulse { 0% { box-shadow: 0 0 5px rgba(244, 67, 54, 0.3); } 50% { box-shadow: 0 0 25px rgba(244, 67, 54, 0.8), 0 0 10px rgba(244, 67, 54, 0.6); } 100% { box-shadow: 0 0 5px rgba(244, 67, 54, 0.3); } }
 
@@ -168,17 +189,6 @@
         .modal-btn { padding: 10px 20px; border-radius: 5px; cursor: pointer; border: none; font-weight: bold; text-transform: uppercase; }
         .btn-modal-confirm { background: var(--accent-green); color: black; }
         .btn-modal-cancel { background: #333; color: white; border: 1px solid #555; }
-        
-        /* Fallback Styles (Si images manquantes) */
-        .fallback-btn {
-            display: none; /* Caché par défaut */
-            width: 100%; padding: 15px; background: #333; color: white; border: 1px solid #555;
-            text-align: center; font-weight: bold; border-radius: 8px; cursor: pointer; text-transform: uppercase;
-        }
-        .fallback-title-text {
-            display: none; font-size: 1.5em; font-weight: bold; color: var(--accent-yellow);
-            text-transform: uppercase; border-bottom: 2px solid var(--accent-yellow); margin-bottom: 15px;
-        }
     </style>
 </head>
 <body>
@@ -196,8 +206,13 @@
 
     <div id="screen-menu" class="container">
         <div class="menu-header">
-            <img src="physiquerush.png" class="logo-reduced" alt="Logo" onerror="this.style.display='none'">
-            <img src="MIAH.png" class="glow-effect" alt="MIAH" onerror="this.style.display='none'">
+            <div style="min-height:50px;">
+                <img src="physiquerush.png" class="logo-reduced" alt="Logo" onerror="this.style.display='none'">
+            </div>
+            <div style="min-height:50px;">
+                <img src="MIAH.png" class="glow-effect" alt="MIAH" onerror="this.style.display='none'">
+            </div>
+            
             <div id="char-display">
                 <img id="char-img" src="evo1.png" alt="Perso" onerror="this.src='https://via.placeholder.com/200x250?text=?'">
                 <div id="global-level-badge">Niveau 0 / 40</div>
@@ -206,30 +221,44 @@
 
         <div class="menu-buttons-list">
             
-            <img src="salledestests.png" class="menu-img-btn" onclick="nav.to('screen-levels')" alt="SALLE DES TESTS" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-            <div class="fallback-btn" onclick="nav.to('screen-levels')">LEVELS ROOM</div>
+            <div class="btn-wrapper" onclick="nav.to('screen-levels')">
+                <img src="salledestests.png" class="menu-img-btn" alt="LEVELS ROOM" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <div class="fallback-btn">LEVELS ROOM</div>
+            </div>
 
-            <img src="trainingarea.png" class="menu-img-btn" onclick="nav.to('screen-training')" alt="TRAINING AREA" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-            <div class="fallback-btn" onclick="nav.to('screen-training')">TRAINING CAMP</div>
+            <div class="btn-wrapper" onclick="nav.to('screen-training')">
+                <img src="trainingarea.png" class="menu-img-btn" alt="TRAINING CAMP" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <div class="fallback-btn">TRAINING CAMP</div>
+            </div>
 
-            <img src="nutrirush.png" class="menu-img-btn" onclick="ui.alert('Patience...', 'Le Module Nutri-Rush sera bientôt disponible !')" alt="NUTRI-RUSH" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-            <div class="fallback-btn" onclick="ui.alert('Patience...', 'Bientôt !')">NUTRI-RUSH</div>
+            <div class="btn-wrapper" onclick="ui.alert('Patience...', 'Le Module Nutri-Rush sera bientôt disponible !')">
+                <img src="nutrirush.png" class="menu-img-btn" alt="NUTRI-RUSH" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <div class="fallback-btn">NUTRI-RUSH</div>
+            </div>
 
-            <img src="galerie.png" class="menu-img-btn" onclick="nav.to('screen-trophy')" alt="GALERIE" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-            <div class="fallback-btn" onclick="nav.to('screen-trophy')">GALERIE</div>
+            <div class="btn-wrapper" onclick="nav.to('screen-trophy')">
+                <img src="galerie.png" class="menu-img-btn" alt="GALERIE" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <div class="fallback-btn">GALERIE</div>
+            </div>
 
-            <img src="teamphysiquerush.png" class="menu-img-btn" onclick="window.location.href='https://wa.me/'" alt="TEAM" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-            <div class="fallback-btn" onclick="window.location.href='https://wa.me/'">LA TEAM</div>
+            <div class="btn-wrapper" onclick="window.location.href='https://wa.me/'">
+                <img src="teamphysiquerush.png" class="menu-img-btn" alt="LA TEAM" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <div class="fallback-btn">LA TEAM</div>
+            </div>
 
-            <img src="quitterlejeu.png" class="menu-img-btn" onclick="window.close(); window.location.href='about:blank';" alt="QUITTER" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'; this.nextElementSibling.style.background='#f44336';">
-            <div class="fallback-btn" style="background:#f44336;" onclick="window.close()">QUITTER</div>
+            <div class="btn-wrapper" onclick="window.close(); window.location.href='about:blank';">
+                <img src="quitterlejeu.png" class="menu-img-btn" alt="QUITTER" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'; this.nextElementSibling.style.background='#f44336';">
+                <div class="fallback-btn" style="background:var(--accent-red); color:black;">QUITTER</div>
+            </div>
 
         </div>
     </div>
 
     <div id="screen-levels" class="container hidden">
-        <img src="salledestests.png" class="screen-title-img" alt="LEVELS ROOM" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
-        <h2 class="fallback-title-text">LEVELS ROOM</h2>
+        <div class="screen-title-wrapper">
+            <img src="salledestests.png" class="screen-title-img" alt="LEVELS ROOM" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+            <h2 class="fallback-title">LEVELS ROOM</h2>
+        </div>
         
         <div class="scrollable-content">
             <button class="btn" onclick="evoLab.init()">Evolution Lab</button>
@@ -274,8 +303,10 @@
     </div>
 
     <div id="screen-training" class="container hidden">
-        <img src="trainingarea.png" class="screen-title-img" alt="TRAINING AREA" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
-        <h2 class="fallback-title-text">TRAINING CAMP</h2>
+        <div class="screen-title-wrapper">
+            <img src="trainingarea.png" class="screen-title-img" alt="TRAINING CAMP" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+            <h2 class="fallback-title">TRAINING CAMP</h2>
+        </div>
         
         <div class="scrollable-content">
             <div class="week-grid" id="week-grid"></div>
@@ -314,8 +345,10 @@
     </div>
 
     <div id="screen-trophy" class="container hidden">
-        <img src="galerie.png" class="screen-title-img" alt="GALERIE" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
-        <h2 class="fallback-title-text">GALERIE TROPHEES</h2>
+        <div class="screen-title-wrapper">
+            <img src="galerie.png" class="screen-title-img" alt="GALERIE" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+            <h2 class="fallback-title">GALERIE</h2>
+        </div>
         
         <div class="scrollable-content">
             <div style="margin-bottom: 30px; background: #1a1a1a; padding: 20px; border-radius: 15px;">
@@ -337,6 +370,30 @@
     </div>
 
     <script>
+        // --- NAVIGATION ---
+        const nav = {
+            to: (id) => {
+                document.querySelectorAll('.container').forEach(d => {
+                    if(d.id !== id) {
+                        d.style.display = 'none'; 
+                        d.classList.add('hidden');
+                    }
+                });
+                
+                const target = document.getElementById(id);
+                target.classList.remove('hidden');
+                
+                if(id === 'screen-menu') {
+                    target.style.display = 'flex'; // Menu est flex pour layout
+                    app.updateCharacter();
+                } else {
+                    target.style.display = 'flex'; // Conteneurs sont flex column
+                    if(id === 'screen-training') training.init();
+                    if(id === 'screen-trophy') gallery.render();
+                }
+            }
+        };
+
         // --- UI MANAGER ---
         const ui = {
             modal: document.getElementById('custom-modal'),
@@ -916,38 +973,9 @@
             }
         };
 
-        // --- NAVIGATION ---
-        const nav = {
-            to: (id) => {
-                // Masquer les autres
-                document.querySelectorAll('.container').forEach(d => {
-                    if(d.id !== id) {
-                        d.style.display = 'none'; // Important pour cacher le flex
-                        d.classList.add('hidden');
-                    }
-                });
-                
-                // Afficher la cible
-                const target = document.getElementById(id);
-                target.classList.remove('hidden');
-                
-                // Gestion spécifique du display pour le menu (flex) vs les autres (block)
-                if(id === 'screen-menu') {
-                    target.style.display = 'flex';
-                    app.updateCharacter();
-                } else {
-                    target.style.display = 'flex'; // Container est flex column
-                    if(id === 'screen-training') training.init();
-                    if(id === 'screen-trophy') gallery.render();
-                }
-            }
-        };
-
         // --- INIT ---
-        // Force l'affichage du menu au démarrage
         document.getElementById('screen-menu').classList.remove('hidden');
         document.getElementById('screen-menu').style.display = 'flex';
-        
         app.updateCharacter();
         lightning.init(); 
 
