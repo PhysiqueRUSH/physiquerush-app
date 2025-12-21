@@ -20,7 +20,7 @@
             --modal-bg: rgba(0, 0, 0, 0.85);
         }
         
-        /* GENERAL */
+        /* LAYERS */
         body { 
             margin: 0; 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
@@ -29,8 +29,9 @@
             flex-direction: column; 
             align-items: center; 
             min-height: 100vh; 
-            height: 100vh; /* Hauteur écran forcée */
-            overflow: hidden; /* Pas de scroll global */
+            height: 100vh; /* Force la hauteur écran sans scroll global */
+            overflow: hidden; 
+            padding-bottom: 0; /* Pas de padding bas global pour gérer le flex */
             background: transparent;
         }
 
@@ -38,111 +39,90 @@
         #lightning-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; overflow: hidden; }
         .lightning-flash { position: absolute; max-width: none; opacity: 0.8; pointer-events: none; }
 
+        /* Conteneur principal en Flex vertical pour la distribution */
         .container { 
-            width: 95%; max-width: 500px; padding: 10px; text-align: center; 
-            position: relative; z-index: 1; 
-            display: flex; flex-direction: column; 
-            height: 100%; 
-            box-sizing: border-box; 
+            width: 95%; 
+            max-width: 500px; 
+            padding: 10px 20px; 
+            text-align: center; 
+            position: relative; 
+            z-index: 1; 
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            box-sizing: border-box;
         }
         
         .hidden { display: none !important; }
         
-        /* --- STRUCTURE MENU PRINCIPAL --- */
+        /* BUTTONS (Standards pour l'intérieur) */
+        .btn { display: block; width: 100%; padding: 15px; margin: 10px 0; background: var(--card-bg); color: white; border: 1px solid #333; cursor: pointer; text-align: center; font-weight: bold; text-transform: uppercase; border-radius: 8px; transition: 0.2s; }
+        .btn:hover { background: #333; }
+        .btn-red { background: var(--accent-red); color: black; border: none; }
+        .btn-outline { background: transparent; border: 1px solid var(--accent-red); color: var(--accent-red); }
+        .btn-danger-zone { margin-top: 30px; border: 1px solid var(--accent-red); color: var(--accent-red); opacity: 0.7; font-size: 0.8em; }
         
-        /* 1. Header (Logos + Perso) */
-        .menu-header-group {
-            flex: 0 0 auto;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding-top: 10px;
-        }
-
-        /* LOGOS : Hauteur fixe pour qu'ils soient assez gros */
-        .logo-top { 
-            height: 5vh; /* Hauteur relative écran */
-            min-height: 40px; 
-            width: auto; 
-            display: block; 
-            margin-bottom: 5px; 
-        }
+        /* --- ELEMENTS DU MENU (STYLE STRICTEMENT CONSERVÉ) --- */
+        .main-img { display: block; margin: 0 auto 15px auto; border-radius: 15px; }
+        .logo-reduced { width: 20%; max-width: 80px; } /* Taille conservée */
+        .glow-effect { width: 100%; max-width: 100%; animation: redPulse 2s infinite ease-in-out; }
         
-        .logo-miah {
-            height: 7vh; /* Un peu plus gros */
-            min-height: 50px;
-            width: auto;
-            display: block;
-            margin-bottom: 5px;
-            animation: redPulse 2s infinite ease-in-out;
-        }
-
-        /* PERSO : Réduit pour l'équilibre */
-        #char-display { margin: 0; }
-        #char-img { 
-            height: 18vh; /* Réduit (était 22vh) */
-            width: auto; 
-            display: block; 
-            margin: 0 auto; 
-            object-fit: contain;
-        }
-        #global-level-badge { font-size: 1.1em; font-weight: bold; margin-top: 2px; color: var(--accent-yellow); text-shadow: 0 0 5px rgba(0,0,0,0.5); }
-
-        /* 2. Navigation (Les boutons images) */
-        .menu-nav-group {
-            flex: 1 1 auto; /* Prend tout l'espace disponible */
-            display: flex;
-            flex-direction: column;
-            justify-content: space-evenly; /* Espacement égal automatique */
-            align-items: center;
-            width: 100%;
-            padding: 5px 0;
-        }
-
-        /* 3. Footer (Quitter) */
-        .menu-footer-group {
-            flex: 0 0 auto;
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            padding-bottom: 15px;
-        }
-
-        /* STYLE DES IMAGES BOUTONS (Hauteur fixe, Largeur variable) */
-        .menu-btn-img {
-            display: block;
-            height: 6.5vh; /* TOUS la même hauteur */
-            min-height: 45px;
-            width: auto; /* La largeur s'adapte à l'image */
-            max-width: 90%; /* Sécurité pour ne pas dépasser l'écran */
-            object-fit: contain;
-            cursor: pointer;
-            filter: drop-shadow(0 4px 4px rgba(0,0,0,0.5));
-            transition: transform 0.1s;
-        }
-        .menu-btn-img:active { transform: scale(0.95); }
-
         @keyframes redPulse {
             0% { box-shadow: 0 0 5px rgba(244, 67, 54, 0.3); }
             50% { box-shadow: 0 0 25px rgba(244, 67, 54, 0.8), 0 0 10px rgba(244, 67, 54, 0.6); }
             100% { box-shadow: 0 0 5px rgba(244, 67, 54, 0.3); }
         }
 
-        /* --- STYLES INTERNES --- */
-        .scrollable-content { overflow-y: auto; height: 100%; display: block; }
-        .title-img { display: block; width: auto; height: 50px; margin: 0 auto 20px auto; object-fit: contain; }
-        
-        .btn { display: block; width: 100%; padding: 15px; margin: 10px 0; background: var(--card-bg); color: white; border: 1px solid #333; cursor: pointer; text-align: center; font-weight: bold; text-transform: uppercase; border-radius: 8px; transition: 0.2s; }
-        .btn-red { background: var(--accent-red); color: black; border: none; }
-        .btn-outline { background: transparent; border: 1px solid var(--accent-red); color: var(--accent-red); }
-        .btn-danger-zone { margin-top: 30px; border: 1px solid var(--accent-red); color: var(--accent-red); opacity: 0.7; font-size: 0.8em; }
+        #char-display { margin-bottom: 10px; margin-top: 10px; flex: 0 0 auto; }
+        #char-img { max-width: 250px; display: block; margin: 0 auto; transition: transform 0.3s; } /* Taille conservée */
+        #global-level-badge { font-size: 1.4em; font-weight: bold; margin-top: 10px; color: var(--accent-yellow); text-shadow: 0 0 5px rgba(0,0,0,0.5); }
 
-        .video-box { background: #000; height: 150px; display: flex; align-items: center; justify-content: center; margin: 0 0 20px 0; color: #555; border: 1px solid #333; font-size: 0.8em; width: 100%; }
+        /* --- NOUVEAUX BOUTONS MENU (IMAGES) --- */
+        .menu-list {
+            flex: 1; /* Prend tout l'espace disponible restant */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-evenly; /* Répartition égale */
+            align-items: center;
+            width: 100%;
+            padding-bottom: 10px;
+        }
+
+        .menu-btn-img {
+            display: block;
+            height: 5.5vh; /* HAUTEUR IDENTIQUE POUR TOUS */
+            width: auto;   /* Largeur s'adapte */
+            max-width: 100%;
+            object-fit: contain;
+            cursor: pointer;
+            transition: transform 0.1s;
+            filter: drop-shadow(0 3px 3px rgba(0,0,0,0.5));
+        }
+        .menu-btn-img:active { transform: scale(0.95); }
+
+        /* TITRES DES ECRANS (IMAGES) */
+        .title-img {
+            display: block;
+            height: 50px; /* Hauteur fixe pour les titres */
+            width: auto;
+            margin: 0 auto 20px auto;
+            object-fit: contain;
+        }
+
+        /* --- CONTENU SCROLLABLE POUR LES SOUS-ECRANS --- */
+        .scrollable-content {
+            display: block; /* Reset flex */
+            overflow-y: auto;
+            height: 100%;
+        }
+
+        /* ELEMENTS */
+        .video-box { background: #000; height: 150px; display: flex; align-items: center; justify-content: center; margin: 0 0 20px 0; color: #555; border: 1px solid #333; font-size: 0.8em; width: 100%; flex: 0 0 auto; }
         #radar-container { position: relative; width: 100%; height: 350px; margin: 0 auto 20px auto; background: #000; border-radius: 10px; border: 1px solid #333; display: flex; align-items: center; justify-content: center; }
         canvas { max-width: 100%; max-height: 100%; }
-        .week-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(70px, 1fr)); gap: 8px; margin-bottom: 20px; justify-content: center; }
-        .day-box { aspect-ratio: 1 / 1; background: #333; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 0.8em; border-radius: 8px; cursor: pointer; opacity: 0.6; transition: all 0.2s; border: 1px solid #444; }
+        .week-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); gap: 10px; margin-bottom: 20px; justify-content: center; }
+        .day-box { aspect-ratio: 1 / 1; background: #333; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 0.9em; border-radius: 8px; cursor: pointer; opacity: 0.6; transition: all 0.2s; border: 1px solid #444; }
+        .day-box:hover { transform: scale(1.05); opacity: 0.8; }
         .day-box.active { border: 2px solid var(--accent-yellow); opacity: 1; background: #2a2a2a; box-shadow: 0 0 10px rgba(255, 235, 59, 0.2); }
         .day-box.done { background: var(--accent-green); color: black; opacity: 1; border: none; font-weight: bold; }
         
@@ -155,11 +135,13 @@
         input[type="number"] { width: 80px; padding: 10px; text-align: center; border-radius: 5px; border: none; font-size: 1.2em; background: #333; color: white; }
         .boss-section { border: 2px solid #444; padding: 15px; border-radius: 12px; margin-bottom: 20px; background: #151515; }
         #boss-img-preview { width: 225px; height: 225px; object-fit: contain; } 
-        .trophy-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; margin-top: 20px; }
-        .trophy-item { width: 130px; cursor: pointer; text-align: center; background: #1a1a1a; padding: 10px; border-radius: 10px; border: 1px solid #333; }
-        .trophy-item img { width: 110px; height: 110px; object-fit: contain; display: block; margin: 0 auto; }
+        .trophy-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; margin-top: 20px; }
+        .trophy-item { width: 150px; cursor: pointer; text-align: center; background: #1a1a1a; padding: 10px; border-radius: 10px; border: 1px solid #333; }
+        .trophy-item img { width: 130px; height: 130px; object-fit: contain; display: block; margin: 0 auto; }
         .trophy-count { font-size: 1.4em; font-weight: bold; color: var(--accent-yellow); margin-top: 5px; display: block; }
-        
+        .whatsapp-icon { width: 24px; vertical-align: middle; margin-left: 10px; }
+
+        /* CUSTOM MODAL */
         #custom-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--modal-bg); z-index: 9999; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
         .modal-content { background: #1a1a1a; border: 2px solid #444; padding: 30px; border-radius: 15px; width: 85%; max-width: 400px; text-align: center; box-shadow: 0 0 20px rgba(0,0,0,0.8); animation: modalPop 0.3s ease-out; }
         @keyframes modalPop { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
@@ -185,26 +167,21 @@
     </div>
 
     <div id="screen-menu" class="container">
-        
-        <div class="menu-header-group">
-            <img src="physiquerush.png" class="logo-top" alt="Logo" onerror="this.style.display='none'">
-            <img src="MIAH.png" class="logo-miah" alt="MIAH" onerror="this.style.display='none'">
-            
+        <div style="flex: 0 0 auto;">
+            <img src="physiquerush.png" class="main-img logo-reduced" alt="Logo" onerror="this.style.display='none'">
+            <img src="MIAH.png" class="main-img glow-effect" alt="MIAH" onerror="this.style.display='none'">
             <div id="char-display">
-                <img id="char-img" src="evo1.png" alt="Perso" onerror="this.src='https://via.placeholder.com/200x250?text=Perso'">
+                <img id="char-img" src="evo1.png" alt="Perso" onerror="this.src='https://via.placeholder.com/250x300?text=Perso'">
                 <div id="global-level-badge">Niveau 0 / 40</div>
             </div>
         </div>
 
-        <div class="menu-nav-group">
-            <img src="levelsroom.png" class="menu-btn-img" onclick="nav.to('screen-levels')" onerror="this.style.background='#333'; this.alt='LEVELS ROOM'">
-            <img src="trainingcamp.png" class="menu-btn-img" onclick="nav.to('screen-training')" onerror="this.style.background='#333'; this.alt='TRAINING CAMP'">
+        <div class="menu-list">
+            <img src="levelsroom.png" class="menu-btn-img" onclick="nav.to('screen-levels')" onerror="this.style.background='#333'; this.alt='LEVELS'">
+            <img src="trainingcamp.png" class="menu-btn-img" onclick="nav.to('screen-training')" onerror="this.style.background='#333'; this.alt='TRAINING'">
             <img src="nutri-rush.png" class="menu-btn-img" onclick="ui.alert('Patience...', 'Le Module Nutri-Rush sera bientôt disponible !')" onerror="this.style.background='#333'; this.alt='NUTRI-RUSH'">
-            <img src="galeriedestrophees.png" class="menu-btn-img" onclick="nav.to('screen-trophy')" onerror="this.style.background='#333'; this.alt='GALERIE TROPHEES'">
-            <img src="lateamphysiquerush.png" class="menu-btn-img" onclick="window.location.href='https://wa.me/'" onerror="this.style.background='#333'; this.alt='LA TEAM'">
-        </div>
-
-        <div class="menu-footer-group">
+            <img src="galeriedestrophees.png" class="menu-btn-img" onclick="nav.to('screen-trophy')" onerror="this.style.background='#333'; this.alt='TROPHEES'">
+            <img src="lateamphysiquerush.png" class="menu-btn-img" onclick="window.location.href='https://wa.me/'" onerror="this.style.background='#333'; this.alt='TEAM'">
             <img src="quitter.png" class="menu-btn-img" onclick="window.close(); window.location.href='about:blank';" onerror="this.style.background='#f44336'; this.alt='QUITTER'">
         </div>
     </div>
@@ -283,7 +260,6 @@
 
     <div id="screen-trophy" class="container hidden scrollable-content">
         <img src="galeriedestrophees.png" class="title-img" onerror="this.style.display='none'; document.write('<h2>GALERIE TROPHEES</h2>')">
-        
         <div style="margin-bottom: 30px; background: #1a1a1a; padding: 20px; border-radius: 15px;">
             <img id="trophy-char-img" src="" style="width: 200px; margin: 0 auto; display: block;">
             <div id="trophy-next-evo" style="color: #aaa; font-size: 0.9em; margin-top: 10px; font-style: italic;"></div>
