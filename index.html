@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>PhysiqueRush - Massive Impact</title>
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#ffeb3b">
@@ -17,142 +17,112 @@
             --accent-yellow: #ffeb3b;
             --accent-red: #f44336;
             --card-bg: #1e1e1e;
-            --modal-bg: rgba(0, 0, 0, 0.85);
+            --modal-bg: rgba(0, 0, 0, 0.9);
         }
         
-        /* LAYERS */
+        /* GENERAL */
         body { 
             margin: 0; 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
             color: var(--text-color); 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            min-height: 100vh; 
-            padding-bottom: 50px; 
-            background: transparent;
+            display: flex; flex-direction: column; align-items: center; 
+            min-height: 100vh; height: 100vh; 
+            overflow: hidden; 
+            background-color: var(--bg-color);
         }
 
         #app-background { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--bg-color); z-index: -2; }
         #lightning-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; overflow: hidden; }
         .lightning-flash { position: absolute; max-width: none; opacity: 0.8; pointer-events: none; }
 
-        .container { width: 95%; max-width: 500px; padding: 20px; text-align: center; position: relative; z-index: 1; }
+        .container { 
+            width: 95%; max-width: 500px; padding: 10px; text-align: center; 
+            position: relative; z-index: 1; display: none; flex-direction: column; 
+            height: 100%; box-sizing: border-box;
+        }
+        #screen-menu { display: flex; }
         .hidden { display: none !important; }
-        
-        /* BUTTONS */
+        .scrollable-content { overflow-y: auto; display: block; height: 100%; padding-bottom: 20px; flex: 1; }
+
+        /* HEADER */
+        .menu-header { flex: 0 0 auto; display: flex; flex-direction: column; align-items: center; justify-content: center; padding-bottom: 5px; }
+        .logo-reduced { width: 20%; max-width: 80px; margin-bottom: 5px; display: block; }
+        .glow-effect { width: 100%; max-width: 250px; margin-bottom: 5px; display: block; animation: redPulse 2s infinite ease-in-out; }
+        #char-img { height: 18vh; max-height: 180px; width: auto; display: block; margin: 0 auto; object-fit: contain; }
+        #global-level-badge { font-size: 1.1em; font-weight: bold; margin-top: 2px; color: var(--accent-yellow); text-shadow: 0 0 5px rgba(0,0,0,0.5); }
+
+        /* MENU BUTTONS */
+        .menu-buttons-list { flex: 1; display: flex; flex-direction: column; justify-content: space-evenly; align-items: center; width: 100%; padding-bottom: 10px; }
+        .btn-wrapper { width: 100%; display: flex; justify-content: center; align-items: center; min-height: 40px; cursor: pointer; }
+        .menu-img-btn { display: block; width: auto; max-width: 90%; height: 7vh; max-height: 70px; object-fit: contain; cursor: pointer; filter: drop-shadow(0 4px 3px rgba(0,0,0,0.6)); transition: transform 0.1s; }
+        .menu-img-btn:active { transform: scale(0.95); }
+        .fallback-btn { display: none; width: 100%; padding: 15px; background: #333; color: white; border: 1px solid #555; text-align: center; font-weight: bold; text-transform: uppercase; border-radius: 8px; cursor: pointer; }
+
+        /* SCREEN TITLES */
+        .screen-title-wrapper { margin-bottom: 15px; min-height: 40px; display: flex; justify-content: center; align-items: center; flex: 0 0 auto; }
+        .screen-title-img { display: block; max-width: 90%; height: auto; max-height: 60px; object-fit: contain; }
+        .fallback-title { display: none; font-size: 1.5em; font-weight: bold; color: var(--accent-yellow); text-transform: uppercase; border-bottom: 2px solid var(--accent-yellow); }
+
+        /* UI ELEMENTS */
         .btn { display: block; width: 100%; padding: 15px; margin: 10px 0; background: var(--card-bg); color: white; border: 1px solid #333; cursor: pointer; text-align: center; font-weight: bold; text-transform: uppercase; border-radius: 8px; transition: 0.2s; }
         .btn:hover { background: #333; }
         .btn-red { background: var(--accent-red); color: black; border: none; }
+        .btn-green { background: var(--accent-green); color: black; border: none; }
         .btn-outline { background: transparent; border: 1px solid var(--accent-red); color: var(--accent-red); }
         .btn-danger-zone { margin-top: 30px; border: 1px solid var(--accent-red); color: var(--accent-red); opacity: 0.7; font-size: 0.8em; }
+
+        /* WORKOUT UI */
+        .video-box { background: #000; height: 150px; display: flex; align-items: center; justify-content: center; margin: 0 0 20px 0; color: #555; border: 1px solid #333; font-size: 0.8em; width: 100%; flex: 0 0 auto; position: relative; }
         
-        /* IMAGES */
-        .main-img { display: block; margin: 0 auto 15px auto; border-radius: 15px; }
-        .logo-reduced { width: 20%; max-width: 80px; }
-        .glow-effect { width: 100%; max-width: 100%; animation: redPulse 2s infinite ease-in-out; }
-        @keyframes redPulse {
-            0% { box-shadow: 0 0 5px rgba(244, 67, 54, 0.3); }
-            50% { box-shadow: 0 0 25px rgba(244, 67, 54, 0.8), 0 0 10px rgba(244, 67, 54, 0.6); }
-            100% { box-shadow: 0 0 5px rgba(244, 67, 54, 0.3); }
-        }
+        /* New Exercise Card Style */
+        .exercise-card { background: #222; border: 1px solid #444; border-radius: 10px; padding: 15px; margin-bottom: 15px; text-align: left; opacity: 0.6; transition: 0.3s; }
+        .exercise-card.active { opacity: 1; border: 2px solid var(--accent-yellow); box-shadow: 0 0 15px rgba(255, 235, 59, 0.2); background: #2a2a2a; }
+        .exercise-title { font-weight: bold; font-size: 1.1em; margin-bottom: 5px; color: #fff; }
+        .exercise-meta { font-size: 0.9em; color: #aaa; }
+        
+        /* Active Exercise GIF */
+        .active-gif-container { width: 100px; height: 100px; background: #000; border: 1px solid #555; border-radius: 5px; float: right; margin-left: 10px; cursor: pointer; position: relative; overflow: hidden; }
+        .active-gif-container img { width: 100%; height: 100%; object-fit: cover; }
+        .play-icon-overlay { position: absolute; top:50%; left:50%; transform:translate(-50%, -50%); color: white; font-size: 20px; text-shadow: 0 0 5px black; pointer-events: none; }
 
-        /* HEADER */
-        #char-display { margin-bottom: 20px; margin-top: 10px; }
-        #char-img { max-width: 250px; display: block; margin: 0 auto; transition: transform 0.3s; }
-        #global-level-badge { font-size: 1.4em; font-weight: bold; margin-top: 10px; color: var(--accent-yellow); text-shadow: 0 0 5px rgba(0,0,0,0.5); }
-
-        /* ELEMENTS */
-        .video-box { background: #000; height: 150px; display: flex; align-items: center; justify-content: center; margin: 0 0 20px 0; color: #555; border: 1px solid #333; font-size: 0.8em; width: 100%; }
-        #radar-container { position: relative; width: 100%; height: 350px; margin: 0 auto 20px auto; background: #000; border-radius: 10px; border: 1px solid #333; display: flex; align-items: center; justify-content: center; }
-        canvas { max-width: 100%; max-height: 100%; }
-        .week-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); gap: 10px; margin-bottom: 20px; justify-content: center; }
-        .day-box { aspect-ratio: 1 / 1; background: #333; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 0.9em; border-radius: 8px; cursor: pointer; opacity: 0.6; transition: all 0.2s; border: 1px solid #444; }
-        .day-box:hover { transform: scale(1.05); opacity: 0.8; }
+        /* Timer Controls */
+        .timer-controls { display: flex; gap: 10px; justify-content: center; margin-top: 10px; }
+        .timer-btn { padding: 8px 15px; border-radius: 5px; border: none; cursor: pointer; font-weight: bold; }
+        
+        .timer-overlay { background: #000; padding: 15px; border-radius: 10px; border: 1px solid #333; margin-bottom: 20px; display: flex; flex-direction: column; align-items: center; }
+        .timer-digits { font-size: 3em; font-weight: bold; font-family: monospace; color: white; }
+        .timer-state { font-size: 1.1em; color: var(--accent-pink); margin-bottom: 5px; }
+        .timer-warning { animation: flashWarning 0.5s infinite; color: var(--accent-red) !important; }
+        
+        .week-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(70px, 1fr)); gap: 8px; margin-bottom: 20px; justify-content: center; }
+        .day-box { aspect-ratio: 1 / 1; background: #333; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 0.8em; border-radius: 8px; cursor: pointer; opacity: 0.6; transition: all 0.2s; border: 1px solid #444; }
         .day-box.active { border: 2px solid var(--accent-yellow); opacity: 1; background: #2a2a2a; box-shadow: 0 0 10px rgba(255, 235, 59, 0.2); }
         .day-box.done { background: var(--accent-green); color: black; opacity: 1; border: none; font-weight: bold; }
+
+        /* Boss Section Compact */
+        .boss-section { 
+            border: 2px solid #444; padding: 10px; border-radius: 12px; margin-bottom: 20px; background: #151515; 
+            width: fit-content; margin-left: auto; margin-right: auto; /* Centered & Tight */
+        }
+        .boss-section h4 { margin: 0 0 5px 0; font-size: 1em; color: var(--accent-red); }
+        #boss-img-preview { width: 100%; max-width: 150px; height: auto; object-fit: contain; } /* Taille originale conservée mais contrainte */
+
+        /* Inputs */
+        input[type="number"] { width: 100%; max-width: 200px; padding: 15px; text-align: center; border-radius: 5px; border: 1px solid #555; font-size: 1.1em; background: #333; color: white; margin-bottom: 10px; }
+
+        /* Gallery Cards */
+        .stats-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        .stat-card { background: #1a1a1a; border: 1px solid #444; border-radius: 10px; padding: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 160px; transition: transform 0.1s; position: relative; }
+        .stat-card img { width: 100%; max-height: 90px; object-fit: contain; margin-bottom: 5px; } /* Images plus grosses */
+        .stat-value { font-size: 1.4em; font-weight: bold; color: var(--accent-yellow); }
+        .stat-label { font-size: 0.8em; color: #888; text-transform: uppercase; font-weight: bold; margin-top: 2px; }
+
+        #custom-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--modal-bg); z-index: 9999; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
+        .modal-content { background: #1a1a1a; border: 2px solid #444; padding: 30px; border-radius: 15px; width: 85%; max-width: 400px; text-align: center; box-shadow: 0 0 20px rgba(0,0,0,0.8); animation: modalPop 0.3s ease-out; }
         
-        .timer-overlay { background: #000; padding: 20px; border-radius: 10px; border: 1px solid #333; margin-bottom: 20px; display: flex; flex-direction: column; align-items: center; }
-        .timer-digits { font-size: 3.5em; font-weight: bold; font-family: monospace; }
-        .timer-state { font-size: 1.2em; color: var(--accent-pink); margin-bottom: 5px; min-height: 1.5em; }
-        .timer-warning { animation: flashWarning 0.5s infinite; color: var(--accent-red) !important; }
-        @keyframes flashWarning { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
-
-        input[type="number"] { width: 80px; padding: 10px; text-align: center; border-radius: 5px; border: none; font-size: 1.2em; background: #333; color: white; }
-        .boss-section { border: 2px solid #444; padding: 15px; border-radius: 12px; margin-bottom: 20px; background: #151515; }
-        #boss-img-preview { width: 225px; height: 225px; object-fit: contain; } 
-        
-        /* --- NOUVEAU DESIGN GALERIE (CARDS) --- */
-        .stats-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr; /* Deux colonnes égales */
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .stat-card {
-            background: #1a1a1a;
-            border: 1px solid #444;
-            border-radius: 10px;
-            padding: 15px 5px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 160px; /* Hauteur fixe pour uniformité */
-            transition: transform 0.1s;
-        }
-        .stat-card:active { transform: scale(0.98); }
-
-        .stat-icon {
-            width: 80px;
-            height: 80px;
-            object-fit: contain;
-            margin-bottom: 5px;
-        }
-
-        .stat-value {
-            font-size: 1.8em;
-            font-weight: bold;
-            color: var(--accent-yellow);
-        }
-
-        .stat-label {
-            font-size: 0.85em;
-            color: #888;
-            margin-top: 5px;
-            text-transform: uppercase;
-            font-weight: bold;
-        }
-
-        .whatsapp-icon { width: 24px; vertical-align: middle; margin-left: 10px; }
-
-        /* --- CUSTOM MODAL --- */
-        #custom-modal {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: var(--modal-bg);
-            z-index: 9999;
-            display: flex; align-items: center; justify-content: center;
-            backdrop-filter: blur(5px);
-        }
-        .modal-content {
-            background: #1a1a1a;
-            border: 2px solid #444;
-            padding: 30px;
-            border-radius: 15px;
-            width: 85%;
-            max-width: 400px;
-            text-align: center;
-            box-shadow: 0 0 20px rgba(0,0,0,0.8);
-            animation: modalPop 0.3s ease-out;
-        }
         @keyframes modalPop { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-        .modal-title { font-size: 1.5em; font-weight: bold; margin-bottom: 15px; color: var(--accent-yellow); text-transform: uppercase; }
-        .modal-msg { font-size: 1.1em; margin-bottom: 25px; line-height: 1.5; }
-        .modal-actions { display: flex; gap: 10px; justify-content: center; }
-        .modal-btn { padding: 10px 20px; border-radius: 5px; cursor: pointer; border: none; font-weight: bold; text-transform: uppercase; }
-        .btn-modal-confirm { background: var(--accent-green); color: black; }
-        .btn-modal-cancel { background: #333; color: white; border: 1px solid #555; }
+        @keyframes flashWarning { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
+        @keyframes redPulse { 0% { box-shadow: 0 0 5px rgba(244, 67, 54, 0.3); } 50% { box-shadow: 0 0 25px rgba(244, 67, 54, 0.8), 0 0 10px rgba(244, 67, 54, 0.6); } 100% { box-shadow: 0 0 5px rgba(244, 67, 54, 0.3); } }
     </style>
 </head>
 <body>
@@ -164,618 +134,599 @@
         <div class="modal-content">
             <div id="modal-title" class="modal-title">TITRE</div>
             <div id="modal-msg" class="modal-msg">Message ici</div>
-            <div id="modal-actions" class="modal-actions">
-                </div>
+            <div id="modal-actions" class="modal-actions"></div>
         </div>
     </div>
 
     <div id="screen-menu" class="container">
-        <img src="physiquerush.png" class="main-img logo-reduced" alt="Logo" onerror="this.style.display='none'">
-        <img src="MIAH.png" class="main-img glow-effect" alt="MIAH" onerror="this.style.display='none'">
-        <div id="char-display">
-            <img id="char-img" src="evo1.png" alt="Perso" onerror="this.src='https://via.placeholder.com/250x300?text=Perso'">
-            <div id="global-level-badge">Niveau 0 / 40</div>
+        <div class="menu-header">
+            <div class="btn-wrapper"><img src="physiquerush.png" class="logo-reduced" alt="Logo" onerror="this.style.display='none'"></div>
+            <div class="btn-wrapper"><img src="MIAH.png" class="glow-effect" alt="MIAH" onerror="this.style.display='none'"></div>
+            <div id="char-display">
+                <img id="char-img" src="evo1.png" alt="Perso" onerror="this.src='https://via.placeholder.com/200x250?text=?'">
+                <div id="global-level-badge">Niveau 0 / 40</div>
+            </div>
         </div>
-        
-        <button class="btn" onclick="nav.to('screen-levels')">SALLE DES TESTS</button>
-        <button class="btn" onclick="nav.to('screen-training')">ZONE D'ENTRAÎNEMENT</button>
-        <button class="btn" onclick="ui.alert('Patience...', 'Le Module Nutri-Rush sera bientôt disponible !')">NUTRI-RUSH</button>
-        <button class="btn" onclick="nav.to('screen-trophy')">RÉCOMPENSES ET STATS</button>
-        
-        <button class="btn" onclick="window.location.href='https://wa.me/'">La Team PhysiqueRush <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" class="whatsapp-icon"></button>
-        <button class="btn btn-red" onclick="window.close(); window.location.href='about:blank';">QUITTER</button>
+
+        <div class="menu-buttons-list">
+            <div class="btn-wrapper" onclick="nav.to('screen-levels')">
+                <img src="salledestests.png" class="menu-img-btn" alt="SALLE DES TESTS" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <div class="fallback-btn">SALLE DES TESTS</div>
+            </div>
+            <div class="btn-wrapper" onclick="nav.to('screen-training')">
+                <img src="trainingarea.png" class="menu-img-btn" alt="ZONE D'ENTRAÎNEMENT" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <div class="fallback-btn">ZONE D'ENTRAÎNEMENT</div>
+            </div>
+            <div class="btn-wrapper" onclick="ui.alert('Patience...', 'Module Nutri-Rush bientôt disponible !')">
+                <img src="nutrirush.png" class="menu-img-btn" alt="NUTRI-RUSH" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <div class="fallback-btn">NUTRI-RUSH</div>
+            </div>
+            <div class="btn-wrapper" onclick="nav.to('screen-trophy')">
+                <img src="galerie.png" class="menu-img-btn" alt="RÉCOMPENSES ET STATS" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <div class="fallback-btn">RÉCOMPENSES ET STATS</div>
+            </div>
+            <div class="btn-wrapper" onclick="window.location.href='https://wa.me/'">
+                <img src="teamphysiquerush.png" class="menu-img-btn" alt="LA TEAM" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <div class="fallback-btn">LA TEAM (WhatsApp)</div>
+            </div>
+            <div class="btn-wrapper" onclick="window.close(); window.location.href='about:blank';">
+                <img src="quitterlejeu.png" class="menu-img-btn" alt="QUITTER" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'; this.nextElementSibling.style.background='#f44336';">
+                <div class="fallback-btn" style="background:var(--accent-red); color:black;">QUITTER</div>
+            </div>
+        </div>
     </div>
 
     <div id="screen-levels" class="container hidden">
-        <h2>SALLE DES TESTS</h2>
-        <button class="btn" onclick="evoLab.init()">Evolution Lab</button>
-        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-            <button class="btn" onclick="tests.start('Pectoraux')">Test Pecs</button>
-            <button class="btn" onclick="tests.start('Jambes')">Test Jambes</button>
-            <button class="btn" onclick="tests.start('Dos')">Test Dos</button>
-            <button class="btn" onclick="tests.start('Triceps')">Test Triceps</button>
-            <button class="btn" onclick="tests.start('Biceps')">Test Biceps</button>
+        <div class="screen-title-wrapper">
+            <img src="salledestests.png" class="screen-title-img" alt="SALLE DES TESTS" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+            <h2 class="fallback-title">SALLE DES TESTS</h2>
         </div>
-        <button class="btn" onclick="nav.to('screen-menu')" style="margin-top:20px;">Retour</button>
+        
+        <div class="scrollable-content">
+            <button class="btn" onclick="evoLab.init()">Evolution Lab</button>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                <button class="btn" onclick="tests.start('Pectoraux')">Test Pecs</button>
+                <button class="btn" onclick="tests.start('Jambes')">Test Jambes</button>
+                <button class="btn" onclick="tests.start('Dos')">Test Dos</button>
+                <button class="btn" onclick="tests.start('Triceps')">Test Triceps</button>
+                <button class="btn" onclick="tests.start('Biceps')">Test Biceps</button>
+            </div>
+            <button class="btn" onclick="nav.to('screen-menu')" style="margin-top:20px;">Retour</button>
+        </div>
     </div>
 
     <div id="screen-evolab" class="container hidden">
         <h3>Evolution Lab</h3>
-        <div id="radar-container">
-            <canvas id="radarChart"></canvas>
+        <div class="scrollable-content">
+            <div id="radar-container"><canvas id="radarChart"></canvas></div>
+            <div id="evolab-global" style="font-size: 1.2em; color: var(--accent-yellow); font-weight: bold; margin-bottom: 15px;"></div>
+            <button class="btn" onclick="nav.to('screen-levels')">Retour</button>
+            <button class="btn btn-danger-zone" onclick="evoLab.resetTests()">⚠️ RÉINITIALISER MES TESTS</button>
         </div>
-        <div id="evolab-global" style="font-size: 1.2em; color: var(--accent-yellow); font-weight: bold; margin-bottom: 15px;"></div>
-        <button class="btn" onclick="nav.to('screen-levels')">Retour</button>
-        <button class="btn btn-danger-zone" onclick="evoLab.resetTests()">⚠️ RÉINITIALISER MES TESTS</button>
     </div>
 
     <div id="screen-test" class="container hidden">
         <h2 id="test-name">Test</h2>
-        <div class="video-box">[VIDEO VIMEO PLACEHOLDER]</div>
-        <div class="timer-overlay">
-            <div id="test-instruction-state" class="timer-state">Prêt ?</div>
-            <div id="timer-display" class="timer-digits">08:00</div>
-            <div id="current-palier" style="margin-top: 10px; font-size: 1.2em; color:#888;">Palier 1</div>
+        <div class="scrollable-content">
+            <div class="video-box">[VIDEO VIMEO PLACEHOLDER]</div>
+            <div class="timer-overlay">
+                <div id="test-instruction-state" class="timer-state">Prêt ?</div>
+                <div id="timer-display" class="timer-digits">08:00</div>
+                <div id="current-palier" style="margin-top: 10px; font-size: 1.2em; color:#888;">Palier 1</div>
+            </div>
+            <h3 id="test-exercise-name" style="color: var(--accent-pink);">Exercice</h3>
+            <div id="reps-target" style="color: var(--accent-yellow); font-size: 1.4em; margin-bottom: 20px;">Objectif: 10 reps</div>
+            
+            <button id="btn-start-test" class="btn btn-red" onclick="tests.run()" style="font-weight:900;">LANCER LE TEST</button>
+            <button id="btn-validate-palier" class="btn btn-green hidden" onclick="tests.validatePalier()" style="font-weight:900;">✅ J'AI VALIDÉ LES 10 REPS</button>
+            <button id="btn-fail-test" class="btn hidden" style="background:#333; border:1px solid #555;" onclick="tests.fail()">❌ J'ai échoué / Fin</button>
+            
+            <button class="btn" onclick="tests.quit()">Retour</button>
         </div>
-        <h3 id="test-exercise-name" style="color: var(--accent-pink);">Exercice</h3>
-        <div id="reps-target" style="color: var(--accent-yellow); font-size: 1.4em; margin-bottom: 20px;">Objectif: 10 reps</div>
-        <button id="btn-start-test" class="btn btn-red" onclick="tests.run()" style="font-weight:900;">LANCER LE TEST</button>
-        <button id="btn-fail-test" class="btn hidden" onclick="tests.fail()">J'ai échoué / Fin</button>
-        <button class="btn" onclick="tests.quit()">Retour</button>
     </div>
 
     <div id="screen-training" class="container hidden">
-        <h2 style="font-size: 2em; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 30px;">ZONE D'ENTRAÎNEMENT</h2>
-        <div class="week-grid" id="week-grid"></div>
-        <div id="training-info" style="margin-top: 20px; color: #888;">
-            Sélectionnez votre séance du jour.
+        <div class="screen-title-wrapper">
+            <img src="trainingarea.png" class="screen-title-img" alt="ZONE D'ENTRAÎNEMENT" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+            <h2 class="fallback-title">ZONE D'ENTRAÎNEMENT</h2>
         </div>
-        <button class="btn" onclick="nav.to('screen-menu')" style="margin-top: 30px;">Retour</button>
+        <div class="scrollable-content">
+            <div class="week-grid" id="week-grid"></div>
+            <div id="training-info" style="margin-top: 20px; color: #888;">Sélectionnez votre séance du jour.</div>
+            <button class="btn" onclick="nav.to('screen-menu')" style="margin-top: 30px;">Retour</button>
+        </div>
     </div>
 
     <div id="screen-workout" class="container hidden">
         <h2 id="workout-day-title">Jour X</h2>
-        <div class="video-box">[VIDEO VIMEO SEANCE]</div>
-        <div id="workout-chrono-panel" class="timer-overlay hidden">
-            <div id="workout-timer-state" class="timer-state">Exercice 1/4</div>
-            <div id="workout-timer-digits" class="timer-digits">00:00</div>
-            <button class="btn btn-outline" onclick="training.stopTimer()" style="margin-top:10px; padding:5px;">Arrêter Chrono</button>
-        </div>
-        <button id="btn-start-workout-timer" class="btn" onclick="training.startSmartTimer()">⏱️ LANCER CHRONO SÉANCE</button>
-        <div id="workout-list" style="text-align: left; margin-bottom: 20px; line-height: 1.6; font-size: 0.95em;"></div>
-        <div class="boss-section">
-            <h4 style="margin-top:0; color: var(--accent-red);">Beat The Boss</h4>
-            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;">
-                <img id="boss-img-preview" src="" onerror="this.src='https://via.placeholder.com/225?text=BTB'">
-                <span id="boss-score-target" style="font-size: 1.2em; font-weight: bold; color: white;">Score à battre: ???</span>
+        <div class="scrollable-content">
+            <div class="video-box" id="workout-video-box">[VIDEO VIMEO SEANCE]</div>
+            
+            <div id="active-exercise-panel" class="hidden">
+                 <div class="timer-overlay" style="padding:10px;">
+                    <div id="workout-timer-digits" class="timer-digits">00:00</div>
+                    <div class="timer-controls">
+                        <button class="timer-btn" style="background:#4caf50;" onclick="training.togglePause()">⏯️</button>
+                        <button class="timer-btn" style="background:#f44336;" onclick="training.resetTimer()">↺</button>
+                    </div>
+                </div>
+                
+                <div id="exercise-list-container">
+                    </div>
+                
+                <button id="btn-next-exercise" class="btn btn-green" onclick="training.nextExercise()">EXERCICE SUIVANT ➔</button>
+                <button id="btn-validate-ascension" class="btn btn-green hidden" onclick="training.validateAscensionSet()">VALIDER SÉRIE (+2)</button>
             </div>
+
+            <button id="btn-start-workout-timer" class="btn" onclick="training.startSmartTimer()">⏱️ LANCER LA SÉANCE</button>
+            
+            <div class="boss-section">
+                <h4 style="margin:0; color: var(--accent-red);">BEAT THE BOSS</h4>
+                <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                    <img id="boss-img-preview" src="" onerror="this.src='https://via.placeholder.com/150?text=BTB'">
+                    <span id="boss-score-target" style="font-size: 1em; font-weight: bold; color: white;">Score à battre: ???</span>
+                </div>
+            </div>
+
+            <div id="validation-zone" style="margin-top:20px;">
+                <label style="display:block; text-align:left; color:#aaa; font-size:0.8em; margin-bottom:5px;">VOTRE SCORE :</label>
+                <input type="number" id="workout-score" placeholder="Nombre total de reps">
+                <button class="btn btn-red" onclick="training.validateSession()">VALIDER LA SEANCE</button>
+            </div>
+            <button id="btn-cancel-session" class="btn hidden" style="background: #333; color: #f44336; border: 1px solid #f44336;" onclick="training.cancelSession()">ANNULER / INVALIDER</button>
+            <button class="btn" onclick="training.quit()">Retour</button>
         </div>
-        <div id="validation-zone">
-            <input type="number" id="workout-score" placeholder="Score">
-            <button class="btn btn-red" onclick="training.validateSession()">VALIDER LA SEANCE</button>
-        </div>
-        <button id="btn-cancel-session" class="btn hidden" style="background: #333; color: #f44336; border: 1px solid #f44336;" onclick="training.cancelSession()">ANNULER / INVALIDER</button>
-        <button class="btn" onclick="training.quit()">Retour</button>
     </div>
 
     <div id="screen-trophy" class="container hidden">
-        <h2>RÉCOMPENSES ET STATS</h2>
+        <div class="screen-title-wrapper">
+            <img src="galerie.png" class="screen-title-img" alt="RÉCOMPENSES ET STATS" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+            <h2 class="fallback-title">RÉCOMPENSES ET STATS</h2>
+        </div>
         
-        <div style="margin-bottom: 20px; padding: 10px;">
-            <img id="trophy-char-img" src="" style="width: 200px; margin: 0 auto; display: block;">
-            <div id="trophy-next-evo" style="color: #aaa; font-size: 0.9em; margin-top: 10px; font-style: italic;"></div>
-        </div>
-
-        <h3 style="border-bottom: 1px solid #333; padding-bottom: 5px; margin-bottom: 15px;">Performances</h3>
-        <div class="stats-row">
-            <div class="stat-card">
-                <img src="record.png" class="stat-icon" onerror="this.src='https://via.placeholder.com/80?text=Rec'">
-                <span id="total-records" class="stat-value">0</span>
-                <span class="stat-label">Records Battus</span>
+        <div class="scrollable-content">
+            <div style="margin-bottom: 20px; padding: 10px;">
+                <img id="trophy-char-img" src="" style="width: 200px; margin: 0 auto; display: block;">
+                <div id="trophy-next-evo" style="color: #aaa; font-size: 0.9em; margin-top: 10px; font-style: italic;"></div>
             </div>
-            
-            <div class="stat-card">
-                <img src="fury.png" class="stat-icon" onerror="this.src='https://via.placeholder.com/80?text=Fury'">
-                <span id="fury-count-display" class="stat-value">0</span>
-                <span class="stat-label">Mode Fury</span>
+
+            <h3 style="border-bottom: 1px solid #333; padding-bottom: 5px; margin-bottom: 15px;">Performances</h3>
+            <div class="stats-row">
+                <div class="stat-card" onclick="ui.alert('RECORDS', 'Nombre total de séances où vous avez battu votre précédent score.')">
+                    <img src="record.png" class="stat-icon" onerror="this.src='https://via.placeholder.com/80?text=Rec'">
+                    <span id="total-records" class="stat-value">0</span>
+                    <span class="stat-label">Records Battus</span>
+                </div>
+                <div class="stat-card" onclick="ui.alert('MODE FURY', 'Nombre de fois où vous avez enchaîné 7 jours d\'entraînement consécutifs.')">
+                    <img src="fury.png" class="stat-icon" onerror="this.src='https://via.placeholder.com/80?text=Fury'">
+                    <span id="fury-count-display" class="stat-value">0</span>
+                    <span class="stat-label">Mode Fury</span>
+                </div>
             </div>
+
+            <h3 style="border-bottom: 1px solid #333; padding-bottom: 5px; margin-bottom: 15px;">Boss Vaincus</h3>
+            <div id="boss-trophy-container" class="stats-row"></div>
+            <div id="no-boss-msg" style="color:#666; font-style:italic; margin-bottom:20px; display:none;">Aucun boss vaincu pour le moment.</div>
+
+            <button class="btn" style="margin-top: 20px;" onclick="nav.to('screen-menu')">Retour</button>
+            <button class="btn btn-danger-zone" onclick="gallery.resetTrophies()">⚠️ EFFACER TOUTES LES RÉCOMPENSES</button>
         </div>
-
-        <h3 style="border-bottom: 1px solid #333; padding-bottom: 5px; margin-bottom: 15px;">Boss Vaincus</h3>
-        <div id="boss-trophy-container" class="stats-row"> </div>
-        <div id="no-boss-msg" style="color:#666; font-style:italic; margin-bottom:20px; display:none;">Aucun boss vaincu pour le moment.</div>
-
-        <button class="btn" style="margin-top: 20px;" onclick="nav.to('screen-menu')">Retour</button>
-        <button class="btn btn-danger-zone" onclick="gallery.resetTrophies()">⚠️ EFFACER TOUTES LES RÉCOMPENSES</button>
     </div>
 
     <script>
-        // --- UI MANAGER (CUSTOM MODAL) ---
+        // --- UI MANAGER ---
         const ui = {
             modal: document.getElementById('custom-modal'),
             title: document.getElementById('modal-title'),
             msg: document.getElementById('modal-msg'),
             actions: document.getElementById('modal-actions'),
-            
             show: (title, message, buttons = []) => {
                 ui.title.innerText = title;
                 ui.msg.innerHTML = message;
                 ui.actions.innerHTML = '';
-                
                 buttons.forEach(btn => {
                     const b = document.createElement('button');
                     b.className = 'modal-btn ' + (btn.class || '');
                     b.innerText = btn.text;
-                    b.onclick = () => {
-                        ui.hide();
-                        if(btn.onClick) btn.onClick();
-                    };
+                    b.onclick = () => { ui.hide(); if(btn.onClick) btn.onClick(); };
                     ui.actions.appendChild(b);
                 });
                 ui.modal.classList.remove('hidden');
             },
-            hide: () => {
-                ui.modal.classList.add('hidden');
-            },
-            alert: (title, message, callback) => {
-                ui.show(title, message, [{ text: 'OK', class: 'btn-modal-confirm', onClick: callback }]);
-            },
-            confirm: (title, message, onConfirm) => {
-                ui.show(title, message, [
-                    { text: 'Annuler', class: 'btn-modal-cancel' },
-                    { text: 'Confirmer', class: 'btn-modal-confirm', onClick: onConfirm }
-                ]);
-            },
-            // Affichage spécifique Résultat Test
+            hide: () => { ui.modal.classList.add('hidden'); },
+            alert: (title, message, callback) => { ui.show(title, message, [{ text: 'OK', class: 'btn-modal-confirm', onClick: callback }]); },
+            confirm: (title, message, onConfirm) => { ui.show(title, message, [{ text: 'Annuler', class: 'btn-modal-cancel' }, { text: 'Confirmer', class: 'btn-modal-confirm', onClick: onConfirm }]); },
             showResult: (score, callback) => {
-                let rank = "DÉBUTANT";
-                let color = "#ff6ec7";
+                let rank = "DÉBUTANT", color = "#ff6ec7";
                 if(score >= 3) { rank = "INTERMÉDIAIRE"; color = "#4caf50"; }
                 if(score >= 5) { rank = "AVANCÉ"; color = "#ffeb3b"; }
                 if(score >= 7) { rank = "EXPERT"; color = "#f44336"; }
-                
-                const html = `
-                    <div style="font-size:3em; font-weight:bold; margin-bottom:10px;">${score}</div>
-                    <div style="font-size:1.5em; font-weight:bold; color:${color}; border:2px solid ${color}; padding:10px; border-radius:10px; display:inline-block;">${rank}</div>
-                    <div style="margin-top:15px; font-style:italic;">Palier validé</div>
-                `;
-                
+                const html = `<div style="font-size:3em; font-weight:bold; margin-bottom:10px;">${score}</div><div style="font-size:1.5em; font-weight:bold; color:${color}; border:2px solid ${color}; padding:10px; border-radius:10px; display:inline-block;">${rank}</div><div style="margin-top:15px; font-style:italic;">Palier validé</div>`;
                 ui.show("RÉSULTAT DU TEST", html, [{ text: 'CONTINUER', class: 'btn-modal-confirm', onClick: callback }]);
             }
         };
 
-        // --- AUDIO ---
         const audio = {
             ctx: null,
-            init: () => {
-                if (!audio.ctx) audio.ctx = new (window.AudioContext || window.webkitAudioContext)();
-            },
+            init: () => { if (!audio.ctx) audio.ctx = new (window.AudioContext || window.webkitAudioContext)(); },
             beep: (type) => { 
-                audio.init();
-                const osc = audio.ctx.createOscillator();
-                const gain = audio.ctx.createGain();
-                osc.connect(gain);
-                gain.connect(audio.ctx.destination);
-                osc.type = 'sine';
-                if (type === 'long') {
-                    osc.frequency.setValueAtTime(600, audio.ctx.currentTime);
-                    osc.frequency.exponentialRampToValueAtTime(300, audio.ctx.currentTime + 0.5);
-                    gain.gain.setValueAtTime(0.5, audio.ctx.currentTime);
-                    osc.start();
-                    osc.stop(audio.ctx.currentTime + 0.6);
-                } else { 
-                    osc.frequency.value = 880;
-                    gain.gain.setValueAtTime(0.1, audio.ctx.currentTime);
-                    osc.start();
-                    osc.stop(audio.ctx.currentTime + 0.1);
-                }
+                audio.init(); const osc = audio.ctx.createOscillator(); const gain = audio.ctx.createGain();
+                osc.connect(gain); gain.connect(audio.ctx.destination); osc.type = 'sine';
+                if (type === 'long') { osc.frequency.setValueAtTime(600, audio.ctx.currentTime); gain.gain.setValueAtTime(0.5, audio.ctx.currentTime); osc.start(); osc.stop(audio.ctx.currentTime + 0.6); }
+                else { osc.frequency.value = 880; gain.gain.setValueAtTime(0.1, audio.ctx.currentTime); osc.start(); osc.stop(audio.ctx.currentTime + 0.1); }
             }
         };
 
-        // --- BACKGROUND FX ---
         const lightning = {
             container: document.getElementById('lightning-container'),
             images: ['eclair1.png', 'eclair2.png', 'eclair3.png'],
             init: () => { lightning.schedule(); },
-            schedule: () => {
-                const delay = Math.random() * (5000 - 300) + 300;
-                setTimeout(() => { lightning.flash(); lightning.schedule(); }, delay);
-            },
+            schedule: () => { setTimeout(() => { lightning.flash(); lightning.schedule(); }, Math.random() * (5000 - 300) + 300); },
             flash: () => {
-                const imgName = lightning.images[Math.floor(Math.random() * lightning.images.length)];
-                const img = document.createElement('img');
-                img.src = imgName;
-                img.className = 'lightning-flash';
-                if (imgName === 'eclair1.png') {
-                    img.style.left = '0px';
-                    img.style.top = (Math.random() * 80) + '%';
-                } else {
-                    img.style.top = '0px';
-                    img.style.left = (Math.random() * 80) + '%'; 
-                }
-                lightning.container.appendChild(img);
-                setTimeout(() => { img.remove(); }, 150);
+                const img = document.createElement('img'); img.src = lightning.images[Math.floor(Math.random() * 3)]; img.className = 'lightning-flash';
+                img.style.left = (img.src.includes('eclair1') ? '0' : Math.random() * 80 + '%'); img.style.top = (img.src.includes('eclair1') ? Math.random() * 80 + '%' : '0');
+                lightning.container.appendChild(img); setTimeout(() => img.remove(), 150);
             }
         };
 
-        // --- DATA ---
         const db = {
             load: () => JSON.parse(localStorage.getItem('physiqueRushDB')) || db.default(),
             save: (data) => localStorage.setItem('physiqueRushDB', JSON.stringify(data)),
-            default: () => ({
-                stats: { Pectoraux: 0, Jambes: 0, Dos: 0, Triceps: 0, Biceps: 0 }, 
-                history: { originalStats: { Pectoraux: 0, Jambes: 0, Dos: 0, Triceps: 0, Biceps: 0 } },
-                sessions: {}, records: {}, bossBeaten: {}, furyCount: 0
-            })
+            default: () => ({ stats: { Pectoraux: 0, Jambes: 0, Dos: 0, Triceps: 0, Biceps: 0 }, history: {}, sessions: {}, records: {}, bossBeaten: {}, furyCount: 0 })
         };
         let data = db.load();
 
-        // --- CORE LOGIC ---
         const app = {
-            getGlobalLevel: () => {
-                let sum = 0;
-                for(let k in data.stats) sum += data.stats[k];
-                return sum;
-            },
-            getFunctionalLevel: (muscle) => {
-                const val = data.stats[muscle];
-                return val === 0 ? 1 : val;
-            },
-            getCharImage: (level) => {
-                if(level < 5) return 'evo1.png';
-                if(level <= 10) return 'evo1.png';
-                if(level <= 15) return 'evo2.png';
-                if(level <= 19) return 'evo3.png';
-                if(level <= 23) return 'evo4.png';
-                if(level <= 26) return 'evo5.png';
-                if(level <= 29) return 'evo6.png';
-                if(level <= 32) return 'evo7.png';
-                if(level <= 34) return 'evo8.png';
-                if(level <= 36) return 'evo9.png';
-                if(level <= 38) return 'evo10.png';
-                if(level === 39) return 'evo11.png';
-                return 'evo12.png';
-            },
-            updateCharacter: () => {
-                const lvl = app.getGlobalLevel();
-                const imgName = app.getCharImage(lvl);
-                document.getElementById('char-img').src = imgName; 
-                document.getElementById('global-level-badge').innerText = "Niveau " + lvl + " / 40";
-            },
-            getLevelColor: (val) => {
-                if(val <= 2) return '#ff6ec7'; 
-                if(val <= 4) return '#4caf50'; 
-                if(val <= 6) return '#ffeb3b'; 
-                return '#f44336'; 
-            }
+            getGlobalLevel: () => { let sum=0; for(let k in data.stats) sum+=data.stats[k]; return sum; },
+            getFunctionalLevel: (m) => data.stats[m] === 0 ? 1 : data.stats[m],
+            getCharImage: (l) => l<5?'evo1.png': l<=10?'evo1.png': l<=15?'evo2.png': l<=19?'evo3.png': l<=23?'evo4.png': l<=26?'evo5.png': l<=29?'evo6.png': l<=32?'evo7.png': l<=34?'evo8.png': l<=36?'evo9.png': l<=38?'evo10.png': l===39?'evo11.png':'evo12.png',
+            updateCharacter: () => { const l=app.getGlobalLevel(); document.getElementById('char-img').src=app.getCharImage(l); document.getElementById('global-level-badge').innerText="Niveau "+l+" / 40"; },
+            getLevelColor: (v) => v<=2?'#ff6ec7': v<=4?'#4caf50': v<=6?'#ffeb3b':'#f44336'
         };
 
-        // --- TESTS ---
         const tests = {
-            currentTest: null,
-            timer: null,
-            interval: null,
-            config: {
-                'Pectoraux': 'Pompes Dead-Stop',
-                'Jambes': 'Fentes Sautées',
-                'Dos': 'Rowing Corner Coudes Écartés',
-                'Triceps': 'Dips Chaise Jambes Tendues',
-                'Biceps': 'Drag Curl au Sol'
-            },
-            start: (muscle) => {
-                tests.currentTest = muscle;
-                document.getElementById('test-name').innerText = "Test " + muscle;
-                document.getElementById('test-exercise-name').innerText = tests.config[muscle];
+            currentTest: null, interval: null, palierValidated: false,
+            config: { 'Pectoraux': 'Pompes Dead-Stop', 'Jambes': 'Fentes Sautées', 'Dos': 'Rowing Corner Coudes Écartés', 'Triceps': 'Dips Chaise Jambes Tendues', 'Biceps': 'Drag Curl au Sol' },
+            start: (m) => {
+                tests.currentTest = m; tests.palierValidated = false;
+                document.getElementById('test-name').innerText = "Test " + m;
+                document.getElementById('test-exercise-name').innerText = tests.config[m];
                 document.getElementById('timer-display').innerText = "08:00";
                 document.getElementById('test-instruction-state').innerText = "Prêt ?";
-                document.getElementById('test-instruction-state').classList.remove('timer-warning');
                 document.getElementById('reps-target').innerText = "Objectif: 10 reps";
                 document.getElementById('current-palier').innerText = "Palier 1";
                 document.getElementById('btn-start-test').classList.remove('hidden');
+                document.getElementById('btn-validate-palier').classList.add('hidden');
                 document.getElementById('btn-fail-test').classList.add('hidden');
                 nav.to('screen-test');
             },
             run: () => {
                 audio.init(); 
                 document.getElementById('btn-start-test').classList.add('hidden');
+                document.getElementById('btn-validate-palier').classList.remove('hidden');
                 document.getElementById('btn-fail-test').classList.remove('hidden');
                 
-                let totalSeconds = 8 * 60;
-                let secondsInMinute = 60;
-                let palier = 1;
-                let reps = 10;
-                audio.beep('long'); 
+                let totalSeconds = 8 * 60, secondsInMinute = 60, palier = 1, reps = 10;
+                audio.beep('long');
 
                 tests.interval = setInterval(() => {
-                    totalSeconds--;
-                    secondsInMinute--;
-
-                    let min = Math.floor(totalSeconds / 60);
-                    let sec = totalSeconds % 60;
+                    totalSeconds--; secondsInMinute--;
+                    let min = Math.floor(totalSeconds / 60), sec = totalSeconds % 60;
                     document.getElementById('timer-display').innerText = `0${min}:${sec < 10 ? '0'+sec : sec}`;
 
-                    const stateDiv = document.getElementById('test-instruction-state');
                     if(secondsInMinute <= 10 && secondsInMinute > 0) {
-                        stateDiv.innerText = "PRÉPAREZ-VOUS !";
-                        stateDiv.classList.add('timer-warning');
-                        audio.beep('short'); 
+                        document.getElementById('test-instruction-state').innerText = "FIN DE LA MINUTE !";
+                        document.getElementById('test-instruction-state').classList.add('timer-warning');
+                        audio.beep('short');
                     } else {
-                        stateDiv.classList.remove('timer-warning');
-                        stateDiv.innerText = "En cours...";
+                        document.getElementById('test-instruction-state').classList.remove('timer-warning');
                     }
 
                     if (secondsInMinute <= 0) {
-                        if (totalSeconds <= 0) {
-                            tests.finish(8); 
+                        // Check validation
+                        if (!tests.palierValidated) {
+                            tests.finish(palier > 1 ? palier - 1 : 0); // Echec
                             return;
                         }
+                        if (totalSeconds <= 0) { tests.finish(8); return; }
+                        
                         audio.beep('long');
-                        palier++;
-                        reps += 2;
-                        secondsInMinute = 60;
+                        tests.palierValidated = false; // Reset flag
+                        document.getElementById('btn-validate-palier').classList.remove('hidden'); // Show button again
+                        palier++; reps += 2; secondsInMinute = 60;
                         document.getElementById('current-palier').innerText = "Palier " + palier;
                         document.getElementById('reps-target').innerText = "Objectif: " + reps + " reps";
-                        stateDiv.innerText = "GO !";
                     }
-                }, 1000); 
+                }, 1000);
+            },
+            validatePalier: () => {
+                tests.palierValidated = true;
+                document.getElementById('btn-validate-palier').classList.add('hidden'); // Hide until next minute
+                document.getElementById('test-instruction-state').innerText = "VALIDÉ ! REPOS...";
             },
             fail: () => {
                 let currentP = parseInt(document.getElementById('current-palier').innerText.split(' ')[1]);
-                let validated = currentP > 1 ? currentP - 1 : 0; 
-                tests.finish(validated);
+                tests.finish(currentP > 1 ? currentP - 1 : 0);
             },
             finish: (score) => {
                 clearInterval(tests.interval);
-                data.stats[tests.currentTest] = score;
-                db.save(data);
+                data.stats[tests.currentTest] = score; db.save(data);
                 ui.showResult(score, () => nav.to('screen-levels'));
             },
-            quit: () => {
-                clearInterval(tests.interval);
-                nav.to('screen-levels');
-            }
+            quit: () => { clearInterval(tests.interval); nav.to('screen-levels'); }
         };
 
-        // --- EVOLUTION LAB ---
         const evoLab = {
             chart: null,
-            init: () => {
-                nav.to('screen-evolab');
-                evoLab.render(data.stats);
-                document.getElementById('evolab-global').innerText = "Niveau Global: " + app.getGlobalLevel() + " / 40";
-            },
-            render: (statsObj) => {
+            init: () => { nav.to('screen-evolab'); evoLab.render(data.stats); document.getElementById('evolab-global').innerText = "Niveau Global: " + app.getGlobalLevel() + " / 40"; },
+            render: (s) => {
                 const ctx = document.getElementById('radarChart').getContext('2d');
-                const values = [statsObj.Pectoraux, statsObj.Jambes, statsObj.Dos, statsObj.Triceps, statsObj.Biceps];
-                const displayValues = values.map(v => v === 0 ? 1 : v);
-                const pointColors = displayValues.map(v => app.getLevelColor(v));
-
+                const v = [s.Pectoraux, s.Jambes, s.Dos, s.Triceps, s.Biceps].map(x => x===0?1:x);
                 if(evoLab.chart) evoLab.chart.destroy();
-
-                evoLab.chart = new Chart(ctx, {
-                    type: 'radar',
-                    data: {
-                        labels: ['Pectoraux', 'Jambes', 'Dos', 'Triceps', 'Biceps'],
-                        datasets: [{
-                            data: displayValues,
-                            backgroundColor: 'rgba(255, 235, 59, 0.2)',
-                            borderColor: '#fff',
-                            borderWidth: 1,
-                            pointBackgroundColor: pointColors,
-                            pointBorderColor: '#fff',
-                            pointRadius: 6 
-                        }]
-                    },
-                    options: {
-                        maintainAspectRatio: false,
-                        scales: {
-                            r: {
-                                min: 0, max: 8,
-                                ticks: { stepSize: 1, display: false },
-                                grid: { color: '#444' },
-                                pointLabels: { color: '#fff', font: {size: 11, weight:'bold'} },
-                                angleLines: { color: '#444' }
-                            }
-                        },
-                        plugins: { legend: { display: false } }
-                    }
-                });
+                evoLab.chart = new Chart(ctx, { type: 'radar', data: { labels: ['Pectoraux', 'Jambes', 'Dos', 'Triceps', 'Biceps'], datasets: [{ data: v, backgroundColor: 'rgba(255,235,59,0.2)', borderColor: '#fff', pointBackgroundColor: v.map(app.getLevelColor) }] }, options: { scales: { r: { min:0, max:8, ticks:{display:false}, grid:{color:'#444'}, pointLabels:{color:'#fff'} } }, plugins:{legend:{display:false}} } });
             },
-            resetTests: () => {
-                ui.confirm("RÉINITIALISATION", "Voulez-vous vraiment effacer tous vos résultats de tests ? Votre niveau global reviendra à 0.", () => {
-                    data.stats = { Pectoraux: 0, Jambes: 0, Dos: 0, Triceps: 0, Biceps: 0 };
-                    db.save(data);
-                    evoLab.init(); 
-                    app.updateCharacter(); 
-                    ui.alert("TERMINE", "Données réinitialisées.");
-                });
-            }
+            resetTests: () => ui.confirm("RESET", "Effacer les tests ?", () => { data.stats={Pectoraux:0,Jambes:0,Dos:0,Triceps:0,Biceps:0}; db.save(data); evoLab.init(); app.updateCharacter(); })
         };
 
-        // --- TRAINING CAMP ---
         const training = {
-            timerInterval: null,
-            days: [
-                { id: 1, name: 'Pectoraux' }, { id: 2, name: 'Jambes (Poly)' },
-                { id: 3, name: 'Dos' }, { id: 4, name: 'Tri/Bi' },
-                { id: 5, name: 'Pectoraux' }, { id: 6, name: 'Jambes (Iso)' },
-                { id: 7, name: 'Dos' }
-            ],
-            getDifficultyIndex: (lvl) => {
-                if(lvl<=2) return 1; if(lvl<=4) return 2; if(lvl<=6) return 3; return 4;            
+            timer: null, timeLeft: 0, isPaused: false, currentExIndex: 0, activeStructure: [], activeExos: [],
+            ascension: { active: false, round: 1, reps: 10 },
+            days: [ {id:1,name:'Pectoraux'}, {id:2,name:'Jambes (Poly)'}, {id:3,name:'Dos'}, {id:4,name:'Tri/Bi'}, {id:5,name:'Pectoraux'}, {id:6,name:'Jambes (Iso)'}, {id:7,name:'Dos'}, {id:8,name:'Ascension Challenge'} ],
+            
+            getDetails: (id) => {
+                const lvl = (m) => app.getFunctionalLevel(m);
+                const diff = (l) => (l<=2?1: l<=4?2: l<=6?3: 4);
+                let struct=[], exos=[], bossT=100, bossImg='btb1.png', bossId=1;
+
+                if (id === 8) { // ASCENSION CHALLENGE
+                    // 1. Get J1 Ex 2 based on Pec Level
+                    const pecLvl = lvl('Pectoraux');
+                    let j1ex2 = "Pompes sur les Genoux Partielles"; // Default Beg
+                    if(diff(pecLvl)===2) j1ex2 = "Pompes Jambe Traversante";
+                    if(diff(pecLvl)===3) j1ex2 = "Pompes Horloge";
+                    if(diff(pecLvl)===4) j1ex2 = "Pompes Diamant";
+
+                    exos = [
+                        { name: j1ex2, gif: 'j8ex1.gif' },
+                        { name: "Fentes du sprinteur (Gauche)", gif: 'j8ex2.gif' },
+                        { name: "Fentes du sprinteur (Droite)", gif: 'j8ex3.gif' },
+                        { name: "Side Elbow Press-Up (Gauche)", gif: 'j8ex4.gif' },
+                        { name: "Side Elbow Press-Up (Droite)", gif: 'j8ex5.gif' }
+                    ];
+                    struct = [480]; // 8 mins total
+                    bossImg = 'btb4.png'; bossT = 250; bossId = 4; // Arbitrary hard boss
+                    return { desc: "", bossTarget: bossT, bossImg, bossId, struct, exos, isAscension: true };
+                }
+
+                // STANDARD DAYS LOGIC (Simplified for brevity, using same logic as before)
+                // Need to map strings to objects {name, gif}
+                // Helper to create object
+                const toExo = (n) => ({ name: n, gif: 'placeholder.gif' });
+
+                if (id===1 || id===5) {
+                    struct = [120, 120, 120, 120];
+                    const d = diff(lvl('Pectoraux'));
+                    if(d===1) exos = ["Pompes Excentrique", "Pompes Genoux Partielles", "Pompes Genoux Excentriques", "Pompes Corner"].map(toExo);
+                    if(d===2) exos = ["Pompes Dead-Stop", "Pompes Jambe Traversante", "Pompes Excentriques", "Pompes Genoux Partielles"].map(toExo);
+                    if(d===3) exos = ["Pompes Décalage Pliométriques", "Pompes Horloge", "Pompes Dead-Stop", "Pompes Jambe Traversante"].map(toExo);
+                    if(d===4) exos = ["Pompes Archer Unilatérales", "Pompes Diamant", "Pompes Décalage Pliométriques", "Pompes Horloge"].map(toExo);
+                    bossId = d;
+                } else if (id===2) {
+                     const d = diff(lvl('Jambes'));
+                     if(d<=2) { struct=[240,240]; exos = (d===1 ? ["Fentes Arrières Basses", "Frog Jumps"] : ["Fentes Sautées", "Fentes Arrières Basses"]).map(toExo); }
+                     else { struct=[480]; exos = (d===3 ? ["Single Leg Landmines"] : ["Levitation Squat Unilateral"]).map(toExo); }
+                     bossId = d;
+                } else if (id===3 || id===7) {
+                    struct = [120,120,120,120];
+                    const d = diff(lvl('Dos'));
+                    const rc = id===7 ? "RC" : "Rowing Corner";
+                    if(d===1) exos = [`${rc} Coudes Écartés`, "Chandelier", "Superman Row Supination", "Snow Angels"].map(toExo);
+                    if(d===2) exos = [`${rc} Coudes Tendus`, `${rc} Coudes Écartés`, "Chandelier", "Superman Row Supination"].map(toExo);
+                    if(d===3) exos = [`${rc} Champion`, `${rc} Coudes Tendus`, `${rc} Coudes Écartés`, "Chandelier"].map(toExo);
+                    if(d===4) exos = [`${rc} Coudes Serrés`, `${rc} Champion`, `${rc} Coudes Tendus`, `${rc} Coudes Écartés`].map(toExo);
+                    bossId = d;
+                } else if (id===4) {
+                    struct = [240,240];
+                    const dT = diff(lvl('Triceps')); const dB = diff(lvl('Biceps'));
+                    let tEx = dT===1?"Wall Triceps": dT===2?"Pompes Sphinx": dT===3?"Pompes Tigre Genoux":"Pompes Tigre";
+                    let bEx = dB===1?"Sock Drag Curl": dB===2?"Corner Curl Uni": dB===3?"Drag Curl Sol":"Rotation Drag Curl Uni";
+                    exos = [toExo(tEx), toExo(bEx)];
+                    bossId = dT;
+                } else if (id===6) {
+                    struct = [240,240];
+                    const d = diff(lvl('Jambes'));
+                    if(d===1) exos = ["Leg Ext. Ours", "Pont Piétinement"].map(toExo);
+                    if(d===2) exos = ["Corner Sissy Squat", "Leg Curl Glissé Alt"].map(toExo);
+                    if(d===3) exos = ["Sissy Squat", "Leg Curl Glissé"].map(toExo);
+                    if(d===4) exos = ["Sissy Squat Partiel Bas", "Leg Curl Glissé Uni"].map(toExo);
+                    bossId = d;
+                }
+
+                return { desc: "", bossTarget: 100, bossImg: `btb${bossId}.png`, bossId, struct, exos, isAscension: false };
             },
-            getWorkoutDetails: (dayId) => {
-                const getLvl = (m) => app.getFunctionalLevel(m); 
-                const getCatCode = (lvl) => {
-                    const idx = training.getDifficultyIndex(lvl);
-                    return idx === 1 ? 'beg' : idx === 2 ? 'int' : idx === 3 ? 'adv' : 'exp';
-                };
-                let content = "";
-                let structure = []; 
-                let primaryMuscleLvl = 1;
 
-                if(dayId === 1 || dayId === 5) { 
-                    primaryMuscleLvl = getLvl('Pectoraux');
-                    structure = [120, 120, 120, 120];
-                    const lvl = getCatCode(primaryMuscleLvl);
-                    if(lvl === 'beg') content = "2' Pompes Excentrique > 2' Pompes Genoux Partielles > 2' Pompes Genoux Excentriques > 2' Pompes Corner";
-                    if(lvl === 'int') content = "Pompes Dead-Stop > Pompes Jambe Traversante > Pompes Excentriques > Pompes Genoux Partielles";
-                    if(lvl === 'adv') content = "Pompes Décalage Pliométriques > Pompes Horloge > Pompes Dead-Stop > Pompes Jambe Traversante";
-                    if(lvl === 'exp') content = "Pompes Archer Unilatérales > Pompes Diamant > Pompes Décalage Pliométriques > Pompes Horloge";
-                }
-                else if(dayId === 2) { 
-                    primaryMuscleLvl = getLvl('Jambes');
-                    const idx = training.getDifficultyIndex(primaryMuscleLvl);
-                    if(idx <= 2) { 
-                        structure = [240, 240];
-                        if(idx===1) content = "4' Fentes Arrières Basses > 4' Frog Jumps";
-                        else content = "4' Fentes Sautées > 4' Fentes Arrières Basses";
-                    } else { 
-                        structure = [480];
-                        if(idx===3) content = "8' Single Leg Landmines";
-                        else content = "8' Levitation Squat Unilateral";
-                    }
-                }
-                else if(dayId === 3 || dayId === 7) { 
-                    primaryMuscleLvl = getLvl('Dos');
-                    structure = [120, 120, 120, 120];
-                    const lvl = getCatCode(primaryMuscleLvl);
-                    let rowName = (dayId === 7) ? "RC" : "Rowing Corner";
-                    if(lvl === 'beg') content = `${rowName} Coudes Écartés > Chandelier > Superman Row Supination > Snow Angels`;
-                    if(lvl === 'int') content = `${rowName} Coudes Tendus > ${rowName} Coudes Écartés > Chandelier > Superman Row Supination`;
-                    if(lvl === 'adv') content = `${rowName} Champion > ${rowName} Coudes Tendus > ${rowName} Coudes Écartés > Chandelier`;
-                    if(lvl === 'exp') content = `${rowName} Coudes Serrés > ${rowName} Champion > ${rowName} Coudes Tendus > ${rowName} Coudes Écartés`;
-                }
-                else if(dayId === 4) { 
-                    primaryMuscleLvl = getLvl('Triceps'); 
-                    structure = [240, 240];
-                    const lTri = getCatCode(primaryMuscleLvl);
-                    const lBi = getCatCode(getLvl('Biceps'));
-                    let triEx="", biEx=""; 
-                    if(lTri === 'beg') triEx = "Wall Triceps Extension"; else if(lTri === 'int') triEx = "Pompes du Sphinx"; else if(lTri === 'adv') triEx = "Pompes Tigre Genoux"; else triEx = "Pompes Tigre";
-                    if(lBi === 'beg') biEx = "Sock Drag Curl"; else if(lBi === 'int') biEx = "Corner Curl Unilatéral"; else if(lBi === 'adv') biEx = "Drag Curl au sol"; else biEx = "Rotation Drag Curl Unilatéral";
-                    content = `Triceps (4'): ${triEx} <br><br> Biceps (4'): ${biEx}`;
-                }
-                else if(dayId === 6) { 
-                    primaryMuscleLvl = getLvl('Jambes');
-                    structure = [240, 240];
-                    const lvl = getCatCode(primaryMuscleLvl);
-                    if(lvl === 'beg') content = "4' Leg Extension de l'Ours > 4' Pont Piétinement";
-                    if(lvl === 'int') content = "4' Corner Sissy Squat > 4' Leg Curl Glissé Alterné";
-                    if(lvl === 'adv') content = "4' Sissy Squat > 4' Leg Curl Glissé";
-                    if(lvl === 'exp') content = "4' Sissy Squat Partiel Bas > 4' Leg Curl Glissé Unilatéral";
-                }
-
-                const diffIdx = training.getDifficultyIndex(primaryMuscleLvl);
-                const bossImg = `btb${diffIdx}.png`;
-
-                return { desc: content, bossTarget: 100, bossImg: bossImg, bossId: diffIdx, timeStructure: structure };
-            },
-            selectedDay: null,
-            currentBossId: null,
-            currentTimeStructure: [],
             init: () => {
-                const grid = document.getElementById('week-grid');
-                grid.innerHTML = '';
+                const grid = document.getElementById('week-grid'); grid.innerHTML = '';
                 training.days.forEach(d => {
-                    const el = document.createElement('div');
-                    el.className = 'day-box';
-                    el.innerHTML = `<span style="font-size:1.5em; font-weight:bold;">J${d.id}</span><span>${d.name}</span>`;
-                    
-                    if(data.sessions['day'+d.id]) {
-                        el.classList.add('done');
-                        el.innerHTML += "<span>✔</span>";
-                    }
-                    el.onclick = () => training.openDay(d.id);
-                    grid.appendChild(el);
+                    const el = document.createElement('div'); el.className = 'day-box';
+                    el.innerHTML = `<span>${d.id===8 ? 'J8' : 'J'+d.id}</span><span style="font-size:0.7em">${d.name.split(' ')[0]}</span>`;
+                    if(data.sessions['day'+d.id]) { el.classList.add('done'); el.innerHTML += "<span>✔</span>"; }
+                    el.onclick = () => training.openDay(d.id); grid.appendChild(el);
                 });
             },
-            openDay: (dayId) => {
-                training.selectedDay = dayId;
-                const wk = training.getWorkoutDetails(dayId);
-                training.currentTimeStructure = wk.timeStructure;
-                
-                document.getElementById('workout-day-title').innerText = `Jour ${dayId}: ${training.days[dayId-1].name}`;
-                document.getElementById('workout-list').innerHTML = wk.desc;
-                document.getElementById('boss-score-target').innerText = "Score à battre: " + wk.bossTarget;
-                document.getElementById('boss-img-preview').src = wk.bossImg;
+
+            openDay: (id) => {
+                training.selectedDay = id;
+                const wk = training.getDetails(id);
+                training.activeStructure = wk.struct;
+                training.activeExos = wk.exos;
+                training.ascension.active = wk.isAscension;
                 training.currentBossId = wk.bossId;
 
-                if(data.sessions['day'+dayId]) {
+                document.getElementById('workout-day-title').innerText = wk.isAscension ? "ASCENSION CHALLENGE" : `JOUR ${id}`;
+                document.getElementById('boss-score-target').innerText = "Score à battre: " + wk.bossTarget;
+                document.getElementById('boss-img-preview').src = wk.bossImg;
+                
+                // Render Exercise List
+                const listContainer = document.getElementById('exercise-list-container');
+                listContainer.innerHTML = '';
+                wk.exos.forEach((ex, idx) => {
+                    const div = document.createElement('div');
+                    div.className = 'exercise-card';
+                    div.id = 'ex-card-'+idx;
+                    div.innerHTML = `
+                        <div class="active-gif-container" onclick="window.open('https://vimeo.com/search?q=${ex.name}', '_blank')">
+                            <img src="${ex.gif}" onerror="this.src='https://via.placeholder.com/100x100?text=GIF'">
+                            <div class="play-icon-overlay">▶</div>
+                        </div>
+                        <div class="exercise-title">${ex.name}</div>
+                        <div class="exercise-meta">${wk.isAscension ? 'Challenge (+2 reps)' : (wk.struct[idx] ? (wk.struct[idx]/60)+" Minutes" : "Fin")}</div>
+                    `;
+                    listContainer.appendChild(div);
+                });
+
+                // UI Reset
+                document.getElementById('btn-start-workout-timer').classList.remove('hidden');
+                document.getElementById('active-exercise-panel').classList.add('hidden');
+                
+                // Score Input
+                if(data.sessions['day'+id]) {
                     document.getElementById('validation-zone').classList.add('hidden');
                     document.getElementById('btn-cancel-session').classList.remove('hidden');
-                    document.getElementById('workout-score').value = data.sessions['day'+dayId].score;
+                    document.getElementById('workout-score').value = data.sessions['day'+id].score;
                 } else {
                     document.getElementById('validation-zone').classList.remove('hidden');
                     document.getElementById('btn-cancel-session').classList.add('hidden');
                     document.getElementById('workout-score').value = "";
                 }
-                document.getElementById('workout-chrono-panel').classList.add('hidden');
-                document.getElementById('btn-start-workout-timer').classList.remove('hidden');
 
                 nav.to('screen-workout');
             },
+
             startSmartTimer: () => {
                 audio.init();
                 document.getElementById('btn-start-workout-timer').classList.add('hidden');
-                document.getElementById('workout-chrono-panel').classList.remove('hidden');
+                document.getElementById('active-exercise-panel').classList.remove('hidden');
                 
-                let segmentIndex = 0;
-                let timeLeft = training.currentTimeStructure[segmentIndex];
-                const totalSegments = training.currentTimeStructure.length;
+                training.currentExIndex = 0;
                 
-                const updateDisplay = () => {
-                    let min = Math.floor(timeLeft / 60);
-                    let sec = timeLeft % 60;
-                    document.getElementById('workout-timer-digits').innerText = `0${min}:${sec < 10 ? '0'+sec : sec}`;
-                    document.getElementById('workout-timer-state').innerText = `Exercice ${segmentIndex + 1} / ${totalSegments}`;
-                };
+                if (training.ascension.active) {
+                    training.ascension.round = 1;
+                    training.ascension.reps = 10;
+                    training.timeLeft = 8 * 60; // 8 mins global
+                    document.getElementById('btn-next-exercise').classList.add('hidden'); // Not used in ascension
+                    document.getElementById('btn-validate-ascension').classList.remove('hidden');
+                    training.updateAscensionUI();
+                } else {
+                    training.timeLeft = training.activeStructure[0];
+                    document.getElementById('btn-next-exercise').classList.remove('hidden');
+                    document.getElementById('btn-validate-ascension').classList.add('hidden');
+                    training.highlightExercise(0);
+                }
 
-                audio.beep('long'); 
-                updateDisplay();
+                training.isPaused = false;
+                training.runTimer();
+            },
 
-                training.timerInterval = setInterval(() => {
-                    timeLeft--;
-                    updateDisplay();
-                    if(timeLeft <= 3 && timeLeft > 0) audio.beep('short');
-
-                    if(timeLeft <= 0) {
-                        segmentIndex++;
-                        if(segmentIndex < totalSegments) {
-                            audio.beep('long');
-                            timeLeft = training.currentTimeStructure[segmentIndex];
-                            updateDisplay();
-                        } else {
-                            audio.beep('long');
-                            clearInterval(training.timerInterval);
-                            document.getElementById('workout-timer-state').innerText = "TERMINÉ !";
-                            document.getElementById('workout-timer-digits').innerText = "00:00";
-                            setTimeout(() => {
-                                document.getElementById('workout-chrono-panel').classList.add('hidden');
-                                document.getElementById('btn-start-workout-timer').classList.remove('hidden');
-                            }, 3000);
+            runTimer: () => {
+                clearInterval(training.timer);
+                audio.beep('long');
+                training.timer = setInterval(() => {
+                    if(!training.isPaused) {
+                        training.timeLeft--;
+                        let min = Math.floor(training.timeLeft / 60);
+                        let sec = training.timeLeft % 60;
+                        document.getElementById('workout-timer-digits').innerText = `0${min}:${sec < 10 ? '0'+sec : sec}`;
+                        
+                        if (training.timeLeft <= 0) {
+                            if (training.ascension.active) {
+                                training.finishAscension();
+                            } else {
+                                // End of exercise segment, but waiting for manual "Next"
+                                audio.beep('long');
+                                clearInterval(training.timer);
+                                // Auto next logic disabled as requested, waiting for user click
+                            }
                         }
                     }
                 }, 1000);
             },
-            stopTimer: () => {
-                clearInterval(training.timerInterval);
-                document.getElementById('workout-chrono-panel').classList.add('hidden');
+
+            togglePause: () => { training.isPaused = !training.isPaused; },
+            
+            resetTimer: () => {
+                clearInterval(training.timer);
+                document.getElementById('active-exercise-panel').classList.add('hidden');
                 document.getElementById('btn-start-workout-timer').classList.remove('hidden');
             },
+
+            nextExercise: () => {
+                training.currentExIndex++;
+                if (training.currentExIndex < training.activeStructure.length) {
+                    training.timeLeft = training.activeStructure[training.currentExIndex];
+                    training.highlightExercise(training.currentExIndex);
+                    training.runTimer();
+                } else {
+                    clearInterval(training.timer);
+                    alert("Séance terminée ! Entrez votre score.");
+                    document.getElementById('active-exercise-panel').classList.add('hidden');
+                }
+            },
+
+            highlightExercise: (idx) => {
+                document.querySelectorAll('.exercise-card').forEach(c => c.classList.remove('active'));
+                const card = document.getElementById('ex-card-'+idx);
+                if(card) {
+                    card.classList.add('active');
+                    card.scrollIntoView({behavior: "smooth", block: "center"});
+                }
+            },
+
+            // --- ASCENSION LOGIC ---
+            updateAscensionUI: () => {
+                training.highlightExercise(training.currentExIndex);
+                document.getElementById('btn-validate-ascension').innerText = `VALIDER ${training.ascension.reps} REPS`;
+            },
+
+            validateAscensionSet: () => {
+                training.currentExIndex++;
+                // If round complete (5 exercises)
+                if (training.currentExIndex >= 5) {
+                    training.currentExIndex = 0;
+                    training.ascension.reps += 2;
+                    training.ascension.round++;
+                    audio.beep('long'); // Round complete sound
+                }
+                training.updateAscensionUI();
+            },
+
+            finishAscension: () => {
+                clearInterval(training.timer);
+                const roundsCompleted = training.ascension.round - 1;
+                const exercisesInCurrent = training.currentExIndex;
+                const score = (roundsCompleted * 10) + exercisesInCurrent;
+                
+                audio.beep('long'); audio.beep('long'); audio.beep('long');
+                ui.alert("FIN DU CHALLENGE !", 
+                    `Temps écoulé !<br>Paliers complets : ${roundsCompleted}<br>Exercices en cours : ${exercisesInCurrent}<br><b>SCORE FINAL : ${score}</b>`, 
+                    () => {
+                        document.getElementById('workout-score').value = score;
+                        document.getElementById('active-exercise-panel').classList.add('hidden');
+                    }
+                );
+            },
+
+            // --- VALIDATION & CANCEL ---
             validateSession: () => {
                 const score = parseInt(document.getElementById('workout-score').value) || 0;
                 const dayKey = 'day' + training.selectedDay;
                 const prevRecord = data.records[dayKey] || 0;
-                const bossTarget = 100; 
+                const bossTarget = 100; // Placeholder
                 const bossBadgeName = "boss" + training.currentBossId;
-
                 let gainedBoss = false;
                 let msg = "Séance validée.";
 
-                if(score > prevRecord && prevRecord > 0) {
-                    msg += "<br>RECORD BATTU !";
-                }
+                if(score > prevRecord && prevRecord > 0) msg += "<br>RECORD BATTU !";
                 data.records[dayKey] = score;
 
                 if(score > bossTarget) {
@@ -785,133 +736,84 @@
                     gainedBoss = true;
                 }
 
-                data.sessions[dayKey] = { 
-                    validated: true, 
-                    score: score, 
-                    undoData: { gainedBoss: gainedBoss, bossName: bossBadgeName } 
-                };
-                
+                data.sessions[dayKey] = { validated: true, score: score, undoData: { gainedBoss: gainedBoss, bossName: bossBadgeName } };
                 db.save(data);
-                ui.alert("FÉLICITATIONS", msg, () => {
-                    training.init();
-                    nav.to('screen-training');
-                });
+                ui.alert("FÉLICITATIONS", msg, () => { training.init(); nav.to('screen-training'); });
             },
+
             cancelSession: () => {
-                ui.confirm("ANNULATION", "Voulez-vous vraiment annuler cette séance ? Cela effacera le statut validé et les récompenses associées.", () => {
+                ui.confirm("ANNULATION", "Annuler cette séance ? Cela effacera la validation.", () => {
                     const dayKey = 'day' + training.selectedDay;
                     const session = data.sessions[dayKey];
-                    
-                    if(session && session.undoData) {
-                        if(session.undoData.gainedBoss) {
-                            const bName = session.undoData.bossName;
-                            if(data.bossBeaten[bName] > 0) data.bossBeaten[bName]--;
-                        }
+                    if(session && session.undoData && session.undoData.gainedBoss) {
+                        const bName = session.undoData.bossName;
+                        if(data.bossBeaten[bName] > 0) data.bossBeaten[bName]--;
                     }
-                    
                     delete data.sessions[dayKey];
                     db.save(data);
-                    ui.alert("INFO", "Séance annulée.", () => {
-                        training.init();
-                        nav.to('screen-training');
-                    });
+                    ui.alert("INFO", "Séance annulée.", () => { training.init(); nav.to('screen-training'); });
                 });
             },
-            quit: () => {
-                training.stopTimer();
-                nav.to('screen-training');
-            }
+            quit: () => { clearInterval(training.timer); nav.to('screen-training'); }
         };
 
-        // --- TROPHY GALLERY ---
         const gallery = {
             render: () => {
                 document.getElementById('trophy-char-img').src = app.getCharImage(app.getGlobalLevel());
-                const recordCount = Object.keys(data.records).length; 
-                document.getElementById('total-records').innerText = recordCount;
-
+                document.getElementById('total-records').innerText = Object.keys(data.records).length;
+                
+                // Logic next evo
                 const lvl = app.getGlobalLevel();
                 const thresholds = [10, 15, 19, 23, 26, 29, 32, 34, 36, 38, 39, 40];
                 let next = thresholds.find(t => t > lvl);
-                let evoText = "";
-                
-                if(next) {
-                    let diff = next - lvl;
-                    evoText = `Plus que ${diff} niveau${diff > 1 ? 'x' : ''} avant évolution !`;
-                } else if (lvl >= 40) {
-                    evoText = "Niveau Maximum atteint !";
-                } else {
-                    evoText = "Continuez l'entraînement !";
-                }
-                document.getElementById('trophy-next-evo').innerText = evoText;
+                document.getElementById('trophy-next-evo').innerText = next ? `Plus que ${next - lvl} niveaux avant évolution !` : "Niveau Maximum !";
 
-                // --- BOSS BADGES ---
-                // MODIF: Design "Card" pour les Boss pour uniformiser
+                // Bosses
                 const bossContainer = document.getElementById('boss-trophy-container');
                 bossContainer.innerHTML = '';
-                
                 let bossFound = false;
                 ['boss1','boss2','boss3','boss4'].forEach(bKey => {
                     if(data.bossBeaten[bKey] && data.bossBeaten[bKey] > 0) {
                         bossFound = true;
                         const div = document.createElement('div');
-                        div.className = 'stat-card'; // Utilisation de la même classe que les stats
-                        div.innerHTML = `
-                            <img src="${bKey}.png" class="stat-icon" style="height:100px; width:100px;" onerror="this.src='https://via.placeholder.com/130?text=Win'">
-                            <span class="stat-value">x${data.bossBeaten[bKey]}</span>
-                            <span class="stat-label">Boss Niv.${bKey.replace('boss','')}</span>
-                        `;
-                        div.onclick = () => ui.alert("BADGE", "Tueur de Boss (Niveau " + bKey.replace('boss','') + ")");
+                        div.className = 'stat-card';
+                        div.innerHTML = `<img src="${bKey}.png" class="stat-icon" onerror="this.src='https://via.placeholder.com/130?text=Win'"><span class="stat-value">x${data.bossBeaten[bKey]}</span><span class="stat-label">Boss Niv.${bKey.replace('boss','')}</span>`;
+                        div.onclick = () => ui.alert("BADGE BOSS", "Félicitations ! Vous avez vaincu ce boss.");
                         bossContainer.appendChild(div);
                     }
                 });
-                
-                // Message si pas de boss
-                const noBossMsg = document.getElementById('no-boss-msg');
-                if(!bossFound) {
-                    noBossMsg.style.display = 'block';
-                } else {
-                    noBossMsg.style.display = 'none';
-                }
+                document.getElementById('no-boss-msg').style.display = bossFound ? 'none' : 'block';
 
-                // --- FURY ---
-                // MODIF: Affichage conditionnel dans la carte Fury
-                const furyCountEl = document.getElementById('fury-count-display');
-                furyCountEl.innerText = data.furyCount;
+                // Fury
+                document.getElementById('fury-count-display').innerText = data.furyCount;
             },
             resetTrophies: () => {
-                ui.confirm("RESET", "Voulez-vous vraiment effacer TOUTES vos récompenses (Boss vaincus, Records, Mode Fury) ?\nCela n'affectera pas votre niveau de tests.", () => {
-                    data.bossBeaten = {};
-                    data.records = {};
-                    data.furyCount = 0;
-                    db.save(data);
-                    gallery.render();
-                    ui.alert("TERMINE", "Toutes les récompenses ont été effacées.");
+                ui.confirm("RESET", "Effacer toutes les récompenses ?", () => {
+                    data.bossBeaten = {}; data.records = {}; data.furyCount = 0;
+                    db.save(data); gallery.render(); ui.alert("TERMINE", "Récompenses effacées.");
                 });
             }
         };
 
-        // --- NAVIGATION ---
+        // --- NAVIGATION & INIT ---
         const nav = {
             to: (id) => {
-                document.querySelectorAll('.container').forEach(d => d.classList.add('hidden'));
-                document.getElementById(id).classList.remove('hidden');
-                if(id === 'screen-menu') app.updateCharacter();
-                if(id === 'screen-training') training.init();
-                if(id === 'screen-trophy') gallery.render();
+                document.querySelectorAll('.container').forEach(d => {
+                    if(d.id !== id) { d.style.display = 'none'; d.classList.add('hidden'); }
+                });
+                const target = document.getElementById(id);
+                target.classList.remove('hidden');
+                
+                if(id === 'screen-menu') { target.style.display = 'flex'; app.updateCharacter(); }
+                else { target.style.display = 'flex'; if(id === 'screen-training') training.init(); if(id === 'screen-trophy') gallery.render(); }
             }
         };
 
-        // --- INIT ---
         document.getElementById('screen-menu').classList.remove('hidden');
+        document.getElementById('screen-menu').style.display = 'flex';
         app.updateCharacter();
-        lightning.init(); 
-
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js');
-            });
-        }
+        lightning.init();
+        if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js'); }); }
     </script>
 </body>
 </html>
