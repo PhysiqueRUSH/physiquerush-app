@@ -81,10 +81,50 @@
         input[type="number"] { width: 80px; padding: 10px; text-align: center; border-radius: 5px; border: none; font-size: 1.2em; background: #333; color: white; }
         .boss-section { border: 2px solid #444; padding: 15px; border-radius: 12px; margin-bottom: 20px; background: #151515; }
         #boss-img-preview { width: 225px; height: 225px; object-fit: contain; } 
-        .trophy-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; margin-top: 20px; }
-        .trophy-item { width: 150px; cursor: pointer; text-align: center; background: #1a1a1a; padding: 10px; border-radius: 10px; border: 1px solid #333; }
-        .trophy-item img { width: 130px; height: 130px; object-fit: contain; display: block; margin: 0 auto; }
-        .trophy-count { font-size: 1.4em; font-weight: bold; color: var(--accent-yellow); margin-top: 5px; display: block; }
+        
+        /* --- NOUVEAU DESIGN GALERIE (CARDS) --- */
+        .stats-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* Deux colonnes égales */
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: #1a1a1a;
+            border: 1px solid #444;
+            border-radius: 10px;
+            padding: 15px 5px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 160px; /* Hauteur fixe pour uniformité */
+            transition: transform 0.1s;
+        }
+        .stat-card:active { transform: scale(0.98); }
+
+        .stat-icon {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: var(--accent-yellow);
+        }
+
+        .stat-label {
+            font-size: 0.85em;
+            color: #888;
+            margin-top: 5px;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
         .whatsapp-icon { width: 24px; vertical-align: middle; margin-left: 10px; }
 
         /* --- CUSTOM MODAL --- */
@@ -220,20 +260,32 @@
 
     <div id="screen-trophy" class="container hidden">
         <h2>RÉCOMPENSES ET STATS</h2>
-        <div style="margin-bottom: 30px; background: #1a1a1a; padding: 20px; border-radius: 15px;">
+        
+        <div style="margin-bottom: 20px; padding: 10px;">
             <img id="trophy-char-img" src="" style="width: 200px; margin: 0 auto; display: block;">
             <div id="trophy-next-evo" style="color: #aaa; font-size: 0.9em; margin-top: 10px; font-style: italic;"></div>
-            <div style="display: flex; align-items: center; justify-content: center; gap: 15px; margin-top: 15px;">
-                <img src="record.png" onerror="this.src='https://via.placeholder.com/80?text=Rec'" style="width: 80px; height: 80px; object-fit: contain;">
-                <span id="total-records" style="font-size: 2.5em; font-weight: bold; color: var(--accent-yellow);">0</span>
-            </div>
-            <div style="font-size: 0.9em; color: #888; margin-top: 5px;">Records battus</div>
         </div>
-        <h3 style="border-bottom: 1px solid #333; padding-bottom: 10px;">Boss Vaincus</h3>
-        <div id="boss-trophy-container" class="trophy-grid"></div>
-        <h3 style="border-bottom: 1px solid #333; padding-bottom: 10px; margin-top: 30px;">Mode Fury</h3>
-        <div id="fury-container" class="trophy-grid"></div>
-        <button class="btn" style="margin-top: 30px;" onclick="nav.to('screen-menu')">Retour</button>
+
+        <h3 style="border-bottom: 1px solid #333; padding-bottom: 5px; margin-bottom: 15px;">Performances</h3>
+        <div class="stats-row">
+            <div class="stat-card">
+                <img src="record.png" class="stat-icon" onerror="this.src='https://via.placeholder.com/80?text=Rec'">
+                <span id="total-records" class="stat-value">0</span>
+                <span class="stat-label">Records Battus</span>
+            </div>
+            
+            <div class="stat-card">
+                <img src="fury.png" class="stat-icon" onerror="this.src='https://via.placeholder.com/80?text=Fury'">
+                <span id="fury-count-display" class="stat-value">0</span>
+                <span class="stat-label">Mode Fury</span>
+            </div>
+        </div>
+
+        <h3 style="border-bottom: 1px solid #333; padding-bottom: 5px; margin-bottom: 15px;">Boss Vaincus</h3>
+        <div id="boss-trophy-container" class="stats-row"> </div>
+        <div id="no-boss-msg" style="color:#666; font-style:italic; margin-bottom:20px; display:none;">Aucun boss vaincu pour le moment.</div>
+
+        <button class="btn" style="margin-top: 20px;" onclick="nav.to('screen-menu')">Retour</button>
         <button class="btn btn-danger-zone" onclick="gallery.resetTrophies()">⚠️ EFFACER TOUTES LES RÉCOMPENSES</button>
     </div>
 
@@ -443,11 +495,10 @@
                     document.getElementById('timer-display').innerText = `0${min}:${sec < 10 ? '0'+sec : sec}`;
 
                     const stateDiv = document.getElementById('test-instruction-state');
-                    // MODIF: Alerte à 10 secondes
                     if(secondsInMinute <= 10 && secondsInMinute > 0) {
                         stateDiv.innerText = "PRÉPAREZ-VOUS !";
                         stateDiv.classList.add('timer-warning');
-                        audio.beep('short'); // Bip à chaque seconde pendant les 10 dernières
+                        audio.beep('short'); 
                     } else {
                         stateDiv.classList.remove('timer-warning');
                         stateDiv.innerText = "En cours...";
@@ -477,7 +528,6 @@
                 clearInterval(tests.interval);
                 data.stats[tests.currentTest] = score;
                 db.save(data);
-                // MODIF: Utilisation de la modale visuelle
                 ui.showResult(score, () => nav.to('screen-levels'));
             },
             quit: () => {
@@ -795,33 +845,39 @@
                 }
                 document.getElementById('trophy-next-evo').innerText = evoText;
 
+                // --- BOSS BADGES ---
+                // MODIF: Design "Card" pour les Boss pour uniformiser
                 const bossContainer = document.getElementById('boss-trophy-container');
                 bossContainer.innerHTML = '';
+                
+                let bossFound = false;
                 ['boss1','boss2','boss3','boss4'].forEach(bKey => {
                     if(data.bossBeaten[bKey] && data.bossBeaten[bKey] > 0) {
-                         const div = document.createElement('div');
-                        div.className = 'trophy-item';
+                        bossFound = true;
+                        const div = document.createElement('div');
+                        div.className = 'stat-card'; // Utilisation de la même classe que les stats
                         div.innerHTML = `
-                            <img src="${bKey}.png" onerror="this.src='https://via.placeholder.com/130?text=Win'">
-                            <span class="trophy-count">x${data.bossBeaten[bKey]}</span>
+                            <img src="${bKey}.png" class="stat-icon" style="height:100px; width:100px;" onerror="this.src='https://via.placeholder.com/130?text=Win'">
+                            <span class="stat-value">x${data.bossBeaten[bKey]}</span>
+                            <span class="stat-label">Boss Niv.${bKey.replace('boss','')}</span>
                         `;
                         div.onclick = () => ui.alert("BADGE", "Tueur de Boss (Niveau " + bKey.replace('boss','') + ")");
                         bossContainer.appendChild(div);
                     }
                 });
-
-                const furyContainer = document.getElementById('fury-container');
-                furyContainer.innerHTML = '';
-                if(data.furyCount > 0) {
-                    furyContainer.innerHTML = `
-                        <div class="trophy-item">
-                            <img src="fury.png" onerror="this.src='https://via.placeholder.com/130?text=Fury'">
-                            <span class="trophy-count">x${data.furyCount}</span>
-                        </div>
-                    `;
+                
+                // Message si pas de boss
+                const noBossMsg = document.getElementById('no-boss-msg');
+                if(!bossFound) {
+                    noBossMsg.style.display = 'block';
                 } else {
-                    furyContainer.innerHTML = "<div style='color:#666; font-style:italic;'>Pas encore de mode Fury activé</div>";
+                    noBossMsg.style.display = 'none';
                 }
+
+                // --- FURY ---
+                // MODIF: Affichage conditionnel dans la carte Fury
+                const furyCountEl = document.getElementById('fury-count-display');
+                furyCountEl.innerText = data.furyCount;
             },
             resetTrophies: () => {
                 ui.confirm("RESET", "Voulez-vous vraiment effacer TOUTES vos récompenses (Boss vaincus, Records, Mode Fury) ?\nCela n'affectera pas votre niveau de tests.", () => {
