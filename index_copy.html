@@ -20,7 +20,6 @@
             --modal-bg: rgba(0, 0, 0, 0.85);
         }
 
-        /* LAYERS */
         body {
             margin: 0;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -40,7 +39,6 @@
         .container { width: 95%; max-width: 500px; padding: 20px; text-align: center; position: relative; z-index: 1; }
         .hidden { display: none !important; }
 
-        /* BUTTONS */
         .btn { display: block; width: 100%; padding: 15px; margin: 10px 0; background: var(--card-bg); color: white; border: 1px solid #333; cursor: pointer; text-align: center; font-weight: bold; text-transform: uppercase; border-radius: 10px; transition: 0.2s; }
         .btn:hover { background: #333; }
         .btn-red { background: var(--accent-red); color: black; border: none; }
@@ -51,7 +49,6 @@
         .btn-row .btn { width:100%; margin: 10px 0; }
         .btn-small { padding:10px; font-size:0.9em; }
 
-        /* Always-visible validate button style (J8) */
         .btn-validate {
             background: var(--accent-yellow) !important;
             color: #000 !important;
@@ -59,7 +56,6 @@
             font-weight: 900 !important;
         }
 
-        /* IMAGES */
         .main-img { display: block; margin: 0 auto 15px auto; border-radius: 15px; }
         .logo-reduced { width: 20%; max-width: 80px; }
         .glow-effect { width: 100%; max-width: 100%; animation: redPulse 2s infinite ease-in-out; }
@@ -69,12 +65,10 @@
             100% { box-shadow: 0 0 5px rgba(244, 67, 54, 0.3); }
         }
 
-        /* HEADER */
         #char-display { margin-bottom: 20px; margin-top: 10px; }
         #char-img { max-width: 250px; display: block; margin: 0 auto; transition: transform 0.3s; }
         #global-level-badge { font-size: 1.4em; font-weight: bold; margin-top: 10px; color: var(--accent-yellow); text-shadow: 0 0 5px rgba(0,0,0,0.5); }
 
-        /* ELEMENTS */
         .video-box { background: #000; min-height: 120px; display: flex; align-items: center; justify-content: center; margin: 0 0 16px 0; color: #777; border: 1px solid #333; font-size: 0.85em; width: 100%; border-radius: 12px; padding: 10px; box-sizing: border-box; }
         #radar-container { position: relative; width: 100%; height: 350px; margin: 0 auto 20px auto; background: #000; border-radius: 10px; border: 1px solid #333; display: flex; align-items: center; justify-content: center; }
         canvas { max-width: 100%; max-height: 100%; }
@@ -95,7 +89,6 @@
         input[type="number"] { width: 140px; padding: 10px; text-align: center; border-radius: 12px; border: 1px solid #444; font-size: 1.1em; background: #111; color: white; outline: none; }
         input[type="number"]:focus { border-color: var(--accent-yellow); box-shadow: 0 0 10px rgba(255,235,59,0.15); }
 
-        /* --- BOSS SECTION (MORE TIGHT) --- */
         .boss-section {
             border: 1px solid #3a3a3a;
             padding: 6px;
@@ -106,7 +99,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 1px; /* tighter */
+            gap: 1px;
         }
         .boss-title {
             margin: 0;
@@ -120,7 +113,6 @@
         #boss-img-preview { width: 225px; height: 225px; object-fit: contain; margin: 0; }
         #boss-score-target { font-size: 1.0em; font-weight: 900; color: white; margin: 0; line-height: 1.05; }
 
-        /* --- WORKOUT UX --- */
         .workout-wrap { display:flex; flex-direction:column; gap:12px; text-align:left; }
         .card {
             background: #141414;
@@ -189,7 +181,6 @@
         .score-inline label { font-weight:1000; color:#fff; }
         .score-help { color:#888; font-size:0.9em; margin-top:-4px; }
 
-        /* --- ASCENSION CHALLENGE --- */
         .asc-grid { display:flex; flex-direction:column; gap:12px; }
         .asc-top { display:flex; gap:12px; align-items:stretch; }
         .asc-top .card { flex:1; }
@@ -201,24 +192,22 @@
         .asc-validate-sticky { position: sticky; bottom: 12px; z-index: 3; padding: 0; margin-top: 6px; }
         .asc-validate-sticky .btn { margin:0; padding: 18px; font-size: 1.05em; }
 
-        /* --- TROPHY GALLERY (TIGHTER) --- */
         .stats-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px;          /* tighter */
-            margin-bottom: 14px;/* tighter */
+            gap: 10px;
+            margin-bottom: 14px;
         }
-
         .stat-card {
             background: #1a1a1a;
             border: 1px solid #444;
             border-radius: 14px;
-            padding: 8px 6px;   /* tighter */
+            padding: 8px 6px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 185px;      /* tighter */
+            height: 185px;
             transition: transform 0.1s;
             cursor: pointer;
             overflow: hidden;
@@ -231,12 +220,7 @@
             object-fit: contain;
             margin-bottom: 4px;
         }
-
-        /* Unstoppable slightly smaller icon to match perceived size */
-        .stat-icon.smallish {
-            width: 118px;
-            height: 118px;
-        }
+        .stat-icon.smallish { width: 118px; height: 118px; }
 
         .stat-value {
             font-size: 1.7em;
@@ -244,7 +228,6 @@
             color: var(--accent-yellow);
             line-height: 1.0;
         }
-
         .stat-label {
             font-size: 0.85em;
             color: #888;
@@ -257,7 +240,6 @@
 
         .whatsapp-icon { width: 24px; vertical-align: middle; margin-left: 10px; }
 
-        /* --- CUSTOM MODAL --- */
         #custom-modal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-color: var(--modal-bg);
@@ -286,7 +268,6 @@
 
         .video-iframe { width: 100%; height: 240px; border: 0; border-radius: 12px; background:#000; margin-top: 10px; }
 
-        /* TEST screen emphasis */
         .test-ex-name {
             font-size: 1.25em;
             font-weight: 1000;
@@ -299,7 +280,6 @@
         .test-do { font-size: 1.35em; font-weight: 1000; color: #fff; margin: 0 0 10px 0; text-align: center; }
         .test-do b { color: var(--accent-yellow); }
 
-        /* Menu tiny version */
         .menu-version {
             margin-top: 8px;
             font-size: 0.55em;
@@ -336,9 +316,8 @@
         <button class="btn" onclick="nav.to('screen-trophy')">RÉCOMPENSES ET STATS</button>
 
         <button class="btn" onclick="window.location.href='https://wa.me/'">La Team PhysiqueRush <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" class="whatsapp-icon"></button>
-        <!-- Quitter now like other buttons -->
         <button class="btn" onclick="window.close(); window.location.href='about:blank';">QUITTER</button>
-        <div class="menu-version">v1.25</div>
+        <div class="menu-version">v1.26</div>
     </div>
 
     <div id="screen-levels" class="container hidden">
@@ -364,7 +343,6 @@
         <button class="btn btn-danger-zone" onclick="evoLab.resetTests()">⚠️ RÉINITIALISER MES TESTS</button>
     </div>
 
-    <!-- TEST SCREEN (UPDATED: auto scroll down on start) -->
     <div id="screen-test" class="container hidden">
         <h2 id="test-name">Test</h2>
 
@@ -424,7 +402,6 @@
         <button class="btn" onclick="nav.to('screen-menu')" style="margin-top: 22px;">Retour</button>
     </div>
 
-    <!-- WORKOUT SCREEN -->
     <div id="screen-workout" class="container hidden">
         <h2 id="workout-day-title">Jour X</h2>
 
@@ -475,7 +452,6 @@
                 <div id="workout-exercise-list" class="exercise-list"></div>
             </div>
 
-            <!-- Beat the Boss tighter around image -->
             <div class="boss-section" aria-label="Beat the Boss">
                 <div class="boss-title">BEAT THE BOSS</div>
                 <img id="boss-img-preview" src="" onerror="this.src='https://via.placeholder.com/225?text=BTB'">
@@ -495,11 +471,10 @@
                 <button id="btn-cancel-session" class="btn hidden" style="background: #222; color: #f44336; border: 1px solid #f44336;" onclick="training.cancelSession()">ANNULER / INVALIDER</button>
             </div>
 
-            <button class="btn" onclick="training.quit()">Retour</button>
+            <button id="btn-workout-retour" class="btn" onclick="training.quit()">Retour</button>
         </div>
     </div>
 
-    <!-- ASCENSION CHALLENGE SCREEN (J8) -->
     <div id="screen-ascension" class="container hidden">
         <h2>J8 — Ascension Challenge</h2>
 
@@ -575,7 +550,6 @@
         </div>
     </div>
 
-    <!-- TROPHY -->
     <div id="screen-trophy" class="container hidden">
         <h2>RÉCOMPENSES ET STATS</h2>
 
@@ -598,14 +572,12 @@
                 <span class="stat-label">Furie</span>
             </div>
 
-            <!-- Unstoppable moved into Performances -->
             <div class="stat-card" onclick="gallery.explain('unstoppable')">
                 <img src="unstoppable.png" class="stat-icon smallish" onerror="this.src='https://via.placeholder.com/130?text=GO'">
                 <span id="unstoppable-display" class="stat-value">0</span>
                 <span class="stat-label">Unstoppable</span>
             </div>
 
-            <!-- Keep weeks streak as stat card (still in performances for now, but it's ok) -->
             <div class="stat-card" onclick="gallery.explain('streak')">
                 <img src="streak.png" class="stat-icon" onerror="this.src='https://via.placeholder.com/130?text=Streak'">
                 <span id="weeks-streak-display" class="stat-value">0</span>
@@ -617,7 +589,6 @@
         <div id="boss-trophy-container" class="stats-row"></div>
         <div id="no-boss-msg" style="color:#666; font-style:italic; margin-bottom:14px; display:none;">Aucun boss vaincu pour le moment.</div>
 
-        <!-- New empty category -->
         <h3 style="border-bottom: 1px solid #333; padding-bottom: 5px; margin-bottom: 12px;">Statistiques</h3>
         <div class="stats-row" id="stats-empty"></div>
 
@@ -626,13 +597,11 @@
     </div>
 
     <script>
-        // --- UI MANAGER (CUSTOM MODAL) ---
         const ui = {
             modal: document.getElementById('custom-modal'),
             title: document.getElementById('modal-title'),
             msg: document.getElementById('modal-msg'),
             actions: document.getElementById('modal-actions'),
-
             show: (title, message, buttons = []) => {
                 ui.title.innerText = title;
                 ui.msg.innerHTML = message;
@@ -658,7 +627,6 @@
                 if(score >= 3) { rank = "INTERMÉDIAIRE"; color = "#4caf50"; }
                 if(score >= 5) { rank = "AVANCÉ"; color = "#ffeb3b"; }
                 if(score >= 7) { rank = "EXPERT"; color = "#f44336"; }
-
                 const html = `
                     <div style="font-size:3em; font-weight:1000; margin-bottom:10px;">${score}</div>
                     <div style="font-size:1.35em; font-weight:1000; color:${color}; border:2px solid ${color}; padding:10px; border-radius:12px; display:inline-block;">
@@ -678,7 +646,6 @@
             }
         };
 
-        // --- AUDIO ---
         const audio = {
             ctx: null,
             init: () => { if (!audio.ctx) audio.ctx = new (window.AudioContext || window.webkitAudioContext)(); },
@@ -726,7 +693,6 @@
             }
         };
 
-        // --- ASSETS HELPERS ---
         const assets = {
             slugify: (s) => (s || "")
                 .toLowerCase()
@@ -734,10 +700,9 @@
                 .replace(/[^a-z0-9]+/g, "-")
                 .replace(/(^-|-$)/g, ""),
             gifFor: (exerciseName) => `gifs/${assets.slugify(exerciseName)}.gif`,
-            vimeoFor: (exerciseName) => `https://player.vimeo.com/video/000000000` // placeholder
+            vimeoFor: (exerciseName) => `https://player.vimeo.com/video/000000000`
         };
 
-        // --- BACKGROUND FX ---
         const lightning = {
             container: document.getElementById('lightning-container'),
             images: ['eclair1.png', 'eclair2.png', 'eclair3.png'],
@@ -763,7 +728,6 @@
             }
         };
 
-        // --- DATA ---
         const db = {
             load: () => JSON.parse(localStorage.getItem('physiqueRushDB')) || db.default(),
             save: (data) => localStorage.setItem('physiqueRushDB', JSON.stringify(data)),
@@ -794,7 +758,6 @@
         };
         normalizeData();
 
-        // --- CORE LOGIC ---
         const app = {
             getGlobalLevel: () => {
                 let sum = 0;
@@ -833,11 +796,10 @@
             }
         };
 
-        // --- TESTS ---
+        // --- TESTS (unchanged here) ---
         const tests = {
             currentTest: null,
             interval: null,
-
             config: {
                 'Pectoraux': 'Pompes Dead-Stop',
                 'Jambes': 'Fentes Sautées',
@@ -845,7 +807,6 @@
                 'Triceps': 'Dips Chaise Jambes Tendues',
                 'Biceps': 'Drag Curl au Sol'
             },
-
             totalSeconds: 0,
             secondsInMinute: 0,
             palier: 1,
@@ -945,7 +906,6 @@
 
                 updateUI();
 
-                // NEW: scroll down so "Retour" is at bottom area and visible
                 setTimeout(() => {
                     const btnRetour = document.getElementById('btn-test-retour');
                     if(btnRetour) btnRetour.scrollIntoView({ behavior: 'smooth', block: 'end' });
@@ -1030,7 +990,7 @@
             }
         };
 
-        // --- EVOLUTION LAB ---
+        // --- EVOLUTION LAB (unchanged) ---
         const evoLab = {
             chart: null,
             init: () => {
@@ -1085,11 +1045,14 @@
             }
         };
 
-        // --- TRAINING CAMP ---
+        // --- TRAINING CAMP (UPDATED FOR AUTOSCROLL) ---
         const training = {
             timerInterval: null,
             timerRunning: false,
             timerPaused: false,
+
+            // NEW: used to ensure we scroll only once when starting the first exercise
+            hasAutoScrolledOnFirstStart: false,
 
             days: [
                 { id: 1, name: 'Pectoraux' },
@@ -1242,6 +1205,8 @@
                 training.currentBossTarget = wk.bossTarget;
                 training.currentWorkoutIntroVimeo = wk.introVimeo;
 
+                training.hasAutoScrolledOnFirstStart = false; // NEW reset
+
                 document.getElementById('workout-day-title').innerText = `Jour ${dayId}: ${training.days.find(x=>x.id===dayId).name}`;
                 document.getElementById('boss-score-target').innerText = "Score à battre: " + wk.bossTarget;
                 document.getElementById('boss-img-preview').src = wk.bossImg;
@@ -1265,6 +1230,26 @@
                 window.scrollTo({ top: 0, behavior: 'auto' });
             },
 
+            // NEW: scroll so the last exercise row is aligned at the bottom
+            scrollListToLast: () => {
+                const list = document.getElementById('workout-exercise-list');
+                if(!list) return;
+                const last = list.lastElementChild;
+                if(last && last.scrollIntoView) {
+                    last.scrollIntoView({ behavior: 'smooth', block: 'end' });
+                }
+            },
+
+            // NEW: scroll to bottom so the "Retour" button is visible
+            scrollToBottom: () => {
+                const btn = document.getElementById('btn-workout-retour');
+                if(btn && btn.scrollIntoView) {
+                    btn.scrollIntoView({ behavior: 'smooth', block: 'end' });
+                } else {
+                    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+                }
+            },
+
             renderWorkoutUI: () => {
                 const ex = training.currentExercises[training.currentIndex];
                 document.getElementById('exercise-name-current').innerText = ex ? ex.name : "—";
@@ -1275,6 +1260,7 @@
                 list.innerHTML = '';
                 training.currentExercises.forEach((e, i) => {
                     const row = document.createElement('div');
+                    row.id = `ex-row-${i}`;
                     row.className = 'exercise-row' + (i === training.currentIndex ? ' current' : '') + (i < training.currentIndex ? ' done' : '');
                     row.innerHTML = `
                         <div class="left">
@@ -1344,12 +1330,21 @@
                 if(training.currentIndex >= training.currentExercises.length) return;
                 if(training.timerRunning && !training.timerPaused) return;
 
+                // NEW: when starting the first exercise for the first time, auto-scroll to last exercise row
+                const isFirstExerciseFirstStart = (training.currentIndex === 0 && !training.hasAutoScrolledOnFirstStart && !training.timerPaused && !training.timerRunning);
+                training.hasAutoScrolledOnFirstStart = training.hasAutoScrolledOnFirstStart || isFirstExerciseFirstStart;
+
                 training.timerPaused = false;
                 training.timerRunning = true;
 
                 audio.beep('long');
                 training.updateControlButtons();
                 training.updateTimerUI(`Exercice ${training.currentIndex+1}/${training.currentExercises.length}`);
+
+                // Trigger scroll after the UI is stable
+                if(isFirstExerciseFirstStart) {
+                    setTimeout(() => training.scrollListToLast(), 200);
+                }
 
                 training.timerStopAll();
                 training.timerInterval = setInterval(() => {
@@ -1372,9 +1367,19 @@
                             training.renderWorkoutUI();
                             training.updateTimerUI(`Exercice suivant prêt — appuyez sur Démarrer`);
                         } else {
+                            // FIN DE SÉANCE
                             training.timeLeft = 0;
                             training.renderWorkoutUI();
                             training.updateTimerUI("TERMINÉ ✅");
+
+                            // NEW: end notification + immediately scroll to bottom (Retour visible)
+                            ui.alert(
+                                "SÉANCE TERMINÉE ✅",
+                                "Chrono terminé !<br><br><b>Il reste à entrer le total de répétitions</b> et à <b>valider la séance</b>.",
+                                () => training.scrollToBottom()
+                            );
+                            // immediate scroll (even before closing modal, ensures position after close)
+                            setTimeout(() => training.scrollToBottom(), 50);
                         }
                         training.updateControlButtons();
                     }
@@ -1520,17 +1525,15 @@
             }
         };
 
-        // --- ASCENSION CHALLENGE (J8) ---
+        // --- ASCENSION (unchanged) ---
         const ascension = {
             totalSeconds: 8*60,
             interval: null,
             running: false,
             paused: false,
-
             targetReps: 10,
             palierCompleted: 0,
             stepIndex: 0,
-
             exercises: [],
             introVimeo: "https://player.vimeo.com/video/000000000",
 
@@ -1539,7 +1542,6 @@
                 ascension.totalSeconds = 8*60;
                 ascension.running = false;
                 ascension.paused = false;
-
                 ascension.targetReps = 10;
                 ascension.palierCompleted = 0;
                 ascension.stepIndex = 0;
@@ -1687,11 +1689,10 @@
             },
 
             stop: () => { clearInterval(ascension.interval); ascension.interval = null; },
-
             quit: () => { ascension.stop(); nav.to('screen-training'); }
         };
 
-        // --- TROPHY GALLERY ---
+        // --- GALLERY (unchanged) ---
         const gallery = {
             render: () => {
                 normalizeData();
@@ -1747,7 +1748,6 @@
                     `);
                     return;
                 }
-
                 if(type === 'fury') {
                     ui.alert("TROPHÉE — FURIE", `
                         <b>Furie</b><br><br>
@@ -1757,7 +1757,6 @@
                     `);
                     return;
                 }
-
                 if(type === 'unstoppable') {
                     ui.alert("TROPHÉE — UNSTOPPABLE", `
                         <b>Unstoppable</b><br><br>
@@ -1766,7 +1765,6 @@
                     `);
                     return;
                 }
-
                 if(type === 'streak') {
                     ui.alert("SUIVI — SEMAINES PARFAITES", `
                         <b>Semaines parfaites</b><br><br>
@@ -1775,7 +1773,6 @@
                     `);
                     return;
                 }
-
                 if(type === 'boss') {
                     const lvl = (key || "").replace("boss","");
                     ui.alert("BADGE — BOSS", `
@@ -1803,7 +1800,6 @@
             }
         };
 
-        // --- NAVIGATION ---
         const nav = {
             to: (id) => {
                 document.querySelectorAll('.container').forEach(d => d.classList.add('hidden'));
@@ -1814,7 +1810,6 @@
             }
         };
 
-        // --- INIT ---
         document.getElementById('screen-menu').classList.remove('hidden');
         app.updateCharacter();
         lightning.init();
