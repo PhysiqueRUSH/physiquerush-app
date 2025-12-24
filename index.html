@@ -98,27 +98,27 @@
         /* --- BOSS SECTION (MORE TIGHT) --- */
         .boss-section {
             border: 1px solid #3a3a3a;
-            padding: 8px;
+            padding: 6px;
             border-radius: 14px;
-            margin: 12px 0;
+            margin: 10px 0;
             background: #151515;
             display: inline-flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 2px; /* tighter */
+            gap: 1px; /* tighter */
         }
         .boss-title {
             margin: 0;
             color: var(--accent-red);
             font-weight: 1000;
             text-transform: uppercase;
-            font-size: 0.92em;
+            font-size: 0.88em;
             letter-spacing: 1px;
             line-height: 1.05;
         }
         #boss-img-preview { width: 225px; height: 225px; object-fit: contain; margin: 0; }
-        #boss-score-target { font-size: 1.02em; font-weight: 900; color: white; margin: 0; line-height: 1.05; }
+        #boss-score-target { font-size: 1.0em; font-weight: 900; color: white; margin: 0; line-height: 1.05; }
 
         /* --- WORKOUT UX --- */
         .workout-wrap { display:flex; flex-direction:column; gap:12px; text-align:left; }
@@ -132,11 +132,7 @@
         .card h4 { margin: 0 0 10px 0; color: var(--accent-yellow); text-transform: uppercase; letter-spacing: 1px; font-size: 0.95em; }
         .subtle { color:#888; font-size:0.92em; line-height:1.35; }
 
-        .current-exercise {
-            display:flex;
-            gap:12px;
-            align-items:center;
-        }
+        .current-exercise { display:flex; gap:12px; align-items:center; }
         .gif-frame {
             width: 110px;
             height: 110px;
@@ -195,74 +191,55 @@
 
         /* --- ASCENSION CHALLENGE --- */
         .asc-grid { display:flex; flex-direction:column; gap:12px; }
-        .asc-top {
-            display:flex;
-            gap:12px;
-            align-items:stretch;
-        }
+        .asc-top { display:flex; gap:12px; align-items:stretch; }
         .asc-top .card { flex:1; }
 
-        .big-target {
-            font-size: 1.8em;
-            font-weight: 1000;
-            color: var(--accent-yellow);
-            text-align:center;
-            margin: 0;
-            line-height: 1.1;
-        }
-
-        .do-now {
-            font-size: 1.35em;
-            font-weight: 1000;
-            color: #fff;
-            text-align: center;
-            margin: 8px 0 0 0;
-        }
+        .big-target { font-size: 1.8em; font-weight: 1000; color: var(--accent-yellow); text-align:center; margin: 0; line-height: 1.1; }
+        .do-now { font-size: 1.35em; font-weight: 1000; color: #fff; text-align: center; margin: 8px 0 0 0; }
         .do-now b { color: var(--accent-yellow); }
 
-        .asc-validate-sticky {
-            position: sticky;
-            bottom: 12px;
-            z-index: 3;
-            padding: 0;
-            margin-top: 6px;
-        }
+        .asc-validate-sticky { position: sticky; bottom: 12px; z-index: 3; padding: 0; margin-top: 6px; }
         .asc-validate-sticky .btn { margin:0; padding: 18px; font-size: 1.05em; }
 
-        /* --- NOUVEAU DESIGN GALERIE (CARDS) --- */
+        /* --- TROPHY GALLERY (TIGHTER) --- */
         .stats-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-bottom: 20px;
+            gap: 10px;          /* tighter */
+            margin-bottom: 14px;/* tighter */
         }
 
         .stat-card {
             background: #1a1a1a;
             border: 1px solid #444;
             border-radius: 14px;
-            padding: 10px 8px;
+            padding: 8px 6px;   /* tighter */
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 200px; /* a bit higher to maximize image */
+            height: 185px;      /* tighter */
             transition: transform 0.1s;
             cursor: pointer;
             overflow: hidden;
         }
         .stat-card:active { transform: scale(0.98); }
 
-        /* Images take maximum place */
         .stat-icon {
-            width: 140px;
-            height: 140px;
+            width: 130px;
+            height: 130px;
             object-fit: contain;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
+        }
+
+        /* Unstoppable slightly smaller icon to match perceived size */
+        .stat-icon.smallish {
+            width: 118px;
+            height: 118px;
         }
 
         .stat-value {
-            font-size: 1.75em;
+            font-size: 1.7em;
             font-weight: 1000;
             color: var(--accent-yellow);
             line-height: 1.0;
@@ -271,7 +248,7 @@
         .stat-label {
             font-size: 0.85em;
             color: #888;
-            margin-top: 5px;
+            margin-top: 4px;
             text-transform: uppercase;
             font-weight: 1000;
             text-align:center;
@@ -307,14 +284,7 @@
         .btn-modal-confirm { background: var(--accent-green); color: black; }
         .btn-modal-cancel { background: #333; color: white; border: 1px solid #555; }
 
-        .video-iframe {
-            width: 100%;
-            height: 240px;
-            border: 0;
-            border-radius: 12px;
-            background:#000;
-            margin-top: 10px;
-        }
+        .video-iframe { width: 100%; height: 240px; border: 0; border-radius: 12px; background:#000; margin-top: 10px; }
 
         /* TEST screen emphasis */
         .test-ex-name {
@@ -326,14 +296,17 @@
             margin: 8px 0 6px 0;
             text-align: center;
         }
-        .test-do {
-            font-size: 1.35em;
-            font-weight: 1000;
-            color: #fff;
-            margin: 0 0 10px 0;
-            text-align: center;
-        }
+        .test-do { font-size: 1.35em; font-weight: 1000; color: #fff; margin: 0 0 10px 0; text-align: center; }
         .test-do b { color: var(--accent-yellow); }
+
+        /* Menu tiny version */
+        .menu-version {
+            margin-top: 8px;
+            font-size: 0.55em;
+            opacity: 0.25;
+            text-align:center;
+            letter-spacing: 1px;
+        }
     </style>
 </head>
 <body>
@@ -363,7 +336,9 @@
         <button class="btn" onclick="nav.to('screen-trophy')">RÉCOMPENSES ET STATS</button>
 
         <button class="btn" onclick="window.location.href='https://wa.me/'">La Team PhysiqueRush <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" class="whatsapp-icon"></button>
-        <button class="btn btn-red" onclick="window.close(); window.location.href='about:blank';">QUITTER</button>
+        <!-- Quitter now like other buttons -->
+        <button class="btn" onclick="window.close(); window.location.href='about:blank';">QUITTER</button>
+        <div class="menu-version">v xyz</div>
     </div>
 
     <div id="screen-levels" class="container hidden">
@@ -389,18 +364,14 @@
         <button class="btn btn-danger-zone" onclick="evoLab.resetTests()">⚠️ RÉINITIALISER MES TESTS</button>
     </div>
 
-    <!-- TEST SCREEN (UPDATED) -->
+    <!-- TEST SCREEN (UPDATED: auto scroll down on start) -->
     <div id="screen-test" class="container hidden">
         <h2 id="test-name">Test</h2>
 
         <div class="video-box">[VIDEO VIMEO PLACEHOLDER — présentation du test]</div>
 
-        <!-- Short principle text (same style as J8 subtle) -->
-        <div id="test-principle" class="subtle" style="text-align:left; margin: 0 0 12px 0;">
-            —
-        </div>
+        <div id="test-principle" class="subtle" style="text-align:left; margin: 0 0 12px 0;">—</div>
 
-        <!-- GIF + video link (same as training/J8) -->
         <div class="card" style="margin-bottom: 12px; text-align:left;">
             <h4>Exercice du test</h4>
             <div class="current-exercise">
@@ -414,7 +385,7 @@
             </div>
         </div>
 
-        <div class="timer-overlay">
+        <div class="timer-overlay" id="test-timer-panel">
             <div id="test-instruction-state" class="timer-state">Prêt ?</div>
             <div id="timer-display" class="timer-digits">08:00</div>
             <div id="current-palier" style="margin-top: 2px; font-size: 1.15em; color:#aaa; font-weight:1000;">Palier 1</div>
@@ -438,7 +409,7 @@
             J'AI ÉCHOUÉ / FIN
         </button>
 
-        <button class="btn" onclick="tests.quit()">Retour</button>
+        <button id="btn-test-retour" class="btn" onclick="tests.quit()">Retour</button>
     </div>
 
     <div id="screen-training" class="container hidden">
@@ -483,7 +454,7 @@
                             <span id="exercise-duration" class="exercise-pill">⏱️ 02:00</span>
                         </div>
                         <div id="exercise-hint" class="subtle" style="margin-top:8px;">
-                            À la fin, on passe à l'exercice suivant… mais <b>le nouveau compte à rebours ne démarre pas tout seul</b>.
+                            À la fin, on passe à l'exercice suivant.
                         </div>
                     </div>
                 </div>
@@ -497,9 +468,6 @@
                     <button id="btn-timer-pause" class="btn btn-small" onclick="training.timerPause()">⏸️ Pause</button>
                     <button id="btn-timer-reset" class="btn btn-small" onclick="training.timerResetCurrent()">🔄 Réinitialiser</button>
                 </div>
-                <div class="subtle" style="text-align:center; margin-top: 6px;">
-                    Si le chrono est à 00:00, appuyez sur <b>Démarrer</b> pour lancer l'exercice affiché.
-                </div>
             </div>
 
             <div class="card">
@@ -507,7 +475,7 @@
                 <div id="workout-exercise-list" class="exercise-list"></div>
             </div>
 
-            <!-- Beat the Boss tightened -->
+            <!-- Beat the Boss tighter around image -->
             <div class="boss-section" aria-label="Beat the Boss">
                 <div class="boss-title">BEAT THE BOSS</div>
                 <img id="boss-img-preview" src="" onerror="this.src='https://via.placeholder.com/225?text=BTB'">
@@ -531,7 +499,7 @@
         </div>
     </div>
 
-    <!-- ASCENSION CHALLENGE SCREEN (J8) — MADE CLEARER -->
+    <!-- ASCENSION CHALLENGE SCREEN (J8) -->
     <div id="screen-ascension" class="container hidden">
         <h2>J8 — Ascension Challenge</h2>
 
@@ -573,7 +541,6 @@
                 </div>
             </div>
 
-            <!-- This is the "current" block: validate should bring focus here -->
             <div class="card" id="asc-current-card">
                 <h4>Exercice à faire maintenant</h4>
                 <div class="current-exercise">
@@ -608,49 +575,53 @@
         </div>
     </div>
 
+    <!-- TROPHY -->
     <div id="screen-trophy" class="container hidden">
         <h2>RÉCOMPENSES ET STATS</h2>
 
-        <div style="margin-bottom: 20px; padding: 10px;">
-            <img id="trophy-char-img" src="" style="width: 200px; margin: 0 auto; display: block;">
-            <div id="trophy-next-evo" style="color: #aaa; font-size: 0.9em; margin-top: 10px; font-style: italic;"></div>
+        <div style="margin-bottom: 14px; padding: 8px;">
+            <img id="trophy-char-img" src="" style="width: 190px; margin: 0 auto; display: block;">
+            <div id="trophy-next-evo" style="color: #aaa; font-size: 0.9em; margin-top: 8px; font-style: italic;"></div>
         </div>
 
-        <h3 style="border-bottom: 1px solid #333; padding-bottom: 5px; margin-bottom: 15px;">Performances</h3>
+        <h3 style="border-bottom: 1px solid #333; padding-bottom: 5px; margin-bottom: 12px;">Performances</h3>
         <div class="stats-row">
             <div class="stat-card" onclick="gallery.explain('records')">
-                <img src="record.png" class="stat-icon" onerror="this.src='https://via.placeholder.com/140?text=Rec'">
+                <img src="record.png" class="stat-icon" onerror="this.src='https://via.placeholder.com/130?text=Rec'">
                 <span id="total-records" class="stat-value">0</span>
                 <span class="stat-label">Records Battus</span>
             </div>
 
             <div class="stat-card" onclick="gallery.explain('fury')">
-                <img src="fury.png" class="stat-icon" onerror="this.src='https://via.placeholder.com/140?text=Fury'">
+                <img src="fury.png" class="stat-icon" onerror="this.src='https://via.placeholder.com/130?text=Fury'">
                 <span id="fury-count-display" class="stat-value">0</span>
                 <span class="stat-label">Furie</span>
             </div>
-        </div>
 
-        <!-- New trophy: Unstoppable -->
-        <h3 style="border-bottom: 1px solid #333; padding-bottom: 5px; margin-bottom: 15px;">Défis</h3>
-        <div class="stats-row">
+            <!-- Unstoppable moved into Performances -->
             <div class="stat-card" onclick="gallery.explain('unstoppable')">
-                <img src="unstoppable.png" class="stat-icon" onerror="this.src='https://via.placeholder.com/140?text=GO'">
+                <img src="unstoppable.png" class="stat-icon smallish" onerror="this.src='https://via.placeholder.com/130?text=GO'">
                 <span id="unstoppable-display" class="stat-value">0</span>
                 <span class="stat-label">Unstoppable</span>
             </div>
+
+            <!-- Keep weeks streak as stat card (still in performances for now, but it's ok) -->
             <div class="stat-card" onclick="gallery.explain('streak')">
-                <img src="streak.png" class="stat-icon" onerror="this.src='https://via.placeholder.com/140?text=Streak'">
+                <img src="streak.png" class="stat-icon" onerror="this.src='https://via.placeholder.com/130?text=Streak'">
                 <span id="weeks-streak-display" class="stat-value">0</span>
                 <span class="stat-label">Semaines parfaites</span>
             </div>
         </div>
 
-        <h3 style="border-bottom: 1px solid #333; padding-bottom: 5px; margin-bottom: 15px;">Boss Vaincus</h3>
+        <h3 style="border-bottom: 1px solid #333; padding-bottom: 5px; margin-bottom: 12px;">Boss Vaincus</h3>
         <div id="boss-trophy-container" class="stats-row"></div>
-        <div id="no-boss-msg" style="color:#666; font-style:italic; margin-bottom:20px; display:none;">Aucun boss vaincu pour le moment.</div>
+        <div id="no-boss-msg" style="color:#666; font-style:italic; margin-bottom:14px; display:none;">Aucun boss vaincu pour le moment.</div>
 
-        <button class="btn" style="margin-top: 20px;" onclick="nav.to('screen-menu')">Retour</button>
+        <!-- New empty category -->
+        <h3 style="border-bottom: 1px solid #333; padding-bottom: 5px; margin-bottom: 12px;">Statistiques</h3>
+        <div class="stats-row" id="stats-empty"></div>
+
+        <button class="btn" style="margin-top: 14px;" onclick="nav.to('screen-menu')">Retour</button>
         <button class="btn btn-danger-zone" onclick="gallery.resetTrophies()">⚠️ EFFACER TOUTES LES RÉCOMPENSES</button>
     </div>
 
@@ -713,9 +684,7 @@
             init: () => { if (!audio.ctx) audio.ctx = new (window.AudioContext || window.webkitAudioContext)(); },
             beep: (type) => {
                 audio.init();
-
                 if(type === 'end') {
-                    // end sequence
                     const t = audio.ctx.currentTime;
                     const seq = [
                         {f: 900, d: 0.12, g: 0.22},
@@ -805,18 +774,15 @@
                 records: {},
                 bossBeaten: {},
                 furyCount: 0,
-
-                // NEW: progress trackers for trophies
-                furyWeek: { daysBeaten: {} },      // needs boss on day1..day7
-                weekProgress: { daysDone: {} },    // needs training done on day1..day7
-                fullWeeksStreak: 0,                // consecutive perfect weeks
+                furyWeek: { daysBeaten: {} },
+                weekProgress: { daysDone: {} },
+                fullWeeksStreak: 0,
                 unstoppableEarned: false
             })
         };
 
         let data = db.load();
 
-        // normalize older saves
         const normalizeData = () => {
             if(!data.furyCount) data.furyCount = 0;
             if(!data.furyWeek) data.furyWeek = { daysBeaten: {} };
@@ -867,7 +833,7 @@
             }
         };
 
-        // --- TESTS (UPDATED: last 10 sec beeper + preparez-vous + red digits + clearer objective) ---
+        // --- TESTS ---
         const tests = {
             currentTest: null,
             interval: null,
@@ -880,7 +846,6 @@
                 'Biceps': 'Drag Curl au Sol'
             },
 
-            // runtime
             totalSeconds: 0,
             secondsInMinute: 0,
             palier: 1,
@@ -910,13 +875,11 @@
 
                 document.getElementById('palier-status').innerHTML = `Cliquez <b>VALIDER</b> dès que vous avez réalisé l'objectif du palier.`;
 
-                // principle text (short)
                 document.getElementById('test-principle').innerHTML =
                     `Principe : pendant 8 minutes, vous devez valider chaque palier.<br>
                     Exercice : <b>${exName}</b>. Dès que vous atteignez le nombre de répétitions du palier, appuyez sur <b>VALIDER</b>.
                     Si la minute se termine sans validation, le test s’arrête et vous gardez le dernier palier validé.`;
 
-                // gif & video
                 document.getElementById('test-gif').src = assets.gifFor(exName);
 
                 document.getElementById('btn-start-test').classList.remove('hidden');
@@ -924,6 +887,7 @@
                 document.getElementById('btn-fail-test').classList.add('hidden');
 
                 nav.to('screen-test');
+                window.scrollTo({ top: 0, behavior: 'auto' });
             },
 
             openExerciseVideo: () => {
@@ -981,11 +945,16 @@
 
                 updateUI();
 
+                // NEW: scroll down so "Retour" is at bottom area and visible
+                setTimeout(() => {
+                    const btnRetour = document.getElementById('btn-test-retour');
+                    if(btnRetour) btnRetour.scrollIntoView({ behavior: 'smooth', block: 'end' });
+                }, 250);
+
                 tests.interval = setInterval(() => {
                     tests.totalSeconds--;
                     tests.secondsInMinute--;
 
-                    // last 10 seconds of EACH minute:
                     if(tests.secondsInMinute <= 10 && tests.secondsInMinute > 0) {
                         stateDiv.innerText = "PRÉPAREZ-VOUS !";
                         stateDiv.classList.add('timer-warning');
@@ -1000,20 +969,17 @@
                     updateUI();
 
                     if (tests.secondsInMinute <= 0) {
-                        // end of whole test
                         if (tests.totalSeconds <= 0) {
                             const finalScore = tests.palierValidated ? tests.palier : tests.lastValidatedPalier;
                             tests.finish(finalScore);
                             return;
                         }
 
-                        // minute ended without validation => stop
                         if(!tests.palierValidated) {
                             tests.finish(tests.lastValidatedPalier);
                             return;
                         }
 
-                        // next palier
                         audio.beep('long');
                         tests.lastValidatedPalier = tests.palier;
                         tests.palier++;
@@ -1296,6 +1262,7 @@
                 training.renderWorkoutUI();
                 training.updateTimerUI("Prêt — exercice 1");
                 nav.to('screen-workout');
+                window.scrollTo({ top: 0, behavior: 'auto' });
             },
 
             renderWorkoutUI: () => {
@@ -1430,7 +1397,7 @@
                 training.timerPaused = false;
                 const ex = training.currentExercises[training.currentIndex];
                 training.timeLeft = ex ? ex.duration : 0;
-                training.updateTimerUI(`Réinitialisé — appuyez sur Démarrer`);
+                training.updateTimerUI(`Réinitialisé`);
                 training.updateControlButtons();
             },
 
@@ -1459,13 +1426,11 @@
                 if(score > prevRecord && prevRecord > 0) msg += "<br><b>RECORD BATTU !</b>";
                 data.records[dayKey] = Math.max(score, prevRecord);
 
-                // streak trophies: track weekly completion (days 1..7)
                 const beforeUnstoppable = !!data.unstoppableEarned;
 
                 if(training.selectedDay >= 1 && training.selectedDay <= 7) {
                     data.weekProgress.daysDone[dayKey] = true;
 
-                    // fury trophy: needs boss beaten each day 1..7
                     if(score > bossTarget) {
                         msg += "<br><b>BOSS BATTU !</b>";
                         if(!data.bossBeaten[bossBadgeName]) data.bossBeaten[bossBadgeName] = 0;
@@ -1482,7 +1447,6 @@
                         }
                     }
 
-                    // completed a full week (no missed training)
                     const weekAll = [1,2,3,4,5,6,7].every(i => !!data.weekProgress.daysDone['day'+i]);
                     if(weekAll) {
                         data.fullWeeksStreak = (data.fullWeeksStreak || 0) + 1;
@@ -1494,7 +1458,6 @@
                         msg += "<br><b>TROPHÉE GAGNÉ : UNSTOPPABLE !</b>";
                     }
                 } else {
-                    // day 8 doesn't count for week trophies
                     if(score > bossTarget) {
                         msg += "<br><b>BOSS BATTU !</b>";
                         if(!data.bossBeaten[bossBadgeName]) data.bossBeaten[bossBadgeName] = 0;
@@ -1532,11 +1495,9 @@
                         if(session.undoData.gainedBoss) {
                             const bName = session.undoData.bossName;
                             if(data.bossBeaten[bName] > 0) data.bossBeaten[bName]--;
-                            // remove from current fury week map (best-effort)
                             if(data.furyWeek?.daysBeaten) delete data.furyWeek.daysBeaten[dayKey];
                         }
                         if(session.undoData.isTrainingDay) {
-                            // remove from current week map (best-effort)
                             if(data.weekProgress?.daysDone) delete data.weekProgress.daysDone[dayKey];
                         }
                     }
@@ -1583,7 +1544,6 @@
                 ascension.palierCompleted = 0;
                 ascension.stepIndex = 0;
 
-                // first exercise = 2nd exercise of J1 (based on pec level)
                 const j1 = training.getWorkoutDetails(1);
                 const secondEx = j1.exercises[1] ? j1.exercises[1].name : "Exercice J1-2";
 
@@ -1597,15 +1557,14 @@
 
                 ascension.render();
                 ascension.updateTimerUI("Prêt");
+                window.scrollTo({ top: 0, behavior: 'auto' });
             },
 
             render: () => {
-                // palier labels
                 document.getElementById('asc-palier-title').innerText = `Palier ${ascension.targetReps} répétitions`;
                 document.getElementById('asc-do-now').innerHTML = `Faîtes <b>${ascension.targetReps}</b> répétitions`;
                 document.getElementById('asc-target-inline').innerText = ascension.targetReps;
 
-                // current exercise
                 const ex = ascension.exercises[ascension.stepIndex];
                 document.getElementById('asc-exercise-name').innerText = ex ? ex.name : "—";
                 document.getElementById('asc-gif').src = ex ? ex.gif : "https://via.placeholder.com/220x220?text=GIF";
@@ -1614,7 +1573,6 @@
                 const exDoneInCurrentPalier = ascension.stepIndex;
                 document.getElementById('asc-progress-pill').innerText = `Paliers: ${ascension.palierCompleted} • Ex: ${exDoneInCurrentPalier}`;
 
-                // list with pills (keep style)
                 const list = document.getElementById('asc-exercise-list');
                 list.innerHTML = "";
                 ascension.exercises.forEach((e, i) => {
@@ -1690,8 +1648,6 @@
                 }
 
                 ascension.render();
-
-                // focus back to "current" block so user instantly sees what to do now
                 const card = document.getElementById('asc-current-card');
                 if(card) card.scrollIntoView({ behavior: 'smooth', block: 'start' });
             },
@@ -1746,8 +1702,6 @@
                 document.getElementById('total-records').innerText = recordCount;
 
                 document.getElementById('fury-count-display').innerText = data.furyCount || 0;
-
-                // Unstoppable display
                 document.getElementById('unstoppable-display').innerText = data.unstoppableEarned ? "✓" : "0";
                 document.getElementById('weeks-streak-display').innerText = data.fullWeeksStreak || 0;
 
@@ -1762,7 +1716,6 @@
                 else evoText = "Continuez l'entraînement !";
                 document.getElementById('trophy-next-evo').innerText = evoText;
 
-                // Boss badges (images maximized by CSS)
                 const bossContainer = document.getElementById('boss-trophy-container');
                 bossContainer.innerHTML = '';
 
@@ -1773,7 +1726,7 @@
                         const div = document.createElement('div');
                         div.className = 'stat-card';
                         div.innerHTML = `
-                            <img src="${bKey}.png" class="stat-icon" onerror="this.src='https://via.placeholder.com/140?text=Win'">
+                            <img src="${bKey}.png" class="stat-icon" onerror="this.src='https://via.placeholder.com/130?text=Win'">
                             <span class="stat-value">x${data.bossBeaten[bKey]}</span>
                             <span class="stat-label">Boss Niv.${bKey.replace('boss','')}</span>
                         `;
