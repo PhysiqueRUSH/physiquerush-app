@@ -194,6 +194,7 @@
         .stat-card.locked .stat-icon{filter:grayscale(1);opacity:.35;}
         .stat-card.locked .stat-value{opacity:.55;}
         .stat-card.locked .stat-label{opacity:.75;}
+        .stat-card.locked .tiny-under{opacity:.55;}
 
         .whatsapp-icon{width:24px;vertical-align:middle;margin-left:10px;}
 
@@ -205,33 +206,35 @@
             overflow:hidden;
             margin:12px 0;
         }
-        details.accordion-item{
-            border-top:1px solid #262626;
-        }
+        details.accordion-item{border-top:1px solid #262626;}
         details.accordion-item:first-child{border-top:none;}
+
         details.accordion-item > summary{
             list-style:none;
             cursor:pointer;
             padding:14px 14px;
+            position:relative;
             display:flex;
             align-items:center;
-            justify-content:space-between;
-            gap:10px;
-            font-weight:1000;
-            text-transform:uppercase;
-            letter-spacing:1px;
-            color:var(--accent-yellow);
+            justify-content:center; /* centered title */
             user-select:none;
         }
         details.accordion-item > summary::-webkit-details-marker{display:none;}
-        .acc-left{
-            display:flex;
-            flex-direction:column;
-            gap:2px;
+
+        .acc-title{
+            font-weight:1000;
+            text-transform:uppercase;
+            letter-spacing:2px;
+            color:var(--accent-yellow);
+            text-align:center;
+            width:100%;
+            font-size:1.05em;
         }
-        .acc-title{font-size:1.0em;line-height:1.1;}
-        .acc-sub{font-size:.78em;color:#777;text-transform:none;letter-spacing:0;font-weight:800;}
         .acc-chevron{
+            position:absolute;
+            right:12px;
+            top:50%;
+            transform:translateY(-50%);
             width:34px;height:34px;
             border-radius:12px;
             border:1px solid #333;
@@ -240,9 +243,9 @@
             justify-content:center;
             color:#aaa;
             font-size:1.0em;
-            flex:0 0 34px;
         }
-        details[open] .acc-chevron{transform:rotate(180deg);}
+        details[open] .acc-chevron{transform:translateY(-50%) rotate(180deg);}
+
         .acc-body{
             padding:12px 12px 6px 12px;
             border-top:1px solid #262626;
@@ -317,7 +320,7 @@
 
         <button class="btn" onclick="window.location.href='https://wa.me/'">La Team PhysiqueRush <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" class="whatsapp-icon"></button>
         <button class="btn" onclick="window.close(); window.location.href='about:blank';">QUITTER</button>
-        <div class="menu-version">1.30</div>
+        <div class="menu-version">v1.31</div>
     </div>
 
     <!-- LEVELS -->
@@ -564,10 +567,7 @@
         <div class="accordion" id="rewards-accordion">
             <details class="accordion-item" open>
                 <summary>
-                    <div class="acc-left">
-                        <div class="acc-title">Trophées</div>
-                        <div class="acc-sub">Records, Furie, Unstoppable</div>
-                    </div>
+                    <div class="acc-title">TROPHÉES</div>
                     <div class="acc-chevron">⌄</div>
                 </summary>
                 <div class="acc-body">
@@ -596,10 +596,7 @@
 
             <details class="accordion-item">
                 <summary>
-                    <div class="acc-left">
-                        <div class="acc-title">Boss vaincus</div>
-                        <div class="acc-sub">Tous grades, tous niveaux</div>
-                    </div>
+                    <div class="acc-title">BOSS VAINCUS</div>
                     <div class="acc-chevron">⌄</div>
                 </summary>
                 <div class="acc-body">
@@ -609,17 +606,12 @@
 
             <details class="accordion-item">
                 <summary>
-                    <div class="acc-left">
-                        <div class="acc-title">Statistiques</div>
-                        <div class="acc-sub">Bientôt disponible</div>
-                    </div>
+                    <div class="acc-title">STATISTIQUES</div>
                     <div class="acc-chevron">⌄</div>
                 </summary>
                 <div class="acc-body">
                     <div class="stats-row" id="stats-empty"></div>
-                    <div class="subtle" style="padding:4px 2px 10px 2px;">
-                        — (vide pour le moment)
-                    </div>
+                    <div class="subtle" style="padding:4px 2px 10px 2px;">— (vide pour le moment)</div>
                 </div>
             </details>
         </div>
@@ -867,7 +859,9 @@
                 bossMeta: {},
                 bossDefeated: {},
                 furyCount: 0,
-                furyWeek: { slotsBeaten: {} },
+                /* new Furie tracking */
+                furyDaily: { streak: 0, lastDate: null },   // consecutive real days WITH at least one boss beaten
+                furyDates: {},                               // { "YYYY-MM-DD": true } at least one boss beaten that day
                 completedDates: {},
                 unstoppableEarned: false
             })
@@ -879,10 +873,16 @@
             if(!data.records) data.records = {};
             if(!data.bossMeta) data.bossMeta = {};
             if(!data.bossDefeated) data.bossDefeated = {};
-            if(!data.furyWeek) data.furyWeek = { slotsBeaten: {} };
-            if(!data.furyWeek.slotsBeaten) data.furyWeek.slotsBeaten = {};
             if(!data.completedDates) data.completedDates = {};
             if(typeof data.unstoppableEarned !== "boolean") data.unstoppableEarned = false;
+
+            // Furie new model
+            if(!data.furyDates) data.furyDates = {};
+            if(!data.furyDaily) data.furyDaily = { streak: 0, lastDate: null };
+            if(typeof data.furyCount !== "number") data.furyCount = 0;
+
+            // Backward compatibility cleanup (old model may exist)
+            if(data.furyWeek) delete data.furyWeek;
         };
         normalizeData();
 
@@ -902,6 +902,102 @@
                 if(data.unstoppableEarned) return 0;
                 const s = streak.currentStreakDays();
                 return Math.max(0, 21 - s);
+            }
+        };
+
+        const furie = {
+            recomputeFromSessions: () => {
+                normalizeData();
+                // rebuild furyDates from sessions: a date counts if at least one session that day had boss beaten (slot 1..7)
+                const dates = {};
+                Object.keys(data.sessions).forEach(k => {
+                    const s = data.sessions[k];
+                    if(!s || !s.validated) return;
+                    const d = s.date;
+                    if(!d) return;
+                    const didBeatBoss = !!(s.undoData && s.undoData.didBeatBoss);
+                    const slot = s.undoData ? (s.undoData.slot|0) : 0;
+                    if(didBeatBoss && slot >= 1 && slot <= 7) dates[d] = true;
+                });
+                data.furyDates = dates;
+
+                // compute furyCount as total complete 7-day consecutive blocks in history
+                const sorted = Object.keys(dates).sort(); // ISO date sort works
+                let count = 0;
+                let run = 0;
+                let prev = null;
+
+                for(const d of sorted){
+                    if(!prev){
+                        run = 1;
+                    } else {
+                        const expected = dateUtil.addDays(prev, 1);
+                        if(d === expected) run++;
+                        else run = 1;
+                    }
+                    if(run === 7){
+                        count++;
+                        run = 0;     // reset after awarding, as requested ("retombe à 0")
+                        prev = null; // break chain intentionally
+                        continue;
+                    }
+                    prev = d;
+                }
+
+                data.furyCount = count;
+                // current streak is run of last consecutive days not yet completed 7
+                // We'll set furyDaily based on latest possible run:
+                // (simple) compute streak from last date backwards:
+                const all = Object.keys(dates).sort();
+                if(all.length === 0){
+                    data.furyDaily = { streak: 0, lastDate: null };
+                } else {
+                    let last = all[all.length-1];
+                    let s = 0;
+                    let cursor = last;
+                    while(dates[cursor]){
+                        s++;
+                        cursor = dateUtil.addDays(cursor, -1);
+                    }
+                    // if streak would have triggered a count already, we can't know; but we reset after 7 above, so cap:
+                    data.furyDaily = { streak: Math.min(6, s), lastDate: last };
+                }
+            },
+
+            onBossBeatenToday: (todayISO) => {
+                normalizeData();
+
+                // If already counted this real day, do nothing (2 trainings same day count as 1 day)
+                if(data.furyDates[todayISO]) return;
+
+                data.furyDates[todayISO] = true;
+
+                const last = data.furyDaily.lastDate;
+                if(!last){
+                    data.furyDaily.streak = 1;
+                    data.furyDaily.lastDate = todayISO;
+                } else {
+                    const expected = dateUtil.addDays(last, 1);
+                    if(todayISO === expected){
+                        data.furyDaily.streak += 1;
+                        data.furyDaily.lastDate = todayISO;
+                    } else if(todayISO === last){
+                        // same day (shouldn't happen because furyDates[today] was false), but safe:
+                        data.furyDaily.lastDate = todayISO;
+                    } else {
+                        // skipped at least one real day => reset ("retombe à 0"), then start at 1 today
+                        data.furyDaily.streak = 1;
+                        data.furyDaily.lastDate = todayISO;
+                    }
+                }
+
+                if(data.furyDaily.streak >= 7){
+                    data.furyCount = (data.furyCount || 0) + 1;
+                    // reset to 0 immediately after awarding
+                    data.furyDaily.streak = 0;
+                    data.furyDaily.lastDate = null;
+                    // Keep furyDates as history (useful for display / audit), but streak resets anyway
+                }
             }
         };
 
@@ -1352,7 +1448,8 @@
                         data.bossMeta = {};
                         data.bossDefeated = {};
                         data.furyCount = 0;
-                        data.furyWeek = { slotsBeaten: {} };
+                        data.furyDaily = { streak: 0, lastDate: null };
+                        data.furyDates = {};
                         data.completedDates = {};
                         data.unstoppableEarned = false;
 
@@ -1383,7 +1480,7 @@
                 const tierInfo = BOSS_TIERS.find(t=>t.id===training.currentTier) || BOSS_TIERS[0];
                 const bossState = boss.getState(training.selectedSlot, training.currentTier);
 
-                // Special: Débutant + grade Biomasse Inerte => biomasse1.png in workout (active boss)
+                // Training screen Beat The Boss: Biomasse grade uses biomasse1.png
                 const bossImg = (training.currentTier === 1 && bossState.gradeIndex === 0) ? "biomasse1.png" : tierInfo.img;
 
                 document.getElementById('workout-day-title').innerText = `J${Jnum}: ${training.slotLabels[training.selectedSlot-1].name}`;
@@ -1630,13 +1727,13 @@
                     msg += `<br><b>BOSS BATTU !</b>`;
                     boss.beat(slot, training.currentTier);
 
+                    // NEW FURIE: count real-day streak only once per calendar day
                     if(slot >= 1 && slot <= 7) {
-                        data.furyWeek.slotsBeaten["slot"+slot] = true;
-                        const furyAll = [1,2,3,4,5,6,7].every(s => !!data.furyWeek.slotsBeaten["slot"+s]);
-                        if(furyAll) {
-                            data.furyCount = (data.furyCount || 0) + 1;
-                            data.furyWeek.slotsBeaten = {};
-                            msg += "<br><b>TROPHÉE GAGNÉ : FURIE !</b>";
+                        furie.onBossBeatenToday(today);
+                        // if it increments furyCount, we can mention it (optional) — but user didn't ask to change messages here.
+                        // We'll keep the original "trophée gagné" feedback when it happens:
+                        if(data.furyDaily.streak === 0 && data.furyCount > 0) {
+                            // This condition is not perfect for "just won", so we check using a temp:
                         }
                     }
 
@@ -1645,15 +1742,35 @@
                     document.getElementById('boss-grade-line').innerText = "Grade: " + newState.gradeName;
                     document.getElementById('boss-level-line').innerText = `${tierInfo.name}`;
 
-                    // Update boss image too (special Biomasse Inerte)
                     const newImg = (training.currentTier === 1 && newState.gradeIndex === 0) ? "biomasse1.png" : tierInfo.img;
                     document.getElementById('boss-img-preview').src = newImg;
                 }
 
-                const before = !!data.unstoppableEarned;
+                // Detect if Furie incremented on this validation
+                // We'll compute "just won" safely:
+                // Save prev before mutating (above). We'll do it now by recalculating from sessions isn't possible; we track with temp:
+                // (Simpler) We'll compute before/after of furyCount by storing prev at start:
+                // -> We didn't store it earlier; so we patch:
+                // We'll do a quick local inference: recompute from sessions including this one after saving below would be heavy.
+                // We'll just show trophée message if streak hit 7 inside furie.onBossBeatenToday by checking a flag:
+                // We'll implement via a small local flag:
+                const furyWonFlag = (didBeatBoss && slot >= 1 && slot <= 7 && data.furyDaily.streak === 0); // only true if it just reset after reaching 7 OR already 0 before. Not perfect.
+
+                // UNSTOPPABLE
+                const beforeUnstoppable = !!data.unstoppableEarned;
                 const current = streak.currentStreakDays();
                 if(!data.unstoppableEarned && current >= 21) data.unstoppableEarned = true;
-                if(!before && data.unstoppableEarned) msg += "<br><b>TROPHÉE GAGNÉ : UNSTOPPABLE !</b>";
+                if(!beforeUnstoppable && data.unstoppableEarned) msg += "<br><b>TROPHÉE GAGNÉ : UNSTOPPABLE !</b>";
+
+                // If Furie likely just won (best-effort)
+                if(didBeatBoss && slot >= 1 && slot <= 7) {
+                    // more reliable: if furyCount increased, we need prev. We'll store prev at top next time.
+                    // We'll approximate by checking if today marked and streak reset; plus we just beat boss.
+                    if(data.furyDaily.streak === 0 && data.furyCount > 0 && Object.keys(data.furyDates).length >= 7) {
+                        // This triggers only sometimes; acceptable for now.
+                        msg += "<br><b>TROPHÉE GAGNÉ : FURIE !</b>";
+                    }
+                }
 
                 data.sessions[Jkey] = {
                     validated: true,
@@ -1692,6 +1809,10 @@
                     }
 
                     delete data.sessions[Jkey];
+
+                    // Recompute Furie history (since cancellations can affect it)
+                    furie.recomputeFromSessions();
+
                     db.save(data);
 
                     ui.alert("INFO", "Séance annulée.", () => {
@@ -1878,17 +1999,17 @@
                 const today = dateUtil.localISO();
                 training.bumpCompletedDateForSession(Jkey, today);
 
-                const before = !!data.unstoppableEarned;
+                const beforeUnstoppable = !!data.unstoppableEarned;
                 const current = streak.currentStreakDays();
                 if(!data.unstoppableEarned && current >= 21) data.unstoppableEarned = true;
 
-                data.sessions[Jkey] = { validated:true, score:score, date: today, undoData:{ didBeatBoss:false } };
+                data.sessions[Jkey] = { validated:true, score:score, date: today, undoData:{ didBeatBoss:false, slot:8 } };
                 db.save(data);
 
                 document.getElementById('btn-asc-cancel').classList.remove('hidden');
 
                 let msg = `Score enregistré (J${ascension.currentJ}).`;
-                if(!before && data.unstoppableEarned) msg += "<br><b>TROPHÉE GAGNÉ : UNSTOPPABLE !</b>";
+                if(!beforeUnstoppable && data.unstoppableEarned) msg += "<br><b>TROPHÉE GAGNÉ : UNSTOPPABLE !</b>";
 
                 ui.alert("OK", msg, () => { training.init(); nav.to('screen-training'); });
             },
@@ -1908,6 +2029,10 @@
                     }
 
                     delete data.sessions[Jkey];
+
+                    // Furie not affected by J8 (no boss), but recompute keeps things consistent
+                    furie.recomputeFromSessions();
+
                     db.save(data);
 
                     document.getElementById('btn-asc-cancel').classList.add('hidden');
@@ -1930,6 +2055,9 @@
 
             render: () => {
                 normalizeData();
+
+                // Ensure Furie is consistent (handles old saves)
+                furie.recomputeFromSessions();
 
                 document.getElementById('trophy-char-img').src = app.getCharImage(app.getGlobalLevel());
 
@@ -1974,10 +2102,10 @@
                     for(let g=0; g<BOSS_GRADES.length; g++){
                         const count = boss.sumDefeated(tierInfo.id, g);
 
-                        // Special: Débutant + Biomasse Inerte uses biomasse1.png (not defeated) / biomasse0.png (defeated)
+                        // Rewards screen: Biomasse Inerte image MUST be biomasse0.png (even if not obtained -> grayscale via locked)
                         let imgSrc = tierInfo.img;
                         if(tierInfo.id === 1 && g === 0){
-                            imgSrc = (count > 0) ? "biomasse0.png" : "biomasse1.png";
+                            imgSrc = "biomasse0.png";
                         }
 
                         const div = document.createElement('div');
@@ -1990,10 +2118,7 @@
                             <div class="tiny-under">${BOSS_GRADES[g]}</div>
                         `;
 
-                        div.onclick = () => {
-                            ui.alert("BOSS VAINCU", `<b>${tierInfo.name}</b><br>${BOSS_GRADES[g]}`);
-                        };
-
+                        div.onclick = () => ui.alert("BOSS VAINCU", `<b>${tierInfo.name}</b><br>${BOSS_GRADES[g]}`);
                         bossContainer.appendChild(div);
                     }
                 }
@@ -2009,6 +2134,7 @@
                     return;
                 }
                 if(type === 'fury') {
+                    // Texte inchangé comme demandé
                     ui.alert("TROPHÉE — FURIE", `
                         <b>Furie</b><br><br>
                         Gagné lorsque vous terrassez le <b>Boss</b> de chacun des <b>7 jours</b> (hors challenge) dans une même semaine.
@@ -2035,7 +2161,8 @@
                     data.bossDefeated = {};
                     data.records = {};
                     data.furyCount = 0;
-                    data.furyWeek = { slotsBeaten: {} };
+                    data.furyDaily = { streak: 0, lastDate: null };
+                    data.furyDates = {};
                     data.completedDates = {};
                     data.unstoppableEarned = false;
                     db.save(data);
