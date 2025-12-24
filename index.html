@@ -161,7 +161,7 @@
             justify-content:center;
             gap:3px;
             width:fit-content;
-            margin:8px auto;            /* <-- center horizontally */
+            margin:8px auto;
         }
         .boss-title{margin:0;color:var(--accent-red);font-weight:1000;text-transform:uppercase;font-size:.86em;letter-spacing:1px;line-height:1.05;}
         .boss-sub{margin:0;color:#ddd;font-weight:1000;font-size:.9em;line-height:1.1;}
@@ -196,6 +196,57 @@
         .stat-card.locked .stat-label{opacity:.75;}
 
         .whatsapp-icon{width:24px;vertical-align:middle;margin-left:10px;}
+
+        /* COLLAPSIBLE CATEGORIES (RÉCOMPENSES) */
+        .accordion{
+            background:#101010;
+            border:1px solid #333;
+            border-radius:14px;
+            overflow:hidden;
+            margin:12px 0;
+        }
+        details.accordion-item{
+            border-top:1px solid #262626;
+        }
+        details.accordion-item:first-child{border-top:none;}
+        details.accordion-item > summary{
+            list-style:none;
+            cursor:pointer;
+            padding:14px 14px;
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:10px;
+            font-weight:1000;
+            text-transform:uppercase;
+            letter-spacing:1px;
+            color:var(--accent-yellow);
+            user-select:none;
+        }
+        details.accordion-item > summary::-webkit-details-marker{display:none;}
+        .acc-left{
+            display:flex;
+            flex-direction:column;
+            gap:2px;
+        }
+        .acc-title{font-size:1.0em;line-height:1.1;}
+        .acc-sub{font-size:.78em;color:#777;text-transform:none;letter-spacing:0;font-weight:800;}
+        .acc-chevron{
+            width:34px;height:34px;
+            border-radius:12px;
+            border:1px solid #333;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            color:#aaa;
+            font-size:1.0em;
+            flex:0 0 34px;
+        }
+        details[open] .acc-chevron{transform:rotate(180deg);}
+        .acc-body{
+            padding:12px 12px 6px 12px;
+            border-top:1px solid #262626;
+        }
 
         /* MODAL */
         #custom-modal{
@@ -266,7 +317,7 @@
 
         <button class="btn" onclick="window.location.href='https://wa.me/'">La Team PhysiqueRush <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" class="whatsapp-icon"></button>
         <button class="btn" onclick="window.close(); window.location.href='about:blank';">QUITTER</button>
-        <div class="menu-version">v1.29</div>
+        <div class="menu-version">1.30</div>
     </div>
 
     <!-- LEVELS -->
@@ -509,33 +560,69 @@
             <div id="trophy-next-evo" style="color:#aaa;font-size:.9em;margin-top:8px;font-style:italic;"></div>
         </div>
 
-        <h3 style="border-bottom:1px solid #333;padding-bottom:5px;margin-bottom:12px;">Performances</h3>
-        <div class="stats-row">
-            <div id="card-records" class="stat-card" onclick="gallery.explain('records')">
-                <img src="record.png" class="stat-icon" onerror="this.src='https://via.placeholder.com/130?text=Rec'">
-                <span id="total-records" class="stat-value">0</span>
-                <span class="stat-label">Records Battus</span>
-            </div>
+        <!-- Collapsible categories -->
+        <div class="accordion" id="rewards-accordion">
+            <details class="accordion-item" open>
+                <summary>
+                    <div class="acc-left">
+                        <div class="acc-title">Trophées</div>
+                        <div class="acc-sub">Records, Furie, Unstoppable</div>
+                    </div>
+                    <div class="acc-chevron">⌄</div>
+                </summary>
+                <div class="acc-body">
+                    <div class="stats-row">
+                        <div id="card-records" class="stat-card" onclick="gallery.explain('records')">
+                            <img src="record.png" class="stat-icon" onerror="this.src='https://via.placeholder.com/130?text=Rec'">
+                            <span id="total-records" class="stat-value">0</span>
+                            <span class="stat-label">Records Battus</span>
+                        </div>
 
-            <div id="card-fury" class="stat-card" onclick="gallery.explain('fury')">
-                <img src="fury.png" class="stat-icon" onerror="this.src='https://via.placeholder.com/130?text=Fury'">
-                <span id="fury-count-display" class="stat-value">0</span>
-                <span class="stat-label">Furie</span>
-            </div>
+                        <div id="card-fury" class="stat-card" onclick="gallery.explain('fury')">
+                            <img src="fury.png" class="stat-icon" onerror="this.src='https://via.placeholder.com/130?text=Fury'">
+                            <span id="fury-count-display" class="stat-value">0</span>
+                            <span class="stat-label">Furie</span>
+                        </div>
 
-            <div id="card-unstoppable" class="stat-card" onclick="gallery.explain('unstoppable')">
-                <img src="unstoppable.png" class="stat-icon smallish" onerror="this.src='https://via.placeholder.com/130?text=GO'">
-                <span id="unstoppable-display" class="stat-value">0</span>
-                <span class="stat-label">Unstoppable</span>
-                <div id="unstoppable-remaining" class="tiny-under">(encore 21 jours)</div>
-            </div>
+                        <div id="card-unstoppable" class="stat-card" onclick="gallery.explain('unstoppable')">
+                            <img src="unstoppable.png" class="stat-icon smallish" onerror="this.src='https://via.placeholder.com/130?text=GO'">
+                            <span id="unstoppable-display" class="stat-value">0</span>
+                            <span class="stat-label">Unstoppable</span>
+                            <div id="unstoppable-remaining" class="tiny-under">(encore 21 jours)</div>
+                        </div>
+                    </div>
+                </div>
+            </details>
+
+            <details class="accordion-item">
+                <summary>
+                    <div class="acc-left">
+                        <div class="acc-title">Boss vaincus</div>
+                        <div class="acc-sub">Tous grades, tous niveaux</div>
+                    </div>
+                    <div class="acc-chevron">⌄</div>
+                </summary>
+                <div class="acc-body">
+                    <div id="boss-trophy-container" class="stats-row"></div>
+                </div>
+            </details>
+
+            <details class="accordion-item">
+                <summary>
+                    <div class="acc-left">
+                        <div class="acc-title">Statistiques</div>
+                        <div class="acc-sub">Bientôt disponible</div>
+                    </div>
+                    <div class="acc-chevron">⌄</div>
+                </summary>
+                <div class="acc-body">
+                    <div class="stats-row" id="stats-empty"></div>
+                    <div class="subtle" style="padding:4px 2px 10px 2px;">
+                        — (vide pour le moment)
+                    </div>
+                </div>
+            </details>
         </div>
-
-        <h3 style="border-bottom:1px solid #333;padding-bottom:5px;margin-bottom:12px;">Boss Vaincus</h3>
-        <div id="boss-trophy-container" class="stats-row"></div>
-
-        <h3 style="border-bottom:1px solid #333;padding-bottom:5px;margin-bottom:12px;">Statistiques</h3>
-        <div class="stats-row" id="stats-empty"></div>
 
         <button class="btn" style="margin-top:14px;" onclick="nav.to('screen-menu')">Retour</button>
         <button class="btn btn-danger-zone" onclick="gallery.resetTrophies()">⚠️ EFFACER TOUTES LES RÉCOMPENSES</button>
@@ -729,8 +816,7 @@
                 if(!data.bossDefeated) data.bossDefeated = {};
                 const k = boss.key(slot, tier);
                 if(!data.bossMeta[k]) data.bossMeta[k] = { target: 100, gradeIndex: 0 };
-                if(!data.bossDefeated[k]) data.bossDefeated[k] = {}; // gradeIndex -> count
-                // clamp
+                if(!data.bossDefeated[k]) data.bossDefeated[k] = {};
                 data.bossMeta[k].gradeIndex = Math.max(0, Math.min(BOSS_GRADES.length-1, data.bossMeta[k].gradeIndex|0));
                 data.bossMeta[k].target = Math.max(1, data.bossMeta[k].target|0);
                 return data.bossMeta[k];
@@ -749,21 +835,15 @@
                 const st = boss.ensure(slot, tier);
                 const g = st.gradeIndex|0;
 
-                // record defeated grade (the one that existed at the moment of the victory)
                 if(!data.bossDefeated[k][g]) data.bossDefeated[k][g] = 0;
                 data.bossDefeated[k][g]++;
 
-                // if max grade reached: no more changes (grade/target frozen)
                 if(g >= BOSS_GRADES.length-1) return;
 
-                // upgrade grade
                 st.gradeIndex = g + 1;
-
-                // upgrade target ~ +5% (integer)
                 const newTarget = Math.round(st.target * 1.05);
                 st.target = Math.max(st.target + 1, newTarget);
             },
-            // Sum defeated counts per tier+grade across all slots (1..7) for gallery
             sumDefeated: (tier, gradeIndex) => {
                 let sum = 0;
                 for(let slot=1; slot<=7; slot++){
@@ -782,20 +862,13 @@
             default: () => ({
                 stats: { Pectoraux:0, Jambes:0, Dos:0, Triceps:0, Biceps:0 },
                 history: { originalStats: { Pectoraux:0, Jambes:0, Dos:0, Triceps:0, Biceps:0 } },
-
-                // sessions are now keyed by "J<number>" (ex: "J1", "J8", "J9"...)
                 sessions: {},
                 records: {},
-
-                // boss system
-                bossMeta: {},       // slot+tier -> {target, gradeIndex}
-                bossDefeated: {},   // slot+tier -> {gradeIndex: count}
-
+                bossMeta: {},
+                bossDefeated: {},
                 furyCount: 0,
                 furyWeek: { slotsBeaten: {} },
-
                 completedDates: {},
-
                 unstoppableEarned: false
             })
         };
@@ -804,13 +877,10 @@
         const normalizeData = () => {
             if(!data.sessions) data.sessions = {};
             if(!data.records) data.records = {};
-
             if(!data.bossMeta) data.bossMeta = {};
             if(!data.bossDefeated) data.bossDefeated = {};
-
             if(!data.furyWeek) data.furyWeek = { slotsBeaten: {} };
             if(!data.furyWeek.slotsBeaten) data.furyWeek.slotsBeaten = {};
-
             if(!data.completedDates) data.completedDates = {};
             if(typeof data.unstoppableEarned !== "boolean") data.unstoppableEarned = false;
         };
@@ -1115,7 +1185,6 @@
             timerPaused: false,
             hasAutoScrolledOnFirstStart: false,
 
-            // cycle slots 1..8 (8 = challenge)
             slotLabels: [
                 { slot:1, name:'Pectoraux' },
                 { slot:2, name:'Jambes (Poly)' },
@@ -1278,7 +1347,6 @@
                     "RÉINITIALISATION",
                     "Voulez-vous vraiment <b>réinitialiser tous les entraînements</b> ?<br><br>Retour à <b>J1</b> et suppression de <b>toutes les récompenses</b>.",
                     () => {
-                        // reset trainings + rewards
                         data.sessions = {};
                         data.records = {};
                         data.bossMeta = {};
@@ -1311,13 +1379,15 @@
                 training.timeLeft = training.currentExercises[0]?.duration || 0;
                 training.currentWorkoutIntroVimeo = wk.introVimeo;
 
-                // Boss: depends on slot (1..7) and tier (1..4)
                 training.currentTier = wk.tier;
                 const tierInfo = BOSS_TIERS.find(t=>t.id===training.currentTier) || BOSS_TIERS[0];
                 const bossState = boss.getState(training.selectedSlot, training.currentTier);
 
+                // Special: Débutant + grade Biomasse Inerte => biomasse1.png in workout (active boss)
+                const bossImg = (training.currentTier === 1 && bossState.gradeIndex === 0) ? "biomasse1.png" : tierInfo.img;
+
                 document.getElementById('workout-day-title').innerText = `J${Jnum}: ${training.slotLabels[training.selectedSlot-1].name}`;
-                document.getElementById('boss-img-preview').src = tierInfo.img;
+                document.getElementById('boss-img-preview').src = bossImg;
                 document.getElementById('boss-score-target').innerText = "Score à battre: " + bossState.target;
                 document.getElementById('boss-level-line').innerText = `${tierInfo.name}`;
                 document.getElementById('boss-grade-line').innerText = `Grade: ${bossState.gradeName}`;
@@ -1343,7 +1413,6 @@
                 window.scrollTo({ top: 0, behavior: 'auto' });
             },
 
-            // WORKOUT UI state
             currentExercises: [],
             currentIndex: 0,
             timeLeft: 0,
@@ -1545,7 +1614,6 @@
 
                 const prevRecord = data.records[Jkey] || 0;
 
-                // boss state
                 const bState = boss.getState(slot, training.currentTier);
                 const bossTarget = bState.target;
                 const tierInfo = BOSS_TIERS.find(t=>t.id===training.currentTier) || BOSS_TIERS[0];
@@ -1557,13 +1625,11 @@
                 const today = dateUtil.localISO();
                 training.bumpCompletedDateForSession(Jkey, today);
 
-                // Beat The Boss
                 const didBeatBoss = (score > bossTarget);
                 if(didBeatBoss) {
                     msg += `<br><b>BOSS BATTU !</b>`;
                     boss.beat(slot, training.currentTier);
 
-                    // Fury progression only for non-challenge slots 1..7
                     if(slot >= 1 && slot <= 7) {
                         data.furyWeek.slotsBeaten["slot"+slot] = true;
                         const furyAll = [1,2,3,4,5,6,7].every(s => !!data.furyWeek.slotsBeaten["slot"+s]);
@@ -1574,14 +1640,16 @@
                         }
                     }
 
-                    // refresh boss display immediately (next grade/target)
                     const newState = boss.getState(slot, training.currentTier);
                     document.getElementById('boss-score-target').innerText = "Score à battre: " + newState.target;
                     document.getElementById('boss-grade-line').innerText = "Grade: " + newState.gradeName;
                     document.getElementById('boss-level-line').innerText = `${tierInfo.name}`;
+
+                    // Update boss image too (special Biomasse Inerte)
+                    const newImg = (training.currentTier === 1 && newState.gradeIndex === 0) ? "biomasse1.png" : tierInfo.img;
+                    document.getElementById('boss-img-preview').src = newImg;
                 }
 
-                // Unstoppable
                 const before = !!data.unstoppableEarned;
                 const current = streak.currentStreakDays();
                 if(!data.unstoppableEarned && current >= 21) data.unstoppableEarned = true;
@@ -1603,7 +1671,7 @@
                 db.save(data);
 
                 ui.alert("FÉLICITATIONS", msg, () => {
-                    training.init();         // this will automatically jump to next J (J8 -> J9 -> ...)
+                    training.init();
                     nav.to('screen-training');
                 });
             },
@@ -1615,7 +1683,6 @@
                     const Jkey = training.sessionKey(Jnum);
                     const session = data.sessions[Jkey];
 
-                    // remove completed date count
                     if(session && session.date) {
                         const d = session.date;
                         if(data.completedDates[d]) {
@@ -1623,9 +1690,6 @@
                             if(data.completedDates[d] <= 0) delete data.completedDates[d];
                         }
                     }
-
-                    // NOTE: We do NOT roll back boss grade/target history when canceling (too complex + avoids exploits).
-                    // We simply remove the session validation (progression lock will update accordingly via computeCurrentJ()).
 
                     delete data.sessions[Jkey];
                     db.save(data);
@@ -1670,7 +1734,6 @@
                 ascension.palierCompleted = 0;
                 ascension.stepIndex = 0;
 
-                // J1 second exercise depends on pec level
                 const j1 = training.getWorkoutDetailsForSlot(1);
                 const secondEx = j1.exercises[1] ? j1.exercises[1].name : "Exercice J1-2";
 
@@ -1911,11 +1974,17 @@
                     for(let g=0; g<BOSS_GRADES.length; g++){
                         const count = boss.sumDefeated(tierInfo.id, g);
 
+                        // Special: Débutant + Biomasse Inerte uses biomasse1.png (not defeated) / biomasse0.png (defeated)
+                        let imgSrc = tierInfo.img;
+                        if(tierInfo.id === 1 && g === 0){
+                            imgSrc = (count > 0) ? "biomasse0.png" : "biomasse1.png";
+                        }
+
                         const div = document.createElement('div');
                         div.className = 'stat-card' + (count <= 0 ? ' locked' : '');
 
                         div.innerHTML = `
-                            <img src="${tierInfo.img}" class="stat-icon" onerror="this.src='https://via.placeholder.com/130?text=Boss'">
+                            <img src="${imgSrc}" class="stat-icon" onerror="this.src='https://via.placeholder.com/130?text=Boss'">
                             <span class="stat-value">x${count}</span>
                             <span class="stat-label">Boss ${tierInfo.name}</span>
                             <div class="tiny-under">${BOSS_GRADES[g]}</div>
