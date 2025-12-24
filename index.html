@@ -90,7 +90,7 @@
             transition:all .2s;
             border:1px solid #444;
             opacity:1;
-            min-height:148px;   /* makes them bigger */
+            min-height:148px;
         }
         .day-box:hover{transform:scale(1.02);}
         .day-box.done{background:var(--accent-green);color:#000;border:none;font-weight:1000;}
@@ -149,21 +149,23 @@
         .score-inline label{font-weight:1000;color:#fff;}
         .score-help{color:#888;font-size:.9em;margin-top:-4px;}
 
-        /* BEAT THE BOSS — resserré/cintré */
+        /* BEAT THE BOSS — resserré/cintré + centré */
         .boss-section{
             border:1px solid #3a3a3a;
-            padding:4px;
+            padding:6px 6px 8px 6px;
             border-radius:14px;
-            margin:8px 0;
             background:#151515;
-            display:inline-flex;
+            display:flex;
             flex-direction:column;
             align-items:center;
             justify-content:center;
-            gap:2px;
+            gap:3px;
             width:fit-content;
+            margin:8px auto;            /* <-- center horizontally */
         }
         .boss-title{margin:0;color:var(--accent-red);font-weight:1000;text-transform:uppercase;font-size:.86em;letter-spacing:1px;line-height:1.05;}
+        .boss-sub{margin:0;color:#ddd;font-weight:1000;font-size:.9em;line-height:1.1;}
+        .boss-grade{margin:0;color:#aaa;font-weight:900;font-size:.78em;line-height:1.15;text-align:center;max-width:260px;}
         #boss-img-preview{width:225px;height:225px;object-fit:contain;margin:0;}
         #boss-score-target{font-size:1.0em;font-weight:1000;color:#fff;margin:0;line-height:1.05;}
 
@@ -190,6 +192,8 @@
         .tiny-under{font-size:.68em;color:#777;opacity:.9;margin-top:2px;text-align:center;line-height:1.2;}
 
         .stat-card.locked .stat-icon{filter:grayscale(1);opacity:.35;}
+        .stat-card.locked .stat-value{opacity:.55;}
+        .stat-card.locked .stat-label{opacity:.75;}
 
         .whatsapp-icon{width:24px;vertical-align:middle;margin-left:10px;}
 
@@ -262,7 +266,7 @@
 
         <button class="btn" onclick="window.location.href='https://wa.me/'">La Team PhysiqueRush <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" class="whatsapp-icon"></button>
         <button class="btn" onclick="window.close(); window.location.href='about:blank';">QUITTER</button>
-        <div class="menu-version">v1.28</div>
+        <div class="menu-version">v xyz</div>
     </div>
 
     <!-- LEVELS -->
@@ -339,13 +343,16 @@
         <div class="subtle" style="text-align:center;margin-bottom:10px;">
             Seul le <b>prochain jour</b> à valider est disponible.
         </div>
+
         <div class="week-grid" id="week-grid"></div>
+
+        <button class="btn btn-danger-zone" onclick="training.resetAllTrainings()">⚠️ RÉINITIALISER TOUS LES ENTRAÎNEMENTS</button>
         <button class="btn" onclick="nav.to('screen-menu')" id="btn-training-retour" style="margin-top:10px;">Retour</button>
     </div>
 
     <!-- WORKOUT -->
     <div id="screen-workout" class="container hidden">
-        <h2 id="workout-day-title">Jour X</h2>
+        <h2 id="workout-day-title">Jx</h2>
 
         <div class="workout-wrap">
             <div class="card" style="text-align:center;">
@@ -392,8 +399,10 @@
 
             <div class="boss-section" aria-label="Beat the Boss">
                 <div class="boss-title">BEAT THE BOSS</div>
+                <div id="boss-level-line" class="boss-sub">—</div>
                 <img id="boss-img-preview" src="" onerror="this.src='https://via.placeholder.com/225?text=BTB'">
                 <div id="boss-score-target">Score à battre: ???</div>
+                <div id="boss-grade-line" class="boss-grade">—</div>
             </div>
 
             <div class="card score-area">
@@ -413,7 +422,7 @@
 
     <!-- J8 ASCENSION -->
     <div id="screen-ascension" class="container hidden">
-        <h2>J8 — Ascension Challenge</h2>
+        <h2 id="asc-title">Jx — Ascension Challenge</h2>
 
         <div class="card" style="text-align:center;margin-bottom:12px;">
             <h4>Présentation</h4>
@@ -685,6 +694,87 @@
             }
         };
 
+        // --- BOSS SYSTEM (tiers + grades) ---
+        const BOSS_TIERS = [
+            { id: 1, name: "Débutant", img: "btb1.png" },
+            { id: 2, name: "Intermédiaire", img: "btb2.png" },
+            { id: 3, name: "Avancé", img: "btb3.png" },
+            { id: 4, name: "Expert", img: "btb4.png" }
+        ];
+
+        const BOSS_GRADES = [
+            "Biomasse Inerte",
+            "Larve Incubatrice",
+            "Micro-Drone de Surveillance",
+            "Symbiote Mineur",
+            "Éclaireur Synaptique",
+            "Fantassin de Ruche",
+            "Maraudeur d'Élite",
+            "Centurion Bio-Mécanique",
+            "Technomancien Orbital",
+            "Superviseur de Couvée",
+            "Primus Tacticien",
+            "Inquisiteur Neural",
+            "Archonte Psionique",
+            "Exécuteur Planétaire",
+            "Seigneur de Guerre Galactique",
+            "Maître-Esprit",
+            "Omniscient Cosmique"
+        ];
+
+        const boss = {
+            key: (slot, tier) => `slot${slot}_tier${tier}`,
+            ensure: (slot, tier) => {
+                if(!data.bossMeta) data.bossMeta = {};
+                if(!data.bossDefeated) data.bossDefeated = {};
+                const k = boss.key(slot, tier);
+                if(!data.bossMeta[k]) data.bossMeta[k] = { target: 100, gradeIndex: 0 };
+                if(!data.bossDefeated[k]) data.bossDefeated[k] = {}; // gradeIndex -> count
+                // clamp
+                data.bossMeta[k].gradeIndex = Math.max(0, Math.min(BOSS_GRADES.length-1, data.bossMeta[k].gradeIndex|0));
+                data.bossMeta[k].target = Math.max(1, data.bossMeta[k].target|0);
+                return data.bossMeta[k];
+            },
+            getState: (slot, tier) => {
+                const st = boss.ensure(slot, tier);
+                return {
+                    target: st.target|0,
+                    gradeIndex: st.gradeIndex|0,
+                    gradeName: BOSS_GRADES[st.gradeIndex|0] || BOSS_GRADES[0],
+                    isMax: (st.gradeIndex|0) >= (BOSS_GRADES.length-1)
+                };
+            },
+            beat: (slot, tier) => {
+                const k = boss.key(slot, tier);
+                const st = boss.ensure(slot, tier);
+                const g = st.gradeIndex|0;
+
+                // record defeated grade (the one that existed at the moment of the victory)
+                if(!data.bossDefeated[k][g]) data.bossDefeated[k][g] = 0;
+                data.bossDefeated[k][g]++;
+
+                // if max grade reached: no more changes (grade/target frozen)
+                if(g >= BOSS_GRADES.length-1) return;
+
+                // upgrade grade
+                st.gradeIndex = g + 1;
+
+                // upgrade target ~ +5% (integer)
+                const newTarget = Math.round(st.target * 1.05);
+                st.target = Math.max(st.target + 1, newTarget);
+            },
+            // Sum defeated counts per tier+grade across all slots (1..7) for gallery
+            sumDefeated: (tier, gradeIndex) => {
+                let sum = 0;
+                for(let slot=1; slot<=7; slot++){
+                    const k = boss.key(slot, tier);
+                    const obj = (data.bossDefeated && data.bossDefeated[k]) ? data.bossDefeated[k] : null;
+                    if(obj && obj[gradeIndex]) sum += obj[gradeIndex];
+                }
+                return sum;
+            }
+        };
+
         // --- DB ---
         const db = {
             load: () => JSON.parse(localStorage.getItem('physiqueRushDB')) || db.default(),
@@ -692,20 +782,35 @@
             default: () => ({
                 stats: { Pectoraux:0, Jambes:0, Dos:0, Triceps:0, Biceps:0 },
                 history: { originalStats: { Pectoraux:0, Jambes:0, Dos:0, Triceps:0, Biceps:0 } },
+
+                // sessions are now keyed by "J<number>" (ex: "J1", "J8", "J9"...)
                 sessions: {},
                 records: {},
-                bossBeaten: {},
+
+                // boss system
+                bossMeta: {},       // slot+tier -> {target, gradeIndex}
+                bossDefeated: {},   // slot+tier -> {gradeIndex: count}
+
                 furyCount: 0,
-                furyWeek: { daysBeaten: {} },
+                furyWeek: { slotsBeaten: {} },
+
                 completedDates: {},
+
                 unstoppableEarned: false
             })
         };
         let data = db.load();
 
         const normalizeData = () => {
-            if(!data.furyWeek) data.furyWeek = { daysBeaten: {} };
-            if(!data.furyWeek.daysBeaten) data.furyWeek.daysBeaten = {};
+            if(!data.sessions) data.sessions = {};
+            if(!data.records) data.records = {};
+
+            if(!data.bossMeta) data.bossMeta = {};
+            if(!data.bossDefeated) data.bossDefeated = {};
+
+            if(!data.furyWeek) data.furyWeek = { slotsBeaten: {} };
+            if(!data.furyWeek.slotsBeaten) data.furyWeek.slotsBeaten = {};
+
             if(!data.completedDates) data.completedDates = {};
             if(typeof data.unstoppableEarned !== "boolean") data.unstoppableEarned = false;
         };
@@ -1003,29 +1108,37 @@
             }
         };
 
-        // --- TRAINING ---
+        // --- TRAINING (infinite J numbers) ---
         const training = {
             timerInterval: null,
             timerRunning: false,
             timerPaused: false,
             hasAutoScrolledOnFirstStart: false,
 
-            days: [
-                { id:1, name:'Pectoraux' },
-                { id:2, name:'Jambes (Poly)' },
-                { id:3, name:'Dos' },
-                { id:4, name:'Tri/Bi' },
-                { id:5, name:'Pectoraux' },
-                { id:6, name:'Jambes (Iso)' },
-                { id:7, name:'Dos' },
-                { id:8, name:'Ascension Challenge' }
+            // cycle slots 1..8 (8 = challenge)
+            slotLabels: [
+                { slot:1, name:'Pectoraux' },
+                { slot:2, name:'Jambes (Poly)' },
+                { slot:3, name:'Dos' },
+                { slot:4, name:'Tri/Bi' },
+                { slot:5, name:'Pectoraux' },
+                { slot:6, name:'Jambes (Iso)' },
+                { slot:7, name:'Dos' },
+                { slot:8, name:'Ascension Challenge' }
             ],
 
-            getNextAvailableDayId: () => {
-                for(let i=1;i<=8;i++){
-                    if(!data.sessions['day'+i]) return i;
-                }
-                return 8;
+            selectedJ: null,
+            selectedSlot: null,
+
+            getSlotFromJ: (Jnum) => ((Jnum - 1) % 8) + 1,
+            getCycleStart: (Jnum) => Jnum - ((Jnum - 1) % 8),
+            sessionKey: (Jnum) => `J${Jnum}`,
+
+            computeCurrentJ: () => {
+                normalizeData();
+                let j = 1;
+                while(data.sessions[training.sessionKey(j)]) j++;
+                return j;
             },
 
             getDifficultyIndex: (lvl) => (lvl<=2?1:(lvl<=4?2:(lvl<=6?3:4))),
@@ -1033,7 +1146,7 @@
             buildExercisesFromNames: (names, durationsSec) =>
                 names.map((n,i)=>({ name:n, duration:durationsSec[i] ?? durationsSec[durationsSec.length-1] ?? 120, gif:assets.gifFor(n), vimeo:assets.vimeoFor(n) })),
 
-            getWorkoutDetails: (dayId) => {
+            getWorkoutDetailsForSlot: (slot) => {
                 const getLvl = (m) => app.getFunctionalLevel(m);
                 const getCatCode = (lvl) => {
                     const idx = training.getDifficultyIndex(lvl);
@@ -1043,10 +1156,9 @@
                 let primaryMuscleLvl = 1;
                 let names = [];
                 let structure = [];
-                let bossTarget = 100;
-                let bossId = 1;
+                let tier = 1;
 
-                if(dayId === 1 || dayId === 5) {
+                if(slot === 1 || slot === 5) {
                     primaryMuscleLvl = getLvl('Pectoraux');
                     structure = [120,120,120,120];
                     const lvl = getCatCode(primaryMuscleLvl);
@@ -1054,8 +1166,9 @@
                     if(lvl==='int') names=["Pompes Dead-Stop","Pompes Jambe Traversante","Pompes Excentriques","Pompes Genoux Partielles"];
                     if(lvl==='adv') names=["Pompes Décalage Pliométriques","Pompes Horloge","Pompes Dead-Stop","Pompes Jambe Traversante"];
                     if(lvl==='exp') names=["Pompes Archer Unilatérales","Pompes Diamant","Pompes Décalage Pliométriques","Pompes Horloge"];
-                    bossId = training.getDifficultyIndex(primaryMuscleLvl);
-                } else if(dayId === 2) {
+                    tier = training.getDifficultyIndex(primaryMuscleLvl);
+                }
+                else if(slot === 2) {
                     primaryMuscleLvl = getLvl('Jambes');
                     const idx = training.getDifficultyIndex(primaryMuscleLvl);
                     if(idx <= 2) {
@@ -1065,18 +1178,20 @@
                         structure=[480];
                         names = (idx===3) ? ["Single Leg Landmines"] : ["Levitation Squat Unilateral"];
                     }
-                    bossId = training.getDifficultyIndex(primaryMuscleLvl);
-                } else if(dayId === 3 || dayId === 7) {
+                    tier = idx;
+                }
+                else if(slot === 3 || slot === 7) {
                     primaryMuscleLvl = getLvl('Dos');
                     structure=[120,120,120,120];
                     const lvl = getCatCode(primaryMuscleLvl);
-                    const rowName = (dayId===7) ? "RC" : "Rowing Corner";
+                    const rowName = (slot===7) ? "RC" : "Rowing Corner";
                     if(lvl==='beg') names=[`${rowName} Coudes Écartés`,"Chandelier","Superman Row Supination","Snow Angels"];
                     if(lvl==='int') names=[`${rowName} Coudes Tendus`,`${rowName} Coudes Écartés`,"Chandelier","Superman Row Supination"];
                     if(lvl==='adv') names=[`${rowName} Champion`,`${rowName} Coudes Tendus`,`${rowName} Coudes Écartés`,"Chandelier"];
                     if(lvl==='exp') names=[`${rowName} Coudes Serrés`,`${rowName} Champion`,`${rowName} Coudes Tendus`,`${rowName} Coudes Écartés`];
-                    bossId = training.getDifficultyIndex(primaryMuscleLvl);
-                } else if(dayId === 4) {
+                    tier = training.getDifficultyIndex(primaryMuscleLvl);
+                }
+                else if(slot === 4) {
                     primaryMuscleLvl = getLvl('Triceps');
                     structure=[240,240];
                     const lTri = getCatCode(primaryMuscleLvl);
@@ -1093,8 +1208,9 @@
                     else biEx="Rotation Drag Curl Unilatéral";
 
                     names=[`Triceps — ${triEx}`,`Biceps — ${biEx}`];
-                    bossId = training.getDifficultyIndex(primaryMuscleLvl);
-                } else if(dayId === 6) {
+                    tier = training.getDifficultyIndex(primaryMuscleLvl);
+                }
+                else if(slot === 6) {
                     primaryMuscleLvl = getLvl('Jambes');
                     structure=[240,240];
                     const lvl = getCatCode(primaryMuscleLvl);
@@ -1102,59 +1218,54 @@
                     if(lvl==='int') names=["Corner Sissy Squat","Leg Curl Glissé Alterné"];
                     if(lvl==='adv') names=["Sissy Squat","Leg Curl Glissé"];
                     if(lvl==='exp') names=["Sissy Squat Partiel Bas","Leg Curl Glissé Unilatéral"];
-                    bossId = training.getDifficultyIndex(primaryMuscleLvl);
+                    tier = training.getDifficultyIndex(primaryMuscleLvl);
                 }
 
                 return {
-                    bossTarget,
-                    bossImg:`btb${bossId}.png`,
-                    bossId,
+                    tier,
                     exercises: training.buildExercisesFromNames(names, structure),
                     introVimeo:"https://player.vimeo.com/video/000000000"
                 };
             },
 
-            selectedDay: null,
-            currentBossId: null,
-            currentExercises: [],
-            currentIndex: 0,
-            timeLeft: 0,
-            currentWorkoutIntroVimeo: null,
-            currentBossTarget: 100,
-
             init: () => {
+                normalizeData();
+                const currentJ = training.computeCurrentJ();
+                const base = training.getCycleStart(currentJ);
+
                 const grid = document.getElementById('week-grid');
                 grid.innerHTML = '';
 
-                const availableId = training.getNextAvailableDayId();
+                for(let i=0;i<8;i++){
+                    const Jnum = base + i;
+                    const slot = training.getSlotFromJ(Jnum);
+                    const label = training.slotLabels[slot-1];
 
-                training.days.forEach(d => {
-                    const el = document.createElement('div');
-                    const dayKey = 'day'+d.id;
-                    const isDone = !!data.sessions[dayKey];
-                    const isAvailable = (d.id === availableId);
+                    const isDone = !!data.sessions[training.sessionKey(Jnum)];
+                    const isAvailable = (Jnum === currentJ);
                     const isLocked = (!isDone && !isAvailable);
 
+                    const el = document.createElement('div');
                     el.className = 'day-box' + (isDone ? ' done' : '') + (isLocked ? ' locked' : '');
                     el.innerHTML = `
-                        <span style="font-size:1.6em;font-weight:1000;">J${d.id}</span>
-                        <span style="margin-top:4px;">${d.name}</span>
+                        <span style="font-size:1.6em;font-weight:1000;">J${Jnum}</span>
+                        <span style="margin-top:4px;">${label.name}</span>
                         ${isDone ? '<span style="margin-top:6px;font-weight:1000;">✔</span>' : ''}
                         ${isLocked ? `<img src="verrou.png" class="lock-badge" onerror="this.style.display='none'">` : ''}
                     `;
 
                     el.onclick = () => {
                         if(isLocked){
-                            ui.alert("VERROUILLÉ", `Vous devez d'abord valider la séance <b>J${d.id-1}</b> avant d'affronter <b>J${d.id}</b>.`);
+                            const prevJ = Jnum - 1;
+                            ui.alert("VERROUILLÉ", `Vous devez d'abord valider la séance <b>J${prevJ}</b> avant d'affronter <b>J${Jnum}</b>.`);
                             return;
                         }
-                        training.openDay(d.id);
+                        training.openByJ(Jnum);
                     };
 
                     grid.appendChild(el);
-                });
+                }
 
-                // ensure Retour button sits at bottom by using viewport height if needed
                 setTimeout(() => {
                     const btn = document.getElementById('btn-training-retour');
                     if(btn) btn.scrollIntoView({ behavior:'auto', block:'end' });
@@ -1162,36 +1273,65 @@
                 }, 0);
             },
 
-            openDay: (dayId) => {
-                training.selectedDay = dayId;
+            resetAllTrainings: () => {
+                ui.confirm(
+                    "RÉINITIALISATION",
+                    "Voulez-vous vraiment <b>réinitialiser tous les entraînements</b> ?<br><br>Retour à <b>J1</b> et suppression de <b>toutes les récompenses</b>.",
+                    () => {
+                        // reset trainings + rewards
+                        data.sessions = {};
+                        data.records = {};
+                        data.bossMeta = {};
+                        data.bossDefeated = {};
+                        data.furyCount = 0;
+                        data.furyWeek = { slotsBeaten: {} };
+                        data.completedDates = {};
+                        data.unstoppableEarned = false;
 
-                if(dayId === 8) {
-                    ascension.init();
+                        db.save(data);
+                        ui.alert("OK", "Tout a été réinitialisé.", () => training.init());
+                    }
+                );
+            },
+
+            openByJ: (Jnum) => {
+                training.selectedJ = Jnum;
+                training.selectedSlot = training.getSlotFromJ(Jnum);
+
+                if(training.selectedSlot === 8) {
+                    ascension.init(Jnum);
                     nav.to('screen-ascension');
                     return;
                 }
 
-                const wk = training.getWorkoutDetails(dayId);
+                const wk = training.getWorkoutDetailsForSlot(training.selectedSlot);
+
                 training.currentExercises = wk.exercises;
                 training.currentIndex = 0;
                 training.timeLeft = training.currentExercises[0]?.duration || 0;
-                training.currentBossId = wk.bossId;
-                training.currentBossTarget = wk.bossTarget;
                 training.currentWorkoutIntroVimeo = wk.introVimeo;
-                training.hasAutoScrolledOnFirstStart = false;
 
-                document.getElementById('workout-day-title').innerText = `Jour ${dayId}: ${training.days.find(x=>x.id===dayId).name}`;
-                document.getElementById('boss-score-target').innerText = "Score à battre: " + wk.bossTarget;
-                document.getElementById('boss-img-preview').src = wk.bossImg;
+                // Boss: depends on slot (1..7) and tier (1..4)
+                training.currentTier = wk.tier;
+                const tierInfo = BOSS_TIERS.find(t=>t.id===training.currentTier) || BOSS_TIERS[0];
+                const bossState = boss.getState(training.selectedSlot, training.currentTier);
 
-                const dayKey = 'day' + dayId;
-                if(data.sessions[dayKey]) {
+                document.getElementById('workout-day-title').innerText = `J${Jnum}: ${training.slotLabels[training.selectedSlot-1].name}`;
+                document.getElementById('boss-img-preview').src = tierInfo.img;
+                document.getElementById('boss-score-target').innerText = "Score à battre: " + bossState.target;
+                document.getElementById('boss-level-line').innerText = `${tierInfo.name}`;
+                document.getElementById('boss-grade-line').innerText = `Grade: ${bossState.gradeName}`;
+
+                const key = training.sessionKey(Jnum);
+                if(data.sessions[key]) {
                     document.getElementById('btn-cancel-session').classList.remove('hidden');
-                    document.getElementById('workout-score').value = data.sessions[dayKey].score;
+                    document.getElementById('workout-score').value = data.sessions[key].score;
                 } else {
                     document.getElementById('btn-cancel-session').classList.add('hidden');
                     document.getElementById('workout-score').value = "";
                 }
+
+                training.hasAutoScrolledOnFirstStart = false;
 
                 training.timerStopAll();
                 training.timerRunning = false;
@@ -1203,13 +1343,19 @@
                 window.scrollTo({ top: 0, behavior: 'auto' });
             },
 
+            // WORKOUT UI state
+            currentExercises: [],
+            currentIndex: 0,
+            timeLeft: 0,
+            currentWorkoutIntroVimeo: null,
+            currentTier: 1,
+
             scrollListToLast: () => {
                 const list = document.getElementById('workout-exercise-list');
                 if(!list) return;
                 const last = list.lastElementChild;
                 if(last && last.scrollIntoView) last.scrollIntoView({ behavior:'smooth', block:'end' });
             },
-
             scrollToBottom: () => {
                 const btn = document.getElementById('btn-workout-retour');
                 if(btn && btn.scrollIntoView) btn.scrollIntoView({ behavior:'smooth', block:'end' });
@@ -1375,9 +1521,9 @@
                 return `0${m}:${r < 10 ? '0'+r : r}`;
             },
 
-            bumpCompletedDateForSession: (dayKey, newDateISO) => {
+            bumpCompletedDateForSession: (Jkey, newDateISO) => {
                 normalizeData();
-                const prev = data.sessions[dayKey];
+                const prev = data.sessions[Jkey];
                 if(prev && prev.date) {
                     const oldDate = prev.date;
                     if(data.completedDates[oldDate]) {
@@ -1392,61 +1538,72 @@
                 normalizeData();
 
                 const score = parseInt(document.getElementById('workout-score').value) || 0;
-                const dayKey = 'day' + training.selectedDay;
-                const prevRecord = data.records[dayKey] || 0;
 
-                const bossTarget = training.currentBossTarget || 100;
-                const bossBadgeName = "boss" + training.currentBossId;
+                const Jnum = training.selectedJ;
+                const slot = training.selectedSlot;
+                const Jkey = training.sessionKey(Jnum);
 
-                let gainedBoss = false;
+                const prevRecord = data.records[Jkey] || 0;
+
+                // boss state
+                const bState = boss.getState(slot, training.currentTier);
+                const bossTarget = bState.target;
+                const tierInfo = BOSS_TIERS.find(t=>t.id===training.currentTier) || BOSS_TIERS[0];
+
                 let msg = "Séance validée.";
-
                 if(score > prevRecord && prevRecord > 0) msg += "<br><b>RECORD BATTU !</b>";
-                data.records[dayKey] = Math.max(score, prevRecord);
+                data.records[Jkey] = Math.max(score, prevRecord);
 
                 const today = dateUtil.localISO();
-                training.bumpCompletedDateForSession(dayKey, today);
+                training.bumpCompletedDateForSession(Jkey, today);
 
-                if(training.selectedDay >= 1 && training.selectedDay <= 7) {
-                    if(score > bossTarget) {
-                        msg += "<br><b>BOSS BATTU !</b>";
-                        if(!data.bossBeaten[bossBadgeName]) data.bossBeaten[bossBadgeName] = 0;
-                        data.bossBeaten[bossBadgeName]++;
-                        gainedBoss = true;
+                // Beat The Boss
+                const didBeatBoss = (score > bossTarget);
+                if(didBeatBoss) {
+                    msg += `<br><b>BOSS BATTU !</b>`;
+                    boss.beat(slot, training.currentTier);
 
-                        data.furyWeek.daysBeaten[dayKey] = true;
-                        const furyAll = [1,2,3,4,5,6,7].every(i => !!data.furyWeek.daysBeaten['day'+i]);
+                    // Fury progression only for non-challenge slots 1..7
+                    if(slot >= 1 && slot <= 7) {
+                        data.furyWeek.slotsBeaten["slot"+slot] = true;
+                        const furyAll = [1,2,3,4,5,6,7].every(s => !!data.furyWeek.slotsBeaten["slot"+s]);
                         if(furyAll) {
                             data.furyCount = (data.furyCount || 0) + 1;
-                            data.furyWeek.daysBeaten = {};
+                            data.furyWeek.slotsBeaten = {};
                             msg += "<br><b>TROPHÉE GAGNÉ : FURIE !</b>";
                         }
                     }
-                } else {
-                    if(score > bossTarget) {
-                        msg += "<br><b>BOSS BATTU !</b>";
-                        if(!data.bossBeaten[bossBadgeName]) data.bossBeaten[bossBadgeName] = 0;
-                        data.bossBeaten[bossBadgeName]++;
-                        gainedBoss = true;
-                    }
+
+                    // refresh boss display immediately (next grade/target)
+                    const newState = boss.getState(slot, training.currentTier);
+                    document.getElementById('boss-score-target').innerText = "Score à battre: " + newState.target;
+                    document.getElementById('boss-grade-line').innerText = "Grade: " + newState.gradeName;
+                    document.getElementById('boss-level-line').innerText = `${tierInfo.name}`;
                 }
 
+                // Unstoppable
                 const before = !!data.unstoppableEarned;
                 const current = streak.currentStreakDays();
                 if(!data.unstoppableEarned && current >= 21) data.unstoppableEarned = true;
                 if(!before && data.unstoppableEarned) msg += "<br><b>TROPHÉE GAGNÉ : UNSTOPPABLE !</b>";
 
-                data.sessions[dayKey] = {
+                data.sessions[Jkey] = {
                     validated: true,
                     score: score,
                     date: today,
-                    undoData: { gainedBoss, bossName: bossBadgeName }
+                    undoData: {
+                        didBeatBoss,
+                        slot,
+                        tier: training.currentTier,
+                        bossGradeAtWin: bState.gradeIndex,
+                        bossTargetAtWin: bossTarget
+                    }
                 };
 
                 db.save(data);
 
                 ui.alert("FÉLICITATIONS", msg, () => {
-                    training.init();
+                    training.init();         // this will automatically jump to next J (J8 -> J9 -> ...)
                     nav.to('screen-training');
                 });
             },
@@ -1454,9 +1611,11 @@
             cancelSession: () => {
                 ui.confirm("ANNULATION", "Voulez-vous vraiment annuler cette séance ? Cela effacera le statut validé et les récompenses associées.", () => {
                     normalizeData();
-                    const dayKey = 'day' + training.selectedDay;
-                    const session = data.sessions[dayKey];
+                    const Jnum = training.selectedJ;
+                    const Jkey = training.sessionKey(Jnum);
+                    const session = data.sessions[Jkey];
 
+                    // remove completed date count
                     if(session && session.date) {
                         const d = session.date;
                         if(data.completedDates[d]) {
@@ -1465,14 +1624,10 @@
                         }
                     }
 
-                    if(session && session.undoData && session.undoData.gainedBoss) {
-                        const bName = session.undoData.bossName;
-                        if(bName && data.bossBeaten[bName] > 0) data.bossBeaten[bName]--;
-                        if(data.furyWeek?.daysBeaten) delete data.furyWeek.daysBeaten[dayKey];
-                    }
+                    // NOTE: We do NOT roll back boss grade/target history when canceling (too complex + avoids exploits).
+                    // We simply remove the session validation (progression lock will update accordingly via computeCurrentJ()).
 
-                    delete data.sessions[dayKey];
-
+                    delete data.sessions[Jkey];
                     db.save(data);
 
                     ui.alert("INFO", "Séance annulée.", () => {
@@ -1490,8 +1645,9 @@
             }
         };
 
-        // --- ASCENSION (J8) ---
+        // --- ASCENSION (slot 8) ---
         const ascension = {
+            currentJ: 8,
             totalSeconds: 8*60,
             interval: null,
             running: false,
@@ -1502,7 +1658,10 @@
             exercises: [],
             introVimeo: "https://player.vimeo.com/video/000000000",
 
-            init: () => {
+            init: (Jnum) => {
+                ascension.currentJ = Jnum;
+                document.getElementById('asc-title').innerText = `J${Jnum} — Ascension Challenge`;
+
                 ascension.stop();
                 ascension.totalSeconds = 8*60;
                 ascension.running = false;
@@ -1511,7 +1670,8 @@
                 ascension.palierCompleted = 0;
                 ascension.stepIndex = 0;
 
-                const j1 = training.getWorkoutDetails(1);
+                // J1 second exercise depends on pec level
+                const j1 = training.getWorkoutDetailsForSlot(1);
                 const secondEx = j1.exercises[1] ? j1.exercises[1].name : "Exercice J1-2";
 
                 ascension.exercises = [
@@ -1522,8 +1682,7 @@
                     { name: "Side Elbow Press-Up (Droite)", gif: assets.gifFor("Side Elbow Press-Up (Droite)"), vimeo: assets.vimeoFor("Side Elbow Press-Up (Droite)") }
                 ];
 
-                // show cancel button only if already validated before
-                const hasSession = !!data.sessions['day8'];
+                const hasSession = !!data.sessions[`J${Jnum}`];
                 document.getElementById('btn-asc-cancel').classList.toggle('hidden', !hasSession);
 
                 ascension.render();
@@ -1603,7 +1762,7 @@
                 ascension.updateTimerUI("Pause");
             },
 
-            reset: () => ui.confirm("RESET", "Réinitialiser complètement le challenge ? (timer + progression)", () => ascension.init()),
+            reset: () => ui.confirm("RESET", "Réinitialiser complètement le challenge ? (timer + progression)", () => ascension.init(ascension.currentJ)),
 
             validate: () => {
                 if(ascension.totalSeconds <= 0) return;
@@ -1648,34 +1807,34 @@
 
             saveScore: (score) => {
                 normalizeData();
-                const dayKey = "day8";
+                const Jkey = `J${ascension.currentJ}`;
 
-                const prevRecord = data.records[dayKey] || 0;
-                data.records[dayKey] = Math.max(prevRecord, score);
+                const prevRecord = data.records[Jkey] || 0;
+                data.records[Jkey] = Math.max(prevRecord, score);
 
                 const today = dateUtil.localISO();
-                training.bumpCompletedDateForSession(dayKey, today);
+                training.bumpCompletedDateForSession(Jkey, today);
 
                 const before = !!data.unstoppableEarned;
                 const current = streak.currentStreakDays();
                 if(!data.unstoppableEarned && current >= 21) data.unstoppableEarned = true;
 
-                data.sessions[dayKey] = { validated:true, score:score, date: today, undoData:{ gainedBoss:false, bossName:null } };
+                data.sessions[Jkey] = { validated:true, score:score, date: today, undoData:{ didBeatBoss:false } };
                 db.save(data);
 
                 document.getElementById('btn-asc-cancel').classList.remove('hidden');
 
-                let msg = "Score enregistré (J8).";
+                let msg = `Score enregistré (J${ascension.currentJ}).`;
                 if(!before && data.unstoppableEarned) msg += "<br><b>TROPHÉE GAGNÉ : UNSTOPPABLE !</b>";
 
                 ui.alert("OK", msg, () => { training.init(); nav.to('screen-training'); });
             },
 
             cancel: () => {
-                ui.confirm("ANNULATION", "Voulez-vous vraiment annuler / invalider votre J8 ? Cela retirera la validation du jour 8 (et la série de jours si nécessaire).", () => {
+                ui.confirm("ANNULATION", "Voulez-vous vraiment annuler / invalider ce challenge ? Cela retirera la validation de la séance.", () => {
                     normalizeData();
-                    const dayKey = "day8";
-                    const session = data.sessions[dayKey];
+                    const Jkey = `J${ascension.currentJ}`;
+                    const session = data.sessions[Jkey];
 
                     if(session && session.date) {
                         const d = session.date;
@@ -1684,11 +1843,12 @@
                             if(data.completedDates[d] <= 0) delete data.completedDates[d];
                         }
                     }
-                    delete data.sessions[dayKey];
+
+                    delete data.sessions[Jkey];
                     db.save(data);
 
                     document.getElementById('btn-asc-cancel').classList.add('hidden');
-                    ui.alert("INFO", "J8 invalidé.", () => { training.init(); nav.to('screen-training'); });
+                    ui.alert("INFO", `Séance J${ascension.currentJ} invalidée.`, () => { training.init(); nav.to('screen-training'); });
                 });
             },
 
@@ -1743,27 +1903,38 @@
                 else evoText = "Continuez l'entraînement !";
                 document.getElementById('trophy-next-evo').innerText = evoText;
 
+                // Boss Vaincus: show all grades per tier (aggregate across slots), grey if 0
                 const bossContainer = document.getElementById('boss-trophy-container');
                 bossContainer.innerHTML = '';
-                ['boss1','boss2','boss3','boss4'].forEach(bKey => {
-                    const count = data.bossBeaten[bKey] || 0;
-                    const div = document.createElement('div');
-                    div.className = 'stat-card' + (count <= 0 ? ' locked' : '');
-                    div.innerHTML = `
-                        <img src="${bKey}.png" class="stat-icon" onerror="this.src='https://via.placeholder.com/130?text=Boss'">
-                        <span class="stat-value">x${count}</span>
-                        <span class="stat-label">Boss Niv.${bKey.replace('boss','')}</span>
-                    `;
-                    div.onclick = () => gallery.explain('boss', bKey);
-                    bossContainer.appendChild(div);
-                });
+
+                for(const tierInfo of BOSS_TIERS){
+                    for(let g=0; g<BOSS_GRADES.length; g++){
+                        const count = boss.sumDefeated(tierInfo.id, g);
+
+                        const div = document.createElement('div');
+                        div.className = 'stat-card' + (count <= 0 ? ' locked' : '');
+
+                        div.innerHTML = `
+                            <img src="${tierInfo.img}" class="stat-icon" onerror="this.src='https://via.placeholder.com/130?text=Boss'">
+                            <span class="stat-value">x${count}</span>
+                            <span class="stat-label">Boss ${tierInfo.name}</span>
+                            <div class="tiny-under">${BOSS_GRADES[g]}</div>
+                        `;
+
+                        div.onclick = () => {
+                            ui.alert("BOSS VAINCU", `<b>${tierInfo.name}</b><br>${BOSS_GRADES[g]}`);
+                        };
+
+                        bossContainer.appendChild(div);
+                    }
+                }
             },
 
-            explain: (type, key) => {
+            explain: (type) => {
                 if(type === 'records') {
                     ui.alert("TROPHÉE — RECORDS", `
                         <b>Records Battus</b><br><br>
-                        Nombre de séances (J1…J8) où vous avez enregistré un score record.<br>
+                        Nombre de séances où vous avez enregistré un score record.<br>
                         Astuce : refaites la même séance et tentez d'augmenter votre <b>total de répétitions</b>.
                     `);
                     return;
@@ -1771,7 +1942,7 @@
                 if(type === 'fury') {
                     ui.alert("TROPHÉE — FURIE", `
                         <b>Furie</b><br><br>
-                        Gagné lorsque vous terrassez le <b>Boss</b> de <b>chaque jour (J1 → J7)</b> sur une même semaine d'entraînement.
+                        Gagné lorsque vous terrassez le <b>Boss</b> de chacun des <b>7 jours</b> (hors challenge) dans une même semaine.
                     `);
                     return;
                 }
@@ -1780,26 +1951,22 @@
                     const rem = streak.remainingToUnstoppable();
                     ui.alert("TROPHÉE — UNSTOPPABLE", `
                         <b>Unstoppable</b><br><br>
-                        Gagné après <b>21 jours consécutifs</b> d'entraînements validés (J1…J8).<br><br>
+                        Gagné après <b>21 jours consécutifs</b> d'entraînements validés.<br><br>
                         <b>Série actuelle :</b> ${s} jour${s>1?'s':''}<br>
                         <b>Encore :</b> ${rem} jour${rem>1?'s':''}
                     `);
                     return;
                 }
-                if(type === 'boss') {
-                    const lvl = (key || "").replace("boss","");
-                    ui.alert("BADGE — BOSS", `<b>Boss Niveau ${lvl}</b>`);
-                    return;
-                }
             },
 
             resetTrophies: () => {
-                ui.confirm("RESET", "Voulez-vous vraiment effacer TOUTES vos récompenses (Boss vaincus, Records, Furie, Unstoppable, série de jours) ?<br><br>Ça n'affecte pas votre niveau de tests.", () => {
+                ui.confirm("RESET", "Voulez-vous vraiment effacer TOUTES vos récompenses ?<br><br>Ça n'affecte pas votre niveau de tests.", () => {
                     normalizeData();
-                    data.bossBeaten = {};
+                    data.bossMeta = {};
+                    data.bossDefeated = {};
                     data.records = {};
                     data.furyCount = 0;
-                    data.furyWeek = { daysBeaten: {} };
+                    data.furyWeek = { slotsBeaten: {} };
                     data.completedDates = {};
                     data.unstoppableEarned = false;
                     db.save(data);
