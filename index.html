@@ -41,7 +41,7 @@
         .hidden { display: none !important; }
 
         /* BUTTONS */
-        .btn { display: block; width: 100%; padding: 15px; margin: 10px 0; background: var(--card-bg); color: white; border: 1px solid #333; cursor: pointer; text-align: center; font-weight: bold; text-transform: uppercase; border-radius: 8px; transition: 0.2s; }
+        .btn { display: block; width: 100%; padding: 15px; margin: 10px 0; background: var(--card-bg); color: white; border: 1px solid #333; cursor: pointer; text-align: center; font-weight: bold; text-transform: uppercase; border-radius: 10px; transition: 0.2s; }
         .btn:hover { background: #333; }
         .btn-red { background: var(--accent-red); color: black; border: none; }
         .btn-outline { background: transparent; border: 1px solid var(--accent-red); color: var(--accent-red); }
@@ -50,6 +50,14 @@
         .btn-row { display:flex; gap:10px; align-items:center; justify-content:center; }
         .btn-row .btn { width:100%; margin: 10px 0; }
         .btn-small { padding:10px; font-size:0.9em; }
+
+        /* Always-visible validate button style (J8) */
+        .btn-validate {
+            background: var(--accent-yellow) !important;
+            color: #000 !important;
+            border: none !important;
+            font-weight: 900 !important;
+        }
 
         /* IMAGES */
         .main-img { display: block; margin: 0 auto 15px auto; border-radius: 15px; }
@@ -67,40 +75,50 @@
         #global-level-badge { font-size: 1.4em; font-weight: bold; margin-top: 10px; color: var(--accent-yellow); text-shadow: 0 0 5px rgba(0,0,0,0.5); }
 
         /* ELEMENTS */
-        .video-box { background: #000; min-height: 120px; display: flex; align-items: center; justify-content: center; margin: 0 0 20px 0; color: #777; border: 1px solid #333; font-size: 0.85em; width: 100%; border-radius: 10px; padding: 10px; box-sizing: border-box; }
+        .video-box { background: #000; min-height: 120px; display: flex; align-items: center; justify-content: center; margin: 0 0 16px 0; color: #777; border: 1px solid #333; font-size: 0.85em; width: 100%; border-radius: 12px; padding: 10px; box-sizing: border-box; }
         #radar-container { position: relative; width: 100%; height: 350px; margin: 0 auto 20px auto; background: #000; border-radius: 10px; border: 1px solid #333; display: flex; align-items: center; justify-content: center; }
         canvas { max-width: 100%; max-height: 100%; }
+
         .week-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); gap: 10px; margin-bottom: 20px; justify-content: center; }
-        .day-box { aspect-ratio: 1 / 1; background: #333; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 0.9em; border-radius: 8px; cursor: pointer; opacity: 0.6; transition: all 0.2s; border: 1px solid #444; }
+        .day-box { aspect-ratio: 1 / 1; background: #333; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 0.9em; border-radius: 10px; cursor: pointer; opacity: 0.6; transition: all 0.2s; border: 1px solid #444; }
         .day-box:hover { transform: scale(1.05); opacity: 0.8; }
         .day-box.active { border: 2px solid var(--accent-yellow); opacity: 1; background: #2a2a2a; box-shadow: 0 0 10px rgba(255, 235, 59, 0.2); }
         .day-box.done { background: var(--accent-green); color: black; opacity: 1; border: none; font-weight: bold; }
 
-        .timer-overlay { background: #000; padding: 16px; border-radius: 12px; border: 1px solid #333; margin-bottom: 16px; display: flex; flex-direction: column; align-items: center; gap: 6px; }
-        .timer-digits { font-size: 3.3em; font-weight: bold; font-family: monospace; }
-        .timer-state { font-size: 1.05em; color: var(--accent-pink); min-height: 1.5em; }
+        .timer-overlay { background: #000; padding: 16px; border-radius: 14px; border: 1px solid #333; margin-bottom: 14px; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+        .timer-digits { font-size: 3.2em; font-weight: bold; font-family: monospace; }
+        .timer-digits.warning { color: var(--accent-red); }
+        .timer-state { font-size: 1.05em; color: var(--accent-pink); min-height: 1.5em; font-weight: 800; letter-spacing: 0.5px; }
         .timer-warning { animation: flashWarning 0.5s infinite; color: var(--accent-red) !important; }
-        @keyframes flashWarning { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
+        @keyframes flashWarning { 0% { opacity: 1; } 50% { opacity: 0.25; } 100% { opacity: 1; } }
 
-        input[type="number"] { width: 120px; padding: 10px; text-align: center; border-radius: 10px; border: 1px solid #444; font-size: 1.1em; background: #111; color: white; outline: none; }
+        input[type="number"] { width: 140px; padding: 10px; text-align: center; border-radius: 12px; border: 1px solid #444; font-size: 1.1em; background: #111; color: white; outline: none; }
         input[type="number"]:focus { border-color: var(--accent-yellow); box-shadow: 0 0 10px rgba(255,235,59,0.15); }
 
-        /* --- BOSS SECTION (COMPACT) --- */
+        /* --- BOSS SECTION (MORE TIGHT) --- */
         .boss-section {
             border: 1px solid #3a3a3a;
-            padding: 10px;
+            padding: 8px;
             border-radius: 14px;
-            margin: 14px 0;
+            margin: 12px 0;
             background: #151515;
             display: inline-flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 2px; /* tighter */
         }
-        .boss-title { margin: 0; color: var(--accent-red); font-weight: 900; text-transform: uppercase; font-size: 0.95em; letter-spacing: 1px; }
-        #boss-img-preview { width: 225px; height: 225px; object-fit: contain; }
-        #boss-score-target { font-size: 1.05em; font-weight: bold; color: white; margin: 0; }
+        .boss-title {
+            margin: 0;
+            color: var(--accent-red);
+            font-weight: 1000;
+            text-transform: uppercase;
+            font-size: 0.92em;
+            letter-spacing: 1px;
+            line-height: 1.05;
+        }
+        #boss-img-preview { width: 225px; height: 225px; object-fit: contain; margin: 0; }
+        #boss-score-target { font-size: 1.02em; font-weight: 900; color: white; margin: 0; line-height: 1.05; }
 
         /* --- WORKOUT UX --- */
         .workout-wrap { display:flex; flex-direction:column; gap:12px; text-align:left; }
@@ -133,15 +151,16 @@
             cursor: pointer;
         }
         .gif-frame img { width:100%; height:100%; object-fit: cover; display:block; }
+
         .exercise-meta { flex:1; }
-        .exercise-name { font-weight: 900; font-size: 1.05em; color: #fff; margin-bottom: 6px; }
+        .exercise-name { font-weight: 1000; font-size: 1.08em; color: #fff; margin-bottom: 6px; }
         .exercise-pill {
             display:inline-block;
             background:#0d0d0d;
             border:1px solid #333;
             border-radius: 999px;
             padding: 6px 10px;
-            font-weight: 800;
+            font-weight: 900;
             font-size: 0.85em;
             color: var(--accent-pink);
         }
@@ -160,7 +179,7 @@
             padding: 10px 12px;
         }
         .exercise-row .left { display:flex; flex-direction:column; gap:4px; }
-        .exercise-row .name { font-weight:800; color:#fff; font-size:0.95em; }
+        .exercise-row .name { font-weight:900; color:#fff; font-size:0.95em; }
         .exercise-row .time { color:#777; font-size:0.85em; }
         .exercise-row.current { border-color: rgba(255,235,59,0.6); box-shadow: 0 0 10px rgba(255,235,59,0.1); }
         .exercise-row.done { opacity: 0.7; }
@@ -171,24 +190,36 @@
 
         .score-area { display:flex; flex-direction:column; gap:10px; }
         .score-inline { display:flex; gap:10px; align-items:center; justify-content:space-between; flex-wrap:wrap; }
-        .score-inline label { font-weight:900; color:#fff; }
+        .score-inline label { font-weight:1000; color:#fff; }
         .score-help { color:#888; font-size:0.9em; margin-top:-4px; }
 
         /* --- ASCENSION CHALLENGE --- */
         .asc-grid { display:flex; flex-direction:column; gap:12px; }
-        .big-target {
-            font-size: 2.2em;
-            font-weight: 900;
-            color: var(--accent-yellow);
-            text-align:center;
-            margin: 0;
-        }
         .asc-top {
             display:flex;
             gap:12px;
             align-items:stretch;
         }
         .asc-top .card { flex:1; }
+
+        .big-target {
+            font-size: 1.8em;
+            font-weight: 1000;
+            color: var(--accent-yellow);
+            text-align:center;
+            margin: 0;
+            line-height: 1.1;
+        }
+
+        .do-now {
+            font-size: 1.35em;
+            font-weight: 1000;
+            color: #fff;
+            text-align: center;
+            margin: 8px 0 0 0;
+        }
+        .do-now b { color: var(--accent-yellow); }
+
         .asc-validate-sticky {
             position: sticky;
             bottom: 12px;
@@ -209,30 +240,32 @@
         .stat-card {
             background: #1a1a1a;
             border: 1px solid #444;
-            border-radius: 12px;
-            padding: 12px 8px;
+            border-radius: 14px;
+            padding: 10px 8px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 170px;
+            height: 200px; /* a bit higher to maximize image */
             transition: transform 0.1s;
             cursor: pointer;
+            overflow: hidden;
         }
         .stat-card:active { transform: scale(0.98); }
 
-        /* Images plus grosses dans les cadres */
+        /* Images take maximum place */
         .stat-icon {
-            width: 105px;
-            height: 105px;
+            width: 140px;
+            height: 140px;
             object-fit: contain;
             margin-bottom: 6px;
         }
 
         .stat-value {
-            font-size: 1.8em;
-            font-weight: bold;
+            font-size: 1.75em;
+            font-weight: 1000;
             color: var(--accent-yellow);
+            line-height: 1.0;
         }
 
         .stat-label {
@@ -240,8 +273,9 @@
             color: #888;
             margin-top: 5px;
             text-transform: uppercase;
-            font-weight: bold;
+            font-weight: 1000;
             text-align:center;
+            line-height: 1.15;
         }
 
         .whatsapp-icon { width: 24px; vertical-align: middle; margin-left: 10px; }
@@ -257,23 +291,22 @@
         .modal-content {
             background: #1a1a1a;
             border: 2px solid #444;
-            padding: 24px;
-            border-radius: 15px;
-            width: 90%;
+            padding: 22px;
+            border-radius: 16px;
+            width: 92%;
             max-width: 430px;
             text-align: center;
             box-shadow: 0 0 20px rgba(0,0,0,0.8);
             animation: modalPop 0.3s ease-out;
         }
         @keyframes modalPop { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-        .modal-title { font-size: 1.35em; font-weight: bold; margin-bottom: 12px; color: var(--accent-yellow); text-transform: uppercase; }
+        .modal-title { font-size: 1.3em; font-weight: 1000; margin-bottom: 12px; color: var(--accent-yellow); text-transform: uppercase; }
         .modal-msg { font-size: 1.05em; margin-bottom: 18px; line-height: 1.5; }
         .modal-actions { display: flex; gap: 10px; justify-content: center; flex-wrap:wrap; }
-        .modal-btn { padding: 10px 18px; border-radius: 10px; cursor: pointer; border: none; font-weight: bold; text-transform: uppercase; }
+        .modal-btn { padding: 10px 18px; border-radius: 12px; cursor: pointer; border: none; font-weight: 1000; text-transform: uppercase; }
         .btn-modal-confirm { background: var(--accent-green); color: black; }
         .btn-modal-cancel { background: #333; color: white; border: 1px solid #555; }
 
-        /* video iframe in modal */
         .video-iframe {
             width: 100%;
             height: 240px;
@@ -282,6 +315,25 @@
             background:#000;
             margin-top: 10px;
         }
+
+        /* TEST screen emphasis */
+        .test-ex-name {
+            font-size: 1.25em;
+            font-weight: 1000;
+            color: var(--accent-yellow);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 8px 0 6px 0;
+            text-align: center;
+        }
+        .test-do {
+            font-size: 1.35em;
+            font-weight: 1000;
+            color: #fff;
+            margin: 0 0 10px 0;
+            text-align: center;
+        }
+        .test-do b { color: var(--accent-yellow); }
     </style>
 </head>
 <body>
@@ -337,31 +389,52 @@
         <button class="btn btn-danger-zone" onclick="evoLab.resetTests()">⚠️ RÉINITIALISER MES TESTS</button>
     </div>
 
-    <!-- TEST SCREEN (MODIF: validation palier) -->
+    <!-- TEST SCREEN (UPDATED) -->
     <div id="screen-test" class="container hidden">
         <h2 id="test-name">Test</h2>
-        <div class="video-box">[VIDEO VIMEO PLACEHOLDER]</div>
+
+        <div class="video-box">[VIDEO VIMEO PLACEHOLDER — présentation du test]</div>
+
+        <!-- Short principle text (same style as J8 subtle) -->
+        <div id="test-principle" class="subtle" style="text-align:left; margin: 0 0 12px 0;">
+            —
+        </div>
+
+        <!-- GIF + video link (same as training/J8) -->
+        <div class="card" style="margin-bottom: 12px; text-align:left;">
+            <h4>Exercice du test</h4>
+            <div class="current-exercise">
+                <div class="gif-frame" onclick="tests.openExerciseVideo()" title="Clique pour ouvrir la vidéo">
+                    <img id="test-gif" src="https://via.placeholder.com/220x220?text=GIF" alt="GIF exercice test">
+                </div>
+                <div class="exercise-meta">
+                    <div id="test-exercise-highlight" class="exercise-name">—</div>
+                    <div class="subtle">Cliquez sur le GIF pour voir la vidéo de l’exercice.</div>
+                </div>
+            </div>
+        </div>
 
         <div class="timer-overlay">
             <div id="test-instruction-state" class="timer-state">Prêt ?</div>
             <div id="timer-display" class="timer-digits">08:00</div>
-            <div id="current-palier" style="margin-top: 6px; font-size: 1.2em; color:#aaa; font-weight:800;">Palier 1</div>
+            <div id="current-palier" style="margin-top: 2px; font-size: 1.15em; color:#aaa; font-weight:1000;">Palier 1</div>
+
+            <div id="reps-target" class="test-do">Faîtes <b>10</b> répétitions</div>
+
             <div id="palier-status" class="subtle" style="text-align:center; max-width: 420px;">
                 Cliquez <b>VALIDER</b> dès que vous avez réalisé l'objectif du palier.
             </div>
         </div>
 
-        <h3 id="test-exercise-name" style="color: var(--accent-pink); margin-top: 6px;">Exercice</h3>
-        <div id="reps-target" style="color: var(--accent-yellow); font-size: 1.35em; margin-bottom: 10px;">Objectif: 10 reps</div>
+        <div id="test-exercise-name" class="test-ex-name">—</div>
 
-        <button id="btn-start-test" class="btn btn-red" onclick="tests.run()" style="font-weight:900;">LANCER LE TEST</button>
+        <button id="btn-start-test" class="btn btn-red" onclick="tests.run()" style="font-weight:1000;">LANCER LE TEST</button>
 
-        <!-- NOUVEAU: bouton validation palier -->
-        <button id="btn-validate-palier" class="btn hidden" onclick="tests.validatePalier()" style="background: var(--accent-yellow); color:#000; border:none; font-weight:900;">
+        <button id="btn-validate-palier" class="btn hidden" onclick="tests.validatePalier()" style="background: var(--accent-yellow); color:#000; border:none; font-weight:1000;">
             ✅ VALIDER (objectif atteint)
         </button>
 
-        <button id="btn-fail-test" class="btn hidden" onclick="tests.fail()" style="background:#222; border:1px solid var(--accent-red); color: var(--accent-red); font-weight:900;">
+        <button id="btn-fail-test" class="btn hidden" onclick="tests.fail()" style="background:#222; border:1px solid var(--accent-red); color: var(--accent-red); font-weight:1000;">
             J'AI ÉCHOUÉ / FIN
         </button>
 
@@ -380,7 +453,7 @@
         <button class="btn" onclick="nav.to('screen-menu')" style="margin-top: 22px;">Retour</button>
     </div>
 
-    <!-- WORKOUT SCREEN (MODIF: plus clair + gifs + vimeo + timer pause/resume/reset + no auto-start next segment) -->
+    <!-- WORKOUT SCREEN -->
     <div id="screen-workout" class="container hidden">
         <h2 id="workout-day-title">Jour X</h2>
 
@@ -410,7 +483,7 @@
                             <span id="exercise-duration" class="exercise-pill">⏱️ 02:00</span>
                         </div>
                         <div id="exercise-hint" class="subtle" style="margin-top:8px;">
-                            Le chrono démarre sur l'exercice 1. À la fin, on passe automatiquement à l'exercice suivant… mais <b>le nouveau compte à rebours ne démarre pas tout seul</b>.
+                            À la fin, on passe à l'exercice suivant… mais <b>le nouveau compte à rebours ne démarre pas tout seul</b>.
                         </div>
                     </div>
                 </div>
@@ -425,7 +498,7 @@
                     <button id="btn-timer-reset" class="btn btn-small" onclick="training.timerResetCurrent()">🔄 Réinitialiser</button>
                 </div>
                 <div class="subtle" style="text-align:center; margin-top: 6px;">
-                    Astuce : si le chrono est à 00:00, appuyez sur <b>Démarrer</b> pour lancer l'exercice affiché.
+                    Si le chrono est à 00:00, appuyez sur <b>Démarrer</b> pour lancer l'exercice affiché.
                 </div>
             </div>
 
@@ -434,8 +507,9 @@
                 <div id="workout-exercise-list" class="exercise-list"></div>
             </div>
 
+            <!-- Beat the Boss tightened -->
             <div class="boss-section" aria-label="Beat the Boss">
-                <div class="boss-title">Beat The Boss</div>
+                <div class="boss-title">BEAT THE BOSS</div>
                 <img id="boss-img-preview" src="" onerror="this.src='https://via.placeholder.com/225?text=BTB'">
                 <div id="boss-score-target">Score à battre: ???</div>
             </div>
@@ -449,7 +523,7 @@
                 <div class="score-help">
                     Entrez ici le <b>nombre total de répétitions</b> réalisées sur toute la séance (tous les exercices cumulés).
                 </div>
-                <button class="btn btn-red" onclick="training.validateSession()" style="font-weight: 900;">VALIDER LA SÉANCE</button>
+                <button class="btn btn-red" onclick="training.validateSession()" style="font-weight: 1000;">VALIDER LA SÉANCE</button>
                 <button id="btn-cancel-session" class="btn hidden" style="background: #222; color: #f44336; border: 1px solid #f44336;" onclick="training.cancelSession()">ANNULER / INVALIDER</button>
             </div>
 
@@ -457,7 +531,7 @@
         </div>
     </div>
 
-    <!-- ASCENSION CHALLENGE SCREEN (J8) -->
+    <!-- ASCENSION CHALLENGE SCREEN (J8) — MADE CLEARER -->
     <div id="screen-ascension" class="container hidden">
         <h2>J8 — Ascension Challenge</h2>
 
@@ -472,9 +546,9 @@
                         </button>
                     </div>
                 </div>
-                <div class="subtle" style="margin-top:10px;">
-                    Objectif : en 8 minutes, enchaîner les exercices dans l’ordre. Quand vous atteignez le nombre de reps requis sur l’exercice affiché,
-                    cliquez <b>VALIDER</b> pour passer au suivant. Quand tous les exercices du palier sont faits, +2 reps et on recommence.
+                <div class="subtle" style="margin-top:10px; text-align:left;">
+                    En 8 minutes : faites le nombre de répétitions demandé sur <b>l’exercice affiché</b>, puis appuyez sur <b>VALIDER</b> pour passer au suivant.
+                    Quand tous les exercices du palier sont faits, le palier augmente (+2 répétitions).
                 </div>
             </div>
 
@@ -494,19 +568,14 @@
 
                 <div class="card" style="display:flex; flex-direction:column; justify-content:center;">
                     <h4>Palier</h4>
-                    <p class="big-target" id="asc-target-reps">10</p>
-                    <div class="subtle" style="text-align:center;">
-                        Reps requises <b>par exercice</b><br>
-                        (+2 à chaque palier)
-                    </div>
-                    <div class="subtle" style="text-align:center; margin-top:10px;">
-                        <b>Score</b> = paliers complétés ×10 + exercices complétés dans le palier en cours
-                    </div>
+                    <p class="big-target" id="asc-palier-title">Palier 10 répétitions</p>
+                    <p class="do-now" id="asc-do-now">Faîtes <b>10</b> répétitions</p>
                 </div>
             </div>
 
-            <div class="card">
-                <h4>Exercice en cours</h4>
+            <!-- This is the "current" block: validate should bring focus here -->
+            <div class="card" id="asc-current-card">
+                <h4>Exercice à faire maintenant</h4>
                 <div class="current-exercise">
                     <div class="gif-frame" onclick="ascension.openCurrentVideo()" title="Clique pour ouvrir la vidéo">
                         <img id="asc-gif" src="https://via.placeholder.com/220x220?text=GIF" alt="GIF exercice">
@@ -518,7 +587,7 @@
                             <span class="exercise-pill" id="asc-progress-pill">Paliers: 0 • Ex: 0</span>
                         </div>
                         <div class="subtle" style="margin-top:8px;">
-                            Faites <b><span id="asc-target-inline">10</span> reps</b> sur l’exercice affiché, puis cliquez <b>VALIDER</b>.
+                            Objectif immédiat : <b><span id="asc-target-inline">10</span> répétitions</b> sur l’exercice affiché, puis <b>VALIDER</b>.
                         </div>
                     </div>
                 </div>
@@ -530,8 +599,8 @@
             </div>
 
             <div class="asc-validate-sticky">
-                <button id="btn-asc-validate" class="btn btn-red" style="font-weight:900;" onclick="ascension.validate()">
-                    ✅ VALIDER (reps atteintes)
+                <button id="btn-asc-validate" class="btn btn-validate" onclick="ascension.validate()">
+                    ✅ VALIDER (répétitions faites)
                 </button>
             </div>
 
@@ -550,15 +619,30 @@
         <h3 style="border-bottom: 1px solid #333; padding-bottom: 5px; margin-bottom: 15px;">Performances</h3>
         <div class="stats-row">
             <div class="stat-card" onclick="gallery.explain('records')">
-                <img src="record.png" class="stat-icon" onerror="this.src='https://via.placeholder.com/105?text=Rec'">
+                <img src="record.png" class="stat-icon" onerror="this.src='https://via.placeholder.com/140?text=Rec'">
                 <span id="total-records" class="stat-value">0</span>
                 <span class="stat-label">Records Battus</span>
             </div>
 
             <div class="stat-card" onclick="gallery.explain('fury')">
-                <img src="fury.png" class="stat-icon" onerror="this.src='https://via.placeholder.com/105?text=Fury'">
+                <img src="fury.png" class="stat-icon" onerror="this.src='https://via.placeholder.com/140?text=Fury'">
                 <span id="fury-count-display" class="stat-value">0</span>
-                <span class="stat-label">Mode Fury</span>
+                <span class="stat-label">Furie</span>
+            </div>
+        </div>
+
+        <!-- New trophy: Unstoppable -->
+        <h3 style="border-bottom: 1px solid #333; padding-bottom: 5px; margin-bottom: 15px;">Défis</h3>
+        <div class="stats-row">
+            <div class="stat-card" onclick="gallery.explain('unstoppable')">
+                <img src="unstoppable.png" class="stat-icon" onerror="this.src='https://via.placeholder.com/140?text=GO'">
+                <span id="unstoppable-display" class="stat-value">0</span>
+                <span class="stat-label">Unstoppable</span>
+            </div>
+            <div class="stat-card" onclick="gallery.explain('streak')">
+                <img src="streak.png" class="stat-icon" onerror="this.src='https://via.placeholder.com/140?text=Streak'">
+                <span id="weeks-streak-display" class="stat-value">0</span>
+                <span class="stat-label">Semaines parfaites</span>
             </div>
         </div>
 
@@ -582,33 +666,21 @@
                 ui.title.innerText = title;
                 ui.msg.innerHTML = message;
                 ui.actions.innerHTML = '';
-
                 buttons.forEach(btn => {
                     const b = document.createElement('button');
                     b.className = 'modal-btn ' + (btn.class || '');
                     b.innerText = btn.text;
-                    b.onclick = () => {
-                        ui.hide();
-                        if(btn.onClick) btn.onClick();
-                    };
+                    b.onclick = () => { ui.hide(); if(btn.onClick) btn.onClick(); };
                     ui.actions.appendChild(b);
                 });
                 ui.modal.classList.remove('hidden');
             },
-            hide: () => {
-                ui.modal.classList.add('hidden');
-                // stop vimeo iframes by clearing html
-                ui.msg.innerHTML = ui.msg.innerHTML; // lightweight refresh (keeps content)
-            },
-            alert: (title, message, callback) => {
-                ui.show(title, message, [{ text: 'OK', class: 'btn-modal-confirm', onClick: callback }]);
-            },
-            confirm: (title, message, onConfirm) => {
-                ui.show(title, message, [
-                    { text: 'Annuler', class: 'btn-modal-cancel' },
-                    { text: 'Confirmer', class: 'btn-modal-confirm', onClick: onConfirm }
-                ]);
-            },
+            hide: () => ui.modal.classList.add('hidden'),
+            alert: (title, message, callback) => ui.show(title, message, [{ text: 'OK', class: 'btn-modal-confirm', onClick: callback }]),
+            confirm: (title, message, onConfirm) => ui.show(title, message, [
+                { text: 'Annuler', class: 'btn-modal-cancel' },
+                { text: 'Confirmer', class: 'btn-modal-confirm', onClick: onConfirm }
+            ]),
             showResult: (score, callback) => {
                 let rank = "DÉBUTANT";
                 let color = "#ff6ec7";
@@ -617,13 +689,12 @@
                 if(score >= 7) { rank = "EXPERT"; color = "#f44336"; }
 
                 const html = `
-                    <div style="font-size:3em; font-weight:bold; margin-bottom:10px;">${score}</div>
-                    <div style="font-size:1.4em; font-weight:bold; color:${color}; border:2px solid ${color}; padding:10px; border-radius:10px; display:inline-block;">
+                    <div style="font-size:3em; font-weight:1000; margin-bottom:10px;">${score}</div>
+                    <div style="font-size:1.35em; font-weight:1000; color:${color}; border:2px solid ${color}; padding:10px; border-radius:12px; display:inline-block;">
                         ${rank}
                     </div>
                     <div style="margin-top:15px; font-style:italic;">Dernier palier validé</div>
                 `;
-
                 ui.show("RÉSULTAT DU TEST", html, [{ text: 'CONTINUER', class: 'btn-modal-confirm', onClick: callback }]);
             },
             video: (title, vimeoUrl) => {
@@ -639,31 +710,18 @@
         // --- AUDIO ---
         const audio = {
             ctx: null,
-            init: () => {
-                if (!audio.ctx) audio.ctx = new (window.AudioContext || window.webkitAudioContext)();
-            },
+            init: () => { if (!audio.ctx) audio.ctx = new (window.AudioContext || window.webkitAudioContext)(); },
             beep: (type) => {
                 audio.init();
-                const osc = audio.ctx.createOscillator();
-                const gain = audio.ctx.createGain();
-                osc.connect(gain);
-                gain.connect(audio.ctx.destination);
-                osc.type = 'sine';
 
-                if (type === 'long') {
-                    osc.frequency.setValueAtTime(600, audio.ctx.currentTime);
-                    osc.frequency.exponentialRampToValueAtTime(300, audio.ctx.currentTime + 0.5);
-                    gain.gain.setValueAtTime(0.5, audio.ctx.currentTime);
-                    osc.start();
-                    osc.stop(audio.ctx.currentTime + 0.6);
-                } else if(type === 'end') {
-                    // "bips spécifiques" (petite séquence)
+                if(type === 'end') {
+                    // end sequence
                     const t = audio.ctx.currentTime;
                     const seq = [
-                        {f: 900, d: 0.12, g: 0.2},
-                        {f: 700, d: 0.12, g: 0.2},
-                        {f: 1000, d: 0.20, g: 0.25},
-                        {f: 1200, d: 0.25, g: 0.25},
+                        {f: 900, d: 0.12, g: 0.22},
+                        {f: 700, d: 0.12, g: 0.22},
+                        {f: 1000, d: 0.20, g: 0.28},
+                        {f: 1200, d: 0.25, g: 0.30},
                     ];
                     seq.forEach((s, i) => {
                         const o = audio.ctx.createOscillator();
@@ -676,6 +734,20 @@
                         o.stop(t + i*0.18 + s.d);
                     });
                     return;
+                }
+
+                const osc = audio.ctx.createOscillator();
+                const gain = audio.ctx.createGain();
+                osc.connect(gain);
+                gain.connect(audio.ctx.destination);
+                osc.type = 'sine';
+
+                if (type === 'long') {
+                    osc.frequency.setValueAtTime(600, audio.ctx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(300, audio.ctx.currentTime + 0.5);
+                    gain.gain.setValueAtTime(0.5, audio.ctx.currentTime);
+                    osc.start();
+                    osc.stop(audio.ctx.currentTime + 0.6);
                 } else {
                     osc.frequency.value = 880;
                     gain.gain.setValueAtTime(0.12, audio.ctx.currentTime);
@@ -693,8 +765,7 @@
                 .replace(/[^a-z0-9]+/g, "-")
                 .replace(/(^-|-$)/g, ""),
             gifFor: (exerciseName) => `gifs/${assets.slugify(exerciseName)}.gif`,
-            // Placeholders Vimeo : remplacez par vos vraies URLs
-            vimeoFor: (exerciseName) => `https://player.vimeo.com/video/000000000`
+            vimeoFor: (exerciseName) => `https://player.vimeo.com/video/000000000` // placeholder
         };
 
         // --- BACKGROUND FX ---
@@ -730,10 +801,32 @@
             default: () => ({
                 stats: { Pectoraux: 0, Jambes: 0, Dos: 0, Triceps: 0, Biceps: 0 },
                 history: { originalStats: { Pectoraux: 0, Jambes: 0, Dos: 0, Triceps: 0, Biceps: 0 } },
-                sessions: {}, records: {}, bossBeaten: {}, furyCount: 0
+                sessions: {},
+                records: {},
+                bossBeaten: {},
+                furyCount: 0,
+
+                // NEW: progress trackers for trophies
+                furyWeek: { daysBeaten: {} },      // needs boss on day1..day7
+                weekProgress: { daysDone: {} },    // needs training done on day1..day7
+                fullWeeksStreak: 0,                // consecutive perfect weeks
+                unstoppableEarned: false
             })
         };
+
         let data = db.load();
+
+        // normalize older saves
+        const normalizeData = () => {
+            if(!data.furyCount) data.furyCount = 0;
+            if(!data.furyWeek) data.furyWeek = { daysBeaten: {} };
+            if(!data.furyWeek.daysBeaten) data.furyWeek.daysBeaten = {};
+            if(!data.weekProgress) data.weekProgress = { daysDone: {} };
+            if(!data.weekProgress.daysDone) data.weekProgress.daysDone = {};
+            if(typeof data.fullWeeksStreak !== "number") data.fullWeeksStreak = 0;
+            if(typeof data.unstoppableEarned !== "boolean") data.unstoppableEarned = false;
+        };
+        normalizeData();
 
         // --- CORE LOGIC ---
         const app = {
@@ -763,8 +856,7 @@
             },
             updateCharacter: () => {
                 const lvl = app.getGlobalLevel();
-                const imgName = app.getCharImage(lvl);
-                document.getElementById('char-img').src = imgName;
+                document.getElementById('char-img').src = app.getCharImage(lvl);
                 document.getElementById('global-level-badge').innerText = "Niveau " + lvl + " / 40";
             },
             getLevelColor: (val) => {
@@ -775,10 +867,11 @@
             }
         };
 
-        // --- TESTS (MODIF: validation palier obligatoire) ---
+        // --- TESTS (UPDATED: last 10 sec beeper + preparez-vous + red digits + clearer objective) ---
         const tests = {
             currentTest: null,
             interval: null,
+
             config: {
                 'Pectoraux': 'Pompes Dead-Stop',
                 'Jambes': 'Fentes Sautées',
@@ -797,23 +890,45 @@
 
             start: (muscle) => {
                 tests.currentTest = muscle;
+                clearInterval(tests.interval);
+                tests.interval = null;
+
+                const exName = tests.config[muscle];
 
                 document.getElementById('test-name').innerText = "Test " + muscle;
-                document.getElementById('test-exercise-name').innerText = tests.config[muscle];
+                document.getElementById('test-exercise-name').innerText = exName;
+                document.getElementById('test-exercise-highlight').innerText = exName;
 
                 document.getElementById('timer-display').innerText = "08:00";
+                document.getElementById('timer-display').classList.remove('warning');
+
                 document.getElementById('test-instruction-state').innerText = "Prêt ?";
                 document.getElementById('test-instruction-state').classList.remove('timer-warning');
 
-                document.getElementById('reps-target').innerText = "Objectif: 10 reps";
                 document.getElementById('current-palier').innerText = "Palier 1";
+                document.getElementById('reps-target').innerHTML = `Faîtes <b>10</b> répétitions`;
+
                 document.getElementById('palier-status').innerHTML = `Cliquez <b>VALIDER</b> dès que vous avez réalisé l'objectif du palier.`;
+
+                // principle text (short)
+                document.getElementById('test-principle').innerHTML =
+                    `Principe : pendant 8 minutes, vous devez valider chaque palier.<br>
+                    Exercice : <b>${exName}</b>. Dès que vous atteignez le nombre de répétitions du palier, appuyez sur <b>VALIDER</b>.
+                    Si la minute se termine sans validation, le test s’arrête et vous gardez le dernier palier validé.`;
+
+                // gif & video
+                document.getElementById('test-gif').src = assets.gifFor(exName);
 
                 document.getElementById('btn-start-test').classList.remove('hidden');
                 document.getElementById('btn-validate-palier').classList.add('hidden');
                 document.getElementById('btn-fail-test').classList.add('hidden');
 
                 nav.to('screen-test');
+            },
+
+            openExerciseVideo: () => {
+                const exName = tests.config[tests.currentTest] || "Exercice";
+                ui.video("VIDÉO — " + exName, assets.vimeoFor(exName));
             },
 
             run: () => {
@@ -833,19 +948,34 @@
 
                 audio.beep('long');
 
-                const updateUI = () => {
-                    const min = Math.floor(tests.totalSeconds / 60);
-                    const sec = tests.totalSeconds % 60;
-                    document.getElementById('timer-display').innerText = `0${min}:${sec < 10 ? '0'+sec : sec}`;
+                const stateDiv = document.getElementById('test-instruction-state');
+                const digitsEl = document.getElementById('timer-display');
 
+                const fmt = (sec) => {
+                    const m = Math.floor(sec / 60);
+                    const s = sec % 60;
+                    return `0${m}:${s < 10 ? '0'+s : s}`;
+                };
+
+                const nextPalierHint = () => {
+                    const totalNext = Math.max(0, tests.totalSeconds - tests.secondsInMinute);
+                    const nextMin = Math.floor(totalNext / 60);
+                    const nextReps = tests.reps + 2;
+                    return `Lorsque le compte à rebours affichera <b>0${nextMin}:00</b> vous devrez faire <b>${nextReps}</b> répétitions.`;
+                };
+
+                const updateUI = () => {
+                    digitsEl.innerText = fmt(tests.totalSeconds);
                     document.getElementById('current-palier').innerText = "Palier " + tests.palier;
-                    document.getElementById('reps-target').innerText = "Objectif: " + tests.reps + " reps";
+                    document.getElementById('reps-target').innerHTML = `Faîtes <b>${tests.reps}</b> répétitions`;
 
                     const status = document.getElementById('palier-status');
                     if(tests.palierValidated) {
-                        status.innerHTML = `<span style="color: var(--accent-green); font-weight:900;">✅ Palier validé</span> — vous pouvez récupérer jusqu'à la fin de la minute.`;
+                        status.innerHTML =
+                            `<div><span style="color: var(--accent-green); font-weight:1000;">✅ Palier validé</span> — vous pouvez récupérer jusqu'à la fin de la minute.</div>
+                             <div style="margin-top:6px;">${nextPalierHint()}</div>`;
                     } else {
-                        status.innerHTML = `Quand vous atteignez <b>${tests.reps} reps</b>, cliquez <b>VALIDER</b> avant la fin de la minute.`;
+                        status.innerHTML = `Dès que vous atteignez <b>${tests.reps}</b> répétitions, appuyez sur <b>VALIDER</b> avant la fin de la minute.`;
                     }
                 };
 
@@ -855,36 +985,35 @@
                     tests.totalSeconds--;
                     tests.secondsInMinute--;
 
-                    const stateDiv = document.getElementById('test-instruction-state');
-
-                    // warning last 10s if not validated
-                    if(tests.secondsInMinute <= 10 && tests.secondsInMinute > 0 && !tests.palierValidated) {
-                        stateDiv.innerText = "VALIDEZ !";
+                    // last 10 seconds of EACH minute:
+                    if(tests.secondsInMinute <= 10 && tests.secondsInMinute > 0) {
+                        stateDiv.innerText = "PRÉPAREZ-VOUS !";
                         stateDiv.classList.add('timer-warning');
+                        digitsEl.classList.add('warning');
                         audio.beep('short');
                     } else {
+                        digitsEl.classList.remove('warning');
                         stateDiv.classList.remove('timer-warning');
                         stateDiv.innerText = tests.palierValidated ? "Validé ✅" : "En cours...";
                     }
 
                     updateUI();
 
-                    // end of minute => if not validated -> stop like fail, take last validated palier
                     if (tests.secondsInMinute <= 0) {
-                        // overall end
+                        // end of whole test
                         if (tests.totalSeconds <= 0) {
-                            // if palier 8 validated -> score = 8 else last validated
                             const finalScore = tests.palierValidated ? tests.palier : tests.lastValidatedPalier;
                             tests.finish(finalScore);
                             return;
                         }
 
+                        // minute ended without validation => stop
                         if(!tests.palierValidated) {
                             tests.finish(tests.lastValidatedPalier);
                             return;
                         }
 
-                        // go next palier
+                        // next palier
                         audio.beep('long');
                         tests.lastValidatedPalier = tests.palier;
                         tests.palier++;
@@ -892,6 +1021,8 @@
                         tests.secondsInMinute = 60;
                         tests.palierValidated = false;
 
+                        stateDiv.classList.remove('timer-warning');
+                        digitsEl.classList.remove('warning');
                         stateDiv.innerText = "GO !";
                         updateUI();
                     }
@@ -904,20 +1035,14 @@
                 tests.palierValidated = true;
                 tests.lastValidatedPalier = tests.palier;
                 audio.beep('long');
-                document.getElementById('test-instruction-state').classList.remove('timer-warning');
-                document.getElementById('test-instruction-state').innerText = "Validé ✅";
             },
 
-            fail: () => {
-                // stop and take last validated palier (or 0)
-                tests.finish(tests.lastValidatedPalier);
-            },
+            fail: () => tests.finish(tests.lastValidatedPalier),
 
             finish: (score) => {
                 clearInterval(tests.interval);
                 tests.interval = null;
 
-                // clamp
                 if(score < 0) score = 0;
                 if(score > 8) score = 8;
 
@@ -926,6 +1051,7 @@
 
                 document.getElementById('btn-validate-palier').classList.add('hidden');
                 document.getElementById('btn-fail-test').classList.add('hidden');
+                document.getElementById('timer-display').classList.remove('warning');
 
                 ui.showResult(score, () => nav.to('screen-levels'));
             },
@@ -933,6 +1059,7 @@
             quit: () => {
                 clearInterval(tests.interval);
                 tests.interval = null;
+                document.getElementById('timer-display').classList.remove('warning');
                 nav.to('screen-levels');
             }
         };
@@ -950,7 +1077,6 @@
                 const values = [statsObj.Pectoraux, statsObj.Jambes, statsObj.Dos, statsObj.Triceps, statsObj.Biceps];
                 const displayValues = values.map(v => v === 0 ? 1 : v);
                 const pointColors = displayValues.map(v => app.getLevelColor(v));
-
                 if(evoLab.chart) evoLab.chart.destroy();
 
                 evoLab.chart = new Chart(ctx, {
@@ -993,7 +1119,7 @@
             }
         };
 
-        // --- TRAINING CAMP (MODIF: exercises list + gifs/vimeo + timer pause/resume/reset + no auto-start next) ---
+        // --- TRAINING CAMP ---
         const training = {
             timerInterval: null,
             timerRunning: false,
@@ -1007,17 +1133,11 @@
                 { id: 5, name: 'Pectoraux' },
                 { id: 6, name: 'Jambes (Iso)' },
                 { id: 7, name: 'Dos' },
-                { id: 8, name: 'Ascension Challenge' } // NOUVEAU
+                { id: 8, name: 'Ascension Challenge' }
             ],
 
-            getDifficultyIndex: (lvl) => {
-                if(lvl<=2) return 1;
-                if(lvl<=4) return 2;
-                if(lvl<=6) return 3;
-                return 4;
-            },
+            getDifficultyIndex: (lvl) => (lvl<=2?1:(lvl<=4?2:(lvl<=6?3:4))),
 
-            // helper to build exercises array
             buildExercisesFromNames: (names, durationsSec) => {
                 return names.map((n, i) => ({
                     name: n,
@@ -1044,18 +1164,15 @@
                     primaryMuscleLvl = getLvl('Pectoraux');
                     structure = [120, 120, 120, 120];
                     const lvl = getCatCode(primaryMuscleLvl);
-
                     if(lvl === 'beg') names = ["Pompes Excentrique","Pompes Genoux Partielles","Pompes Genoux Excentriques","Pompes Corner"];
                     if(lvl === 'int') names = ["Pompes Dead-Stop","Pompes Jambe Traversante","Pompes Excentriques","Pompes Genoux Partielles"];
                     if(lvl === 'adv') names = ["Pompes Décalage Pliométriques","Pompes Horloge","Pompes Dead-Stop","Pompes Jambe Traversante"];
                     if(lvl === 'exp') names = ["Pompes Archer Unilatérales","Pompes Diamant","Pompes Décalage Pliométriques","Pompes Horloge"];
-
                     bossId = training.getDifficultyIndex(primaryMuscleLvl);
                 }
                 else if(dayId === 2) {
                     primaryMuscleLvl = getLvl('Jambes');
                     const idx = training.getDifficultyIndex(primaryMuscleLvl);
-
                     if(idx <= 2) {
                         structure = [240, 240];
                         if(idx===1) names = ["Fentes Arrières Basses","Frog Jumps"];
@@ -1072,12 +1189,10 @@
                     structure = [120, 120, 120, 120];
                     const lvl = getCatCode(primaryMuscleLvl);
                     let rowName = (dayId === 7) ? "RC" : "Rowing Corner";
-
                     if(lvl === 'beg') names = [`${rowName} Coudes Écartés`,"Chandelier","Superman Row Supination","Snow Angels"];
                     if(lvl === 'int') names = [`${rowName} Coudes Tendus`,`${rowName} Coudes Écartés`,"Chandelier","Superman Row Supination"];
                     if(lvl === 'adv') names = [`${rowName} Champion`,`${rowName} Coudes Tendus`,`${rowName} Coudes Écartés`,"Chandelier"];
                     if(lvl === 'exp') names = [`${rowName} Coudes Serrés`,`${rowName} Champion`,`${rowName} Coudes Tendus`,`${rowName} Coudes Écartés`];
-
                     bossId = training.getDifficultyIndex(primaryMuscleLvl);
                 }
                 else if(dayId === 4) {
@@ -1085,7 +1200,6 @@
                     structure = [240, 240];
                     const lTri = getCatCode(primaryMuscleLvl);
                     const lBi = getCatCode(getLvl('Biceps'));
-
                     let triEx="", biEx="";
                     if(lTri === 'beg') triEx = "Wall Triceps Extension";
                     else if(lTri === 'int') triEx = "Pompes du Sphinx";
@@ -1097,7 +1211,6 @@
                     else if(lBi === 'adv') biEx = "Drag Curl au sol";
                     else biEx = "Rotation Drag Curl Unilatéral";
 
-                    // pour rendre lisible, on crée 2 blocs
                     names = [`Triceps — ${triEx}`, `Biceps — ${biEx}`];
                     bossId = training.getDifficultyIndex(primaryMuscleLvl);
                 }
@@ -1109,28 +1222,25 @@
                     if(lvl === 'int') names = ["Corner Sissy Squat","Leg Curl Glissé Alterné"];
                     if(lvl === 'adv') names = ["Sissy Squat","Leg Curl Glissé"];
                     if(lvl === 'exp') names = ["Sissy Squat Partiel Bas","Leg Curl Glissé Unilatéral"];
-
                     bossId = training.getDifficultyIndex(primaryMuscleLvl);
                 }
 
-                const bossImg = `btb${bossId}.png`;
-                const exercises = training.buildExercisesFromNames(names, structure);
-
                 return {
                     bossTarget,
-                    bossImg,
+                    bossImg: `btb${bossId}.png`,
                     bossId,
-                    exercises,
+                    exercises: training.buildExercisesFromNames(names, structure),
                     introVimeo: "https://player.vimeo.com/video/000000000"
                 };
             },
 
-            // state
             selectedDay: null,
             currentBossId: null,
             currentExercises: [],
             currentIndex: 0,
             timeLeft: 0,
+            currentWorkoutIntroVimeo: null,
+            currentBossTarget: 100,
 
             init: () => {
                 const grid = document.getElementById('week-grid');
@@ -1138,8 +1248,7 @@
                 training.days.forEach(d => {
                     const el = document.createElement('div');
                     el.className = 'day-box';
-                    el.innerHTML = `<span style="font-size:1.5em; font-weight:bold;">J${d.id}</span><span>${d.name}</span>`;
-
+                    el.innerHTML = `<span style="font-size:1.5em; font-weight:1000;">J${d.id}</span><span>${d.name}</span>`;
                     if(data.sessions['day'+d.id]) {
                         el.classList.add('done');
                         el.innerHTML += "<span>✔</span>";
@@ -1152,7 +1261,6 @@
             openDay: (dayId) => {
                 training.selectedDay = dayId;
 
-                // J8 -> screen ascension
                 if(dayId === 8) {
                     ascension.init();
                     nav.to('screen-ascension');
@@ -1160,17 +1268,18 @@
                 }
 
                 const wk = training.getWorkoutDetails(dayId);
+
                 training.currentExercises = wk.exercises;
                 training.currentIndex = 0;
                 training.timeLeft = training.currentExercises[0]?.duration || 0;
+                training.currentBossId = wk.bossId;
+                training.currentBossTarget = wk.bossTarget;
+                training.currentWorkoutIntroVimeo = wk.introVimeo;
 
                 document.getElementById('workout-day-title').innerText = `Jour ${dayId}: ${training.days.find(x=>x.id===dayId).name}`;
                 document.getElementById('boss-score-target').innerText = "Score à battre: " + wk.bossTarget;
                 document.getElementById('boss-img-preview').src = wk.bossImg;
-                training.currentBossId = wk.bossId;
-                training.currentWorkoutIntroVimeo = wk.introVimeo;
 
-                // session validation UI
                 const dayKey = 'day' + dayId;
                 if(data.sessions[dayKey]) {
                     document.getElementById('btn-cancel-session').classList.remove('hidden');
@@ -1180,7 +1289,6 @@
                     document.getElementById('workout-score').value = "";
                 }
 
-                // reset timer
                 training.timerStopAll();
                 training.timerRunning = false;
                 training.timerPaused = false;
@@ -1191,13 +1299,11 @@
             },
 
             renderWorkoutUI: () => {
-                // current exercise display
                 const ex = training.currentExercises[training.currentIndex];
                 document.getElementById('exercise-name-current').innerText = ex ? ex.name : "—";
                 document.getElementById('exercise-gif').src = ex ? ex.gif : "https://via.placeholder.com/220x220?text=GIF";
                 document.getElementById('exercise-duration').innerText = `⏱️ ${training.formatMMSS(ex?.duration || 0)}`;
 
-                // exercise list
                 const list = document.getElementById('workout-exercise-list');
                 list.innerHTML = '';
                 training.currentExercises.forEach((e, i) => {
@@ -1218,12 +1324,10 @@
                     list.appendChild(row);
                 });
 
-                // controls button states
                 training.updateControlButtons();
             },
 
             jumpToExercise: (index) => {
-                // allow jumping only if timer not running (avoid confusion)
                 if(training.timerRunning && !training.timerPaused) {
                     ui.alert("INFO", "Mettez le chrono en pause ou attendez la fin de l'exercice avant de changer.");
                     return;
@@ -1237,9 +1341,7 @@
                 training.updateTimerUI(`Prêt — exercice ${training.currentIndex+1}`);
             },
 
-            openWorkoutIntroVideo: () => {
-                ui.video("VIDÉO — séance", training.currentWorkoutIntroVimeo || "https://player.vimeo.com/video/000000000");
-            },
+            openWorkoutIntroVideo: () => ui.video("VIDÉO — séance", training.currentWorkoutIntroVimeo || "https://player.vimeo.com/video/000000000"),
 
             openCurrentExerciseVideo: () => {
                 const ex = training.currentExercises[training.currentIndex];
@@ -1257,36 +1359,24 @@
 
                 if(training.timerRunning && !training.timerPaused) {
                     startBtn.innerText = "▶️ Reprendre";
-                    startBtn.disabled = true;
-                    startBtn.style.opacity = 0.5;
-                    pauseBtn.disabled = false;
-                    pauseBtn.style.opacity = 1;
+                    startBtn.disabled = true; startBtn.style.opacity = 0.5;
+                    pauseBtn.disabled = false; pauseBtn.style.opacity = 1;
                 } else if(training.timerPaused) {
                     startBtn.innerText = "▶️ Reprendre";
-                    startBtn.disabled = false;
-                    startBtn.style.opacity = 1;
-                    pauseBtn.disabled = true;
-                    pauseBtn.style.opacity = 0.5;
+                    startBtn.disabled = false; startBtn.style.opacity = 1;
+                    pauseBtn.disabled = true; pauseBtn.style.opacity = 0.5;
                 } else {
-                    // not running
                     startBtn.innerText = "▶️ Démarrer";
-                    startBtn.disabled = false;
-                    startBtn.style.opacity = 1;
-                    pauseBtn.disabled = true;
-                    pauseBtn.style.opacity = 0.5;
+                    startBtn.disabled = false; startBtn.style.opacity = 1;
+                    pauseBtn.disabled = true; pauseBtn.style.opacity = 0.5;
                 }
             },
 
             timerStartOrResume: () => {
                 audio.init();
-
-                // if finished all
                 if(training.currentIndex >= training.currentExercises.length) return;
-
-                // already running?
                 if(training.timerRunning && !training.timerPaused) return;
 
-                // resume
                 training.timerPaused = false;
                 training.timerRunning = true;
 
@@ -1298,11 +1388,9 @@
                 training.timerInterval = setInterval(() => {
                     training.timeLeft--;
                     training.updateTimerUI(`Exercice ${training.currentIndex+1}/${training.currentExercises.length}`);
-
                     if(training.timeLeft <= 3 && training.timeLeft > 0) audio.beep('short');
 
                     if(training.timeLeft <= 0) {
-                        // END of this exercise: move to next, but DO NOT auto-start
                         clearInterval(training.timerInterval);
                         training.timerInterval = null;
 
@@ -1337,7 +1425,6 @@
             },
 
             timerResetCurrent: () => {
-                // reset current exercise timer to full duration (no auto start)
                 training.timerStopAll();
                 training.timerRunning = false;
                 training.timerPaused = false;
@@ -1347,10 +1434,7 @@
                 training.updateControlButtons();
             },
 
-            timerStopAll: () => {
-                clearInterval(training.timerInterval);
-                training.timerInterval = null;
-            },
+            timerStopAll: () => { clearInterval(training.timerInterval); training.timerInterval = null; },
 
             formatMMSS: (sec) => {
                 const s = Math.max(0, sec|0);
@@ -1360,10 +1444,13 @@
             },
 
             validateSession: () => {
+                normalizeData();
+
                 const score = parseInt(document.getElementById('workout-score').value) || 0;
                 const dayKey = 'day' + training.selectedDay;
                 const prevRecord = data.records[dayKey] || 0;
-                const bossTarget = 100;
+
+                const bossTarget = training.currentBossTarget || 100;
                 const bossBadgeName = "boss" + training.currentBossId;
 
                 let gainedBoss = false;
@@ -1372,20 +1459,62 @@
                 if(score > prevRecord && prevRecord > 0) msg += "<br><b>RECORD BATTU !</b>";
                 data.records[dayKey] = Math.max(score, prevRecord);
 
-                if(score > bossTarget) {
-                    msg += "<br><b>BOSS BATTU !</b>";
-                    if(!data.bossBeaten[bossBadgeName]) data.bossBeaten[bossBadgeName] = 0;
-                    data.bossBeaten[bossBadgeName]++;
-                    gainedBoss = true;
+                // streak trophies: track weekly completion (days 1..7)
+                const beforeUnstoppable = !!data.unstoppableEarned;
+
+                if(training.selectedDay >= 1 && training.selectedDay <= 7) {
+                    data.weekProgress.daysDone[dayKey] = true;
+
+                    // fury trophy: needs boss beaten each day 1..7
+                    if(score > bossTarget) {
+                        msg += "<br><b>BOSS BATTU !</b>";
+                        if(!data.bossBeaten[bossBadgeName]) data.bossBeaten[bossBadgeName] = 0;
+                        data.bossBeaten[bossBadgeName]++;
+                        gainedBoss = true;
+
+                        data.furyWeek.daysBeaten[dayKey] = true;
+
+                        const furyAll = [1,2,3,4,5,6,7].every(i => !!data.furyWeek.daysBeaten['day'+i]);
+                        if(furyAll) {
+                            data.furyCount = (data.furyCount || 0) + 1;
+                            data.furyWeek.daysBeaten = {};
+                            msg += "<br><b>TROPHÉE GAGNÉ : FURIE !</b>";
+                        }
+                    }
+
+                    // completed a full week (no missed training)
+                    const weekAll = [1,2,3,4,5,6,7].every(i => !!data.weekProgress.daysDone['day'+i]);
+                    if(weekAll) {
+                        data.fullWeeksStreak = (data.fullWeeksStreak || 0) + 1;
+                        data.weekProgress.daysDone = {};
+                        if(data.fullWeeksStreak >= 3) data.unstoppableEarned = true;
+                    }
+
+                    if(!beforeUnstoppable && data.unstoppableEarned) {
+                        msg += "<br><b>TROPHÉE GAGNÉ : UNSTOPPABLE !</b>";
+                    }
+                } else {
+                    // day 8 doesn't count for week trophies
+                    if(score > bossTarget) {
+                        msg += "<br><b>BOSS BATTU !</b>";
+                        if(!data.bossBeaten[bossBadgeName]) data.bossBeaten[bossBadgeName] = 0;
+                        data.bossBeaten[bossBadgeName]++;
+                        gainedBoss = true;
+                    }
                 }
 
                 data.sessions[dayKey] = {
                     validated: true,
                     score: score,
-                    undoData: { gainedBoss: gainedBoss, bossName: bossBadgeName }
+                    undoData: {
+                        gainedBoss: gainedBoss,
+                        bossName: bossBadgeName,
+                        isTrainingDay: (training.selectedDay>=1 && training.selectedDay<=7)
+                    }
                 };
 
                 db.save(data);
+
                 ui.alert("FÉLICITATIONS", msg, () => {
                     training.init();
                     nav.to('screen-training');
@@ -1394,6 +1523,8 @@
 
             cancelSession: () => {
                 ui.confirm("ANNULATION", "Voulez-vous vraiment annuler cette séance ? Cela effacera le statut validé et les récompenses associées.", () => {
+                    normalizeData();
+
                     const dayKey = 'day' + training.selectedDay;
                     const session = data.sessions[dayKey];
 
@@ -1401,11 +1532,18 @@
                         if(session.undoData.gainedBoss) {
                             const bName = session.undoData.bossName;
                             if(data.bossBeaten[bName] > 0) data.bossBeaten[bName]--;
+                            // remove from current fury week map (best-effort)
+                            if(data.furyWeek?.daysBeaten) delete data.furyWeek.daysBeaten[dayKey];
+                        }
+                        if(session.undoData.isTrainingDay) {
+                            // remove from current week map (best-effort)
+                            if(data.weekProgress?.daysDone) delete data.weekProgress.daysDone[dayKey];
                         }
                     }
 
                     delete data.sessions[dayKey];
                     db.save(data);
+
                     ui.alert("INFO", "Séance annulée.", () => {
                         training.init();
                         nav.to('screen-training');
@@ -1428,12 +1566,10 @@
             running: false,
             paused: false,
 
-            // progression
             targetReps: 10,
             palierCompleted: 0,
             stepIndex: 0,
 
-            // exercise list
             exercises: [],
             introVimeo: "https://player.vimeo.com/video/000000000",
 
@@ -1464,11 +1600,12 @@
             },
 
             render: () => {
-                // target
-                document.getElementById('asc-target-reps').innerText = ascension.targetReps;
+                // palier labels
+                document.getElementById('asc-palier-title').innerText = `Palier ${ascension.targetReps} répétitions`;
+                document.getElementById('asc-do-now').innerHTML = `Faîtes <b>${ascension.targetReps}</b> répétitions`;
                 document.getElementById('asc-target-inline').innerText = ascension.targetReps;
 
-                // current
+                // current exercise
                 const ex = ascension.exercises[ascension.stepIndex];
                 document.getElementById('asc-exercise-name').innerText = ex ? ex.name : "—";
                 document.getElementById('asc-gif').src = ex ? ex.gif : "https://via.placeholder.com/220x220?text=GIF";
@@ -1477,7 +1614,7 @@
                 const exDoneInCurrentPalier = ascension.stepIndex;
                 document.getElementById('asc-progress-pill').innerText = `Paliers: ${ascension.palierCompleted} • Ex: ${exDoneInCurrentPalier}`;
 
-                // list
+                // list with pills (keep style)
                 const list = document.getElementById('asc-exercise-list');
                 list.innerHTML = "";
                 ascension.exercises.forEach((e, i) => {
@@ -1486,7 +1623,7 @@
                     row.innerHTML = `
                         <div class="left">
                             <div class="name">${i===ascension.stepIndex ? "▶ " : ""}${e.name}</div>
-                            <div class="time">Objectif: ${ascension.targetReps} reps</div>
+                            <div class="time">Objectif: ${ascension.targetReps} répétitions</div>
                         </div>
                         <div>
                             <span class="exercise-pill ${i<ascension.stepIndex ? "done" : (i===ascension.stepIndex ? "current" : "")}">
@@ -1494,10 +1631,7 @@
                             </span>
                         </div>
                     `;
-                    row.onclick = () => {
-                        // allow opening video on click
-                        ui.video("VIDÉO — " + e.name, e.vimeo);
-                    };
+                    row.onclick = () => ui.video("VIDÉO — " + e.name, e.vimeo);
                     list.appendChild(row);
                 });
             },
@@ -1527,10 +1661,7 @@
                     ascension.totalSeconds--;
                     if(ascension.totalSeconds <= 3 && ascension.totalSeconds > 0) audio.beep('short');
                     ascension.updateTimerUI("En cours...");
-
-                    if(ascension.totalSeconds <= 0) {
-                        ascension.finish();
-                    }
+                    if(ascension.totalSeconds <= 0) ascension.finish();
                 }, 1000);
             },
 
@@ -1543,22 +1674,15 @@
                 ascension.updateTimerUI("Pause");
             },
 
-            reset: () => {
-                ui.confirm("RESET", "Réinitialiser complètement le challenge ? (timer + progression)", () => {
-                    ascension.init();
-                });
-            },
+            reset: () => ui.confirm("RESET", "Réinitialiser complètement le challenge ? (timer + progression)", () => ascension.init()),
 
             validate: () => {
-                // validation reps atteintes -> step++
                 if(ascension.totalSeconds <= 0) return;
-
                 audio.init();
                 audio.beep('long');
 
                 ascension.stepIndex++;
 
-                // completed all exercises -> palier++
                 if(ascension.stepIndex >= ascension.exercises.length) {
                     ascension.palierCompleted++;
                     ascension.stepIndex = 0;
@@ -1566,6 +1690,10 @@
                 }
 
                 ascension.render();
+
+                // focus back to "current" block so user instantly sees what to do now
+                const card = document.getElementById('asc-current-card');
+                if(card) card.scrollIntoView({ behavior: 'smooth', block: 'start' });
             },
 
             finish: () => {
@@ -1579,7 +1707,7 @@
                 const score = (ascension.palierCompleted * 10) + exercisesDoneInCurrentPalier;
 
                 const html = `
-                    <div style="font-size:2.6em; font-weight:900; color: var(--accent-yellow); margin-bottom: 10px;">${score}</div>
+                    <div style="font-size:2.6em; font-weight:1000; color: var(--accent-yellow); margin-bottom: 10px;">${score}</div>
                     <div class="subtle" style="text-align:left;">
                         <b>Paliers complétés :</b> ${ascension.palierCompleted}<br>
                         <b>Exercices complétés</b> dans le palier en cours : ${exercisesDoneInCurrentPalier} / ${ascension.exercises.length}<br><br>
@@ -1596,57 +1724,45 @@
             saveScore: (score) => {
                 const dayKey = "day8";
                 const prevRecord = data.records[dayKey] || 0;
-
-                if(score > prevRecord && prevRecord > 0) {
-                    data.furyCount = (data.furyCount || 0) + 1; // option: vous pouvez enlever si vous ne voulez pas lier au fury
-                }
-
                 data.records[dayKey] = Math.max(prevRecord, score);
-                data.sessions[dayKey] = { validated: true, score: score, undoData: { gainedBoss:false, bossName:null } };
-
+                data.sessions[dayKey] = { validated: true, score: score, undoData: { gainedBoss:false, bossName:null, isTrainingDay:false } };
                 db.save(data);
-                ui.alert("OK", "Score enregistré (J8).", () => {
-                    training.init();
-                    nav.to('screen-training');
-                });
+                ui.alert("OK", "Score enregistré (J8).", () => { training.init(); nav.to('screen-training'); });
             },
 
-            stop: () => {
-                clearInterval(ascension.interval);
-                ascension.interval = null;
-            },
+            stop: () => { clearInterval(ascension.interval); ascension.interval = null; },
 
-            quit: () => {
-                ascension.stop();
-                nav.to('screen-training');
-            }
+            quit: () => { ascension.stop(); nav.to('screen-training'); }
         };
 
-        // --- TROPHY GALLERY (MODIF: explications aussi sur trophées + images plus grosses déjà en CSS) ---
+        // --- TROPHY GALLERY ---
         const gallery = {
             render: () => {
+                normalizeData();
+
                 document.getElementById('trophy-char-img').src = app.getCharImage(app.getGlobalLevel());
 
-                // records count: nombre de jours avec record non nul
                 const recordCount = Object.keys(data.records).filter(k => (data.records[k] || 0) > 0).length;
                 document.getElementById('total-records').innerText = recordCount;
+
+                document.getElementById('fury-count-display').innerText = data.furyCount || 0;
+
+                // Unstoppable display
+                document.getElementById('unstoppable-display').innerText = data.unstoppableEarned ? "✓" : "0";
+                document.getElementById('weeks-streak-display').innerText = data.fullWeeksStreak || 0;
 
                 const lvl = app.getGlobalLevel();
                 const thresholds = [10, 15, 19, 23, 26, 29, 32, 34, 36, 38, 39, 40];
                 let next = thresholds.find(t => t > lvl);
                 let evoText = "";
-
                 if(next) {
                     let diff = next - lvl;
                     evoText = `Plus que ${diff} niveau${diff > 1 ? 'x' : ''} avant évolution !`;
-                } else if (lvl >= 40) {
-                    evoText = "Niveau Maximum atteint !";
-                } else {
-                    evoText = "Continuez l'entraînement !";
-                }
+                } else if (lvl >= 40) evoText = "Niveau Maximum atteint !";
+                else evoText = "Continuez l'entraînement !";
                 document.getElementById('trophy-next-evo').innerText = evoText;
 
-                // boss badges
+                // Boss badges (images maximized by CSS)
                 const bossContainer = document.getElementById('boss-trophy-container');
                 bossContainer.innerHTML = '';
 
@@ -1657,7 +1773,7 @@
                         const div = document.createElement('div');
                         div.className = 'stat-card';
                         div.innerHTML = `
-                            <img src="${bKey}.png" class="stat-icon" onerror="this.src='https://via.placeholder.com/105?text=Win'">
+                            <img src="${bKey}.png" class="stat-icon" onerror="this.src='https://via.placeholder.com/140?text=Win'">
                             <span class="stat-value">x${data.bossBeaten[bKey]}</span>
                             <span class="stat-label">Boss Niv.${bKey.replace('boss','')}</span>
                         `;
@@ -1666,10 +1782,7 @@
                     }
                 });
 
-                const noBossMsg = document.getElementById('no-boss-msg');
-                noBossMsg.style.display = bossFound ? 'none' : 'block';
-
-                document.getElementById('fury-count-display').innerText = data.furyCount || 0;
+                document.getElementById('no-boss-msg').style.display = bossFound ? 'none' : 'block';
             },
 
             explain: (type, key) => {
@@ -1683,10 +1796,29 @@
                 }
 
                 if(type === 'fury') {
-                    ui.alert("TROPHÉE — MODE FURY", `
-                        <b>Mode Fury</b><br><br>
-                        Compteur de moments où vous êtes entré en mode "tout donner".<br>
-                        (À vous de définir la règle exacte : ex. battre un record, finir un challenge, etc.)
+                    ui.alert("TROPHÉE — FURIE", `
+                        <b>Furie</b><br><br>
+                        Gagné lorsque vous terrassez le <b>Boss</b> de <b>chaque jour (J1 → J7)</b> sur une même semaine d'entraînement.
+                        <br><br>
+                        Quand les 7 jours ont leur Boss battu, <b>Furie</b> s'incrémente de +1.
+                    `);
+                    return;
+                }
+
+                if(type === 'unstoppable') {
+                    ui.alert("TROPHÉE — UNSTOPPABLE", `
+                        <b>Unstoppable</b><br><br>
+                        Gagné si vous ne ratez <b>aucun entraînement</b> pendant <b>3 semaines d'affilée</b>.<br>
+                        (Une semaine = avoir validé J1 → J7)
+                    `);
+                    return;
+                }
+
+                if(type === 'streak') {
+                    ui.alert("SUIVI — SEMAINES PARFAITES", `
+                        <b>Semaines parfaites</b><br><br>
+                        Compte le nombre de semaines d'entraînement complètes (J1 → J7).<br>
+                        Unstoppable se débloque à <b>3</b> semaines parfaites d'affilée.
                     `);
                     return;
                 }
@@ -1702,10 +1834,15 @@
             },
 
             resetTrophies: () => {
-                ui.confirm("RESET", "Voulez-vous vraiment effacer TOUTES vos récompenses (Boss vaincus, Records, Mode Fury) ?<br><br>Ça n'affecte pas votre niveau de tests.", () => {
+                ui.confirm("RESET", "Voulez-vous vraiment effacer TOUTES vos récompenses (Boss vaincus, Records, Furie, Unstoppable, etc.) ?<br><br>Ça n'affecte pas votre niveau de tests.", () => {
+                    normalizeData();
                     data.bossBeaten = {};
                     data.records = {};
                     data.furyCount = 0;
+                    data.furyWeek = { daysBeaten: {} };
+                    data.weekProgress = { daysDone: {} };
+                    data.fullWeeksStreak = 0;
+                    data.unstoppableEarned = false;
                     db.save(data);
                     gallery.render();
                     ui.alert("TERMINE", "Toutes les récompenses ont été effacées.");
