@@ -68,10 +68,45 @@
         #radar-container{position:relative;width:100%;height:350px;margin:0 auto 20px auto;background:#000;border-radius:10px;border:1px solid #333;display:flex;align-items:center;justify-content:center;}
         canvas{max-width:100%;max-height:100%;}
 
-        .week-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(80px,1fr));gap:10px;margin-bottom:20px;justify-content:center;}
-        .day-box{aspect-ratio:1/1;background:#333;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:.9em;border-radius:10px;cursor:pointer;opacity:.6;transition:all .2s;border:1px solid #444;}
-        .day-box:hover{transform:scale(1.05);opacity:.8;}
-        .day-box.done{background:var(--accent-green);color:#000;opacity:1;border:none;font-weight:1000;}
+        /* TRAINING GRID - bigger cells + lock */
+        .week-grid{
+            display:grid;
+            grid-template-columns:repeat(2, 1fr);
+            gap:12px;
+            margin:18px 0 12px 0;
+            justify-content:center;
+        }
+        .day-box{
+            position:relative;
+            aspect-ratio:1/1;
+            background:#2b2b2b;
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            justify-content:center;
+            font-size:1.02em;
+            border-radius:14px;
+            cursor:pointer;
+            transition:all .2s;
+            border:1px solid #444;
+            opacity:1;
+            min-height:148px;   /* makes them bigger */
+        }
+        .day-box:hover{transform:scale(1.02);}
+        .day-box.done{background:var(--accent-green);color:#000;border:none;font-weight:1000;}
+        .day-box.locked{
+            background:#202020;
+            opacity:.45;
+            cursor:not-allowed;
+            filter:grayscale(.2);
+        }
+        .lock-badge{
+            position:absolute;
+            top:8px; right:8px;
+            width:28px; height:28px;
+            opacity:.95;
+            pointer-events:none;
+        }
 
         /* TIMER */
         .timer-overlay{background:#000;padding:16px;border-radius:14px;border:1px solid #333;margin-bottom:14px;display:flex;flex-direction:column;align-items:center;gap:6px;}
@@ -143,24 +178,18 @@
             flex-direction:column;
             align-items:center;
             justify-content:center;
-            height:auto;          /* <-- cintré */
+            height:auto;
             cursor:pointer;
             overflow:hidden;
         }
         .stat-card:active{transform:scale(.98);}
-        .stat-icon{
-            width:130px;height:130px;
-            object-fit:contain;
-            margin:0 0 4px 0;
-        }
+        .stat-icon{width:130px;height:130px;object-fit:contain;margin:0 0 4px 0;}
         .stat-icon.smallish{width:118px;height:118px;}
         .stat-value{font-size:1.7em;font-weight:1000;color:var(--accent-yellow);line-height:1.0;}
         .stat-label{font-size:.85em;color:#888;margin-top:4px;text-transform:uppercase;font-weight:1000;text-align:center;line-height:1.15;}
         .tiny-under{font-size:.68em;color:#777;opacity:.9;margin-top:2px;text-align:center;line-height:1.2;}
 
-        /* Locked state: images grisées + translucides */
         .stat-card.locked .stat-icon{filter:grayscale(1);opacity:.35;}
-        .stat-card.locked #boss-img-preview{filter:grayscale(1);opacity:.35;} /* (au cas où) */
 
         .whatsapp-icon{width:24px;vertical-align:middle;margin-left:10px;}
 
@@ -233,7 +262,7 @@
 
         <button class="btn" onclick="window.location.href='https://wa.me/'">La Team PhysiqueRush <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" class="whatsapp-icon"></button>
         <button class="btn" onclick="window.close(); window.location.href='about:blank';">QUITTER</button>
-        <div class="menu-version">v1.27</div>
+        <div class="menu-version">v xyz</div>
     </div>
 
     <!-- LEVELS -->
@@ -306,13 +335,12 @@
 
     <!-- TRAINING -->
     <div id="screen-training" class="container hidden">
-        <h2 style="font-size:2em;text-transform:uppercase;letter-spacing:2px;margin-bottom:18px;">ZONE D'ENTRAÎNEMENT</h2>
-        <div class="subtle" style="text-align:center;margin-bottom:14px;">
-            Choisissez votre séance. Le chrono vous guide exercice par exercice (pause/reprise/reset disponibles).
+        <h2 style="font-size:2em;text-transform:uppercase;letter-spacing:2px;margin-bottom:10px;">ZONE D'ENTRAÎNEMENT</h2>
+        <div class="subtle" style="text-align:center;margin-bottom:10px;">
+            Seul le <b>prochain jour</b> à valider est disponible.
         </div>
         <div class="week-grid" id="week-grid"></div>
-        <div id="training-info" style="margin-top:10px;color:#888;">Sélectionnez votre séance du jour.</div>
-        <button class="btn" onclick="nav.to('screen-menu')" style="margin-top:22px;">Retour</button>
+        <button class="btn" onclick="nav.to('screen-menu')" id="btn-training-retour" style="margin-top:10px;">Retour</button>
     </div>
 
     <!-- WORKOUT -->
@@ -450,6 +478,14 @@
 
         <div style="position:sticky;bottom:12px;z-index:3;margin-top:6px;">
             <button id="btn-asc-validate" class="btn btn-validate" onclick="ascension.validate()">✅ VALIDER (répétitions faites)</button>
+        </div>
+
+        <div class="card score-area" style="margin-top:8px;">
+            <h4>Score du challenge</h4>
+            <div class="subtle" style="margin-top:-4px;">
+                Le score est calculé automatiquement à la fin. Vous pouvez aussi enregistrer / invalider ensuite.
+            </div>
+            <button id="btn-asc-cancel" class="btn hidden" style="background:#222;color:#f44336;border:1px solid #f44336;" onclick="ascension.cancel()">ANNULER / INVALIDER</button>
         </div>
 
         <button class="btn" onclick="ascension.quit()">Retour</button>
@@ -604,7 +640,7 @@
             vimeoFor: (exerciseName) => `https://player.vimeo.com/video/000000000`
         };
 
-        // --- DATE UTILS (streak local) ---
+        // --- DATE UTILS ---
         const dateUtil = {
             localISO: (d = new Date()) => {
                 const y = d.getFullYear();
@@ -661,9 +697,7 @@
                 bossBeaten: {},
                 furyCount: 0,
                 furyWeek: { daysBeaten: {} },
-
-                // NEW: streak day-by-day (counts any validated training including J8)
-                completedDates: {},   // { "YYYY-MM-DD": countOfValidatedSessionsThatDay }
+                completedDates: {},
                 unstoppableEarned: false
             })
         };
@@ -987,6 +1021,13 @@
                 { id:8, name:'Ascension Challenge' }
             ],
 
+            getNextAvailableDayId: () => {
+                for(let i=1;i<=8;i++){
+                    if(!data.sessions['day'+i]) return i;
+                }
+                return 8;
+            },
+
             getDifficultyIndex: (lvl) => (lvl<=2?1:(lvl<=4?2:(lvl<=6?3:4))),
 
             buildExercisesFromNames: (names, durationsSec) =>
@@ -1084,17 +1125,41 @@
             init: () => {
                 const grid = document.getElementById('week-grid');
                 grid.innerHTML = '';
+
+                const availableId = training.getNextAvailableDayId();
+
                 training.days.forEach(d => {
                     const el = document.createElement('div');
-                    el.className = 'day-box';
-                    el.innerHTML = `<span style="font-size:1.5em;font-weight:1000;">J${d.id}</span><span>${d.name}</span>`;
-                    if(data.sessions['day'+d.id]) {
-                        el.classList.add('done');
-                        el.innerHTML += "<span>✔</span>";
-                    }
-                    el.onclick = () => training.openDay(d.id);
+                    const dayKey = 'day'+d.id;
+                    const isDone = !!data.sessions[dayKey];
+                    const isAvailable = (d.id === availableId);
+                    const isLocked = (!isDone && !isAvailable);
+
+                    el.className = 'day-box' + (isDone ? ' done' : '') + (isLocked ? ' locked' : '');
+                    el.innerHTML = `
+                        <span style="font-size:1.6em;font-weight:1000;">J${d.id}</span>
+                        <span style="margin-top:4px;">${d.name}</span>
+                        ${isDone ? '<span style="margin-top:6px;font-weight:1000;">✔</span>' : ''}
+                        ${isLocked ? `<img src="verrou.png" class="lock-badge" onerror="this.style.display='none'">` : ''}
+                    `;
+
+                    el.onclick = () => {
+                        if(isLocked){
+                            ui.alert("VERROUILLÉ", `Vous devez d'abord valider la séance <b>J${d.id-1}</b> avant d'affronter <b>J${d.id}</b>.`);
+                            return;
+                        }
+                        training.openDay(d.id);
+                    };
+
                     grid.appendChild(el);
                 });
+
+                // ensure Retour button sits at bottom by using viewport height if needed
+                setTimeout(() => {
+                    const btn = document.getElementById('btn-training-retour');
+                    if(btn) btn.scrollIntoView({ behavior:'auto', block:'end' });
+                    window.scrollTo({ top: 0, behavior:'auto' });
+                }, 0);
             },
 
             openDay: (dayId) => {
@@ -1310,7 +1375,6 @@
                 return `0${m}:${r < 10 ? '0'+r : r}`;
             },
 
-            // --- STREAK + COMPLETEDDATES bookkeeping ---
             bumpCompletedDateForSession: (dayKey, newDateISO) => {
                 normalizeData();
                 const prev = data.sessions[dayKey];
@@ -1341,11 +1405,8 @@
                 data.records[dayKey] = Math.max(score, prevRecord);
 
                 const today = dateUtil.localISO();
-
-                // streak date counts (J1..J8 inclus)
                 training.bumpCompletedDateForSession(dayKey, today);
 
-                // Furie: semaine complète J1..J7 avec boss battu chaque jour (logic unchanged)
                 if(training.selectedDay >= 1 && training.selectedDay <= 7) {
                     if(score > bossTarget) {
                         msg += "<br><b>BOSS BATTU !</b>";
@@ -1370,7 +1431,6 @@
                     }
                 }
 
-                // Unstoppable: 21 jours consécutifs (J8 inclus)
                 const before = !!data.unstoppableEarned;
                 const current = streak.currentStreakDays();
                 if(!data.unstoppableEarned && current >= 21) data.unstoppableEarned = true;
@@ -1397,7 +1457,6 @@
                     const dayKey = 'day' + training.selectedDay;
                     const session = data.sessions[dayKey];
 
-                    // decrement completedDates if needed
                     if(session && session.date) {
                         const d = session.date;
                         if(data.completedDates[d]) {
@@ -1406,7 +1465,6 @@
                         }
                     }
 
-                    // remove boss reward if previously gained during that validation
                     if(session && session.undoData && session.undoData.gainedBoss) {
                         const bName = session.undoData.bossName;
                         if(bName && data.bossBeaten[bName] > 0) data.bossBeaten[bName]--;
@@ -1415,7 +1473,6 @@
 
                     delete data.sessions[dayKey];
 
-                    // If Unstoppable was earned, we keep it (trophy once earned stays).
                     db.save(data);
 
                     ui.alert("INFO", "Séance annulée.", () => {
@@ -1464,6 +1521,10 @@
                     { name: "Side Elbow Press-Up (Gauche)", gif: assets.gifFor("Side Elbow Press-Up (Gauche)"), vimeo: assets.vimeoFor("Side Elbow Press-Up (Gauche)") },
                     { name: "Side Elbow Press-Up (Droite)", gif: assets.gifFor("Side Elbow Press-Up (Droite)"), vimeo: assets.vimeoFor("Side Elbow Press-Up (Droite)") }
                 ];
+
+                // show cancel button only if already validated before
+                const hasSession = !!data.sessions['day8'];
+                document.getElementById('btn-asc-cancel').classList.toggle('hidden', !hasSession);
 
                 ascension.render();
                 ascension.updateTimerUI("Prêt");
@@ -1589,15 +1650,12 @@
                 normalizeData();
                 const dayKey = "day8";
 
-                // record
                 const prevRecord = data.records[dayKey] || 0;
                 data.records[dayKey] = Math.max(prevRecord, score);
 
-                // streak (J8 compte)
                 const today = dateUtil.localISO();
                 training.bumpCompletedDateForSession(dayKey, today);
 
-                // Unstoppable
                 const before = !!data.unstoppableEarned;
                 const current = streak.currentStreakDays();
                 if(!data.unstoppableEarned && current >= 21) data.unstoppableEarned = true;
@@ -1605,10 +1663,33 @@
                 data.sessions[dayKey] = { validated:true, score:score, date: today, undoData:{ gainedBoss:false, bossName:null } };
                 db.save(data);
 
+                document.getElementById('btn-asc-cancel').classList.remove('hidden');
+
                 let msg = "Score enregistré (J8).";
                 if(!before && data.unstoppableEarned) msg += "<br><b>TROPHÉE GAGNÉ : UNSTOPPABLE !</b>";
 
                 ui.alert("OK", msg, () => { training.init(); nav.to('screen-training'); });
+            },
+
+            cancel: () => {
+                ui.confirm("ANNULATION", "Voulez-vous vraiment annuler / invalider votre J8 ? Cela retirera la validation du jour 8 (et la série de jours si nécessaire).", () => {
+                    normalizeData();
+                    const dayKey = "day8";
+                    const session = data.sessions[dayKey];
+
+                    if(session && session.date) {
+                        const d = session.date;
+                        if(data.completedDates[d]) {
+                            data.completedDates[d]--;
+                            if(data.completedDates[d] <= 0) delete data.completedDates[d];
+                        }
+                    }
+                    delete data.sessions[dayKey];
+                    db.save(data);
+
+                    document.getElementById('btn-asc-cancel').classList.add('hidden');
+                    ui.alert("INFO", "J8 invalidé.", () => { training.init(); nav.to('screen-training'); });
+                });
             },
 
             stop: () => { clearInterval(ascension.interval); ascension.interval = null; },
@@ -1629,17 +1710,14 @@
 
                 document.getElementById('trophy-char-img').src = app.getCharImage(app.getGlobalLevel());
 
-                // Records
                 const recordCount = Object.keys(data.records).filter(k => (data.records[k] || 0) > 0).length;
                 document.getElementById('total-records').innerText = recordCount;
                 gallery.setLocked('card-records', recordCount <= 0);
 
-                // Furie
                 const fury = data.furyCount || 0;
                 document.getElementById('fury-count-display').innerText = fury;
                 gallery.setLocked('card-fury', fury <= 0);
 
-                // Unstoppable (21 jours consécutifs)
                 const hasUnstoppable = !!data.unstoppableEarned;
                 document.getElementById('unstoppable-display').innerText = hasUnstoppable ? "✓" : "0";
                 gallery.setLocked('card-unstoppable', !hasUnstoppable);
@@ -1654,7 +1732,6 @@
                     remEl.style.opacity = 0.95;
                 }
 
-                // Evo next
                 const lvl = app.getGlobalLevel();
                 const thresholds = [10,15,19,23,26,29,32,34,36,38,39,40];
                 const next = thresholds.find(t => t > lvl);
@@ -1666,7 +1743,6 @@
                 else evoText = "Continuez l'entraînement !";
                 document.getElementById('trophy-next-evo').innerText = evoText;
 
-                // Boss cards: ALWAYS show boss1..boss4 (locked if 0)
                 const bossContainer = document.getElementById('boss-trophy-container');
                 bossContainer.innerHTML = '';
                 ['boss1','boss2','boss3','boss4'].forEach(bKey => {
@@ -1696,8 +1772,6 @@
                     ui.alert("TROPHÉE — FURIE", `
                         <b>Furie</b><br><br>
                         Gagné lorsque vous terrassez le <b>Boss</b> de <b>chaque jour (J1 → J7)</b> sur une même semaine d'entraînement.
-                        <br><br>
-                        Quand les 7 jours ont leur Boss battu, <b>Furie</b> s'incrémente de +1.
                     `);
                     return;
                 }
@@ -1706,7 +1780,7 @@
                     const rem = streak.remainingToUnstoppable();
                     ui.alert("TROPHÉE — UNSTOPPABLE", `
                         <b>Unstoppable</b><br><br>
-                        Gagné après <b>21 jours consécutifs</b> d'entraînements validés (J1…J8, <b>J8 inclus</b>).<br><br>
+                        Gagné après <b>21 jours consécutifs</b> d'entraînements validés (J1…J8).<br><br>
                         <b>Série actuelle :</b> ${s} jour${s>1?'s':''}<br>
                         <b>Encore :</b> ${rem} jour${rem>1?'s':''}
                     `);
@@ -1714,12 +1788,7 @@
                 }
                 if(type === 'boss') {
                     const lvl = (key || "").replace("boss","");
-                    const c = data.bossBeaten[key] || 0;
-                    ui.alert("BADGE — BOSS", `
-                        <b>Boss Niveau ${lvl}</b><br><br>
-                        Nombre de Boss battus : <b>x${c}</b><br>
-                        (Le badge augmente quand vous battez le Boss : score supérieur à la cible.)
-                    `);
+                    ui.alert("BADGE — BOSS", `<b>Boss Niveau ${lvl}</b>`);
                     return;
                 }
             },
