@@ -1,5 +1,5 @@
 // NOM DU CACHE
-const CACHE_NAME = 'physiquerush-v2.01';
+const CACHE_NAME = 'physiquerush-v2.02';
 
 // Liste de tous les fichiers à mettre en cache pour le mode hors ligne
 const ASSETS_TO_CACHE = [
