@@ -1,0 +1,2832 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>PhysiqueRush - Massive Impact</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#ffeb3b">
+
+  <!-- FONTS -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    :root{
+      --bg-color:#121212;
+      --text-color:#ffffff;
+      --accent-pink:#ff6ec7;
+      --accent-green:#4caf50;
+      --accent-yellow:#ffeb3b;
+      --accent-red:#f44336;
+
+      --card-bg:#1e1e1e;
+      --modal-bg:rgba(0,0,0,0.85);
+
+      --glass-bg: rgba(0,0,0,0.38);
+      --glass-bg-strong: rgba(0,0,0,0.52);
+      --glass-border: rgba(255,255,255,0.14);
+      --glass-shadow: 0 8px 22px rgba(0,0,0,0.40);
+
+      --muted:#9aa0a6;
+      --lock-dim: 0.35;
+      --radius: 14px;
+    }
+
+    /* --- GLOBAL --- */
+    *{ box-sizing:border-box; }
+    html, body { height:100%; }
+    body{
+      margin:0;
+      font-family: "Rajdhani", system-ui, -apple-system, Segoe UI, Arial, sans-serif;
+      color:var(--text-color);
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      min-height:100vh;
+      padding-bottom: env(safe-area-inset-bottom);
+      background:transparent;
+      overflow-x:hidden;
+    }
+
+    /* Long texts use Roboto/Open Sans */
+    .longtext, .modal-msg, .video-box, #training-info, #workout-list, #test-principle, #j8-principle{
+      font-family: "Roboto","Open Sans", system-ui, -apple-system, Segoe UI, Arial, sans-serif;
+      letter-spacing: 0.1px;
+    }
+
+    #app-background{ position:fixed; inset:0; background-color:var(--bg-color); z-index:-2; }
+    #lightning-container{ position:fixed; inset:0; z-index:-1; pointer-events:none; overflow:hidden; }
+    .lightning-flash{ position:absolute; max-width:none; opacity:0.8; pointer-events:none; }
+
+    .container{
+      width:95%;
+      max-width:520px;
+      padding:18px 18px 14px 18px;
+      text-align:center;
+      position:relative;
+      z-index:1;
+    }
+    .hidden{ display:none !important; }
+
+    /* --- BUTTONS --- */
+    .btn{
+      display:block;
+      width:100%;
+      padding:14px 14px;
+      margin:10px 0;
+      background:var(--card-bg);
+      color:white;
+      border:1px solid #333;
+      cursor:pointer;
+      text-align:center;
+      font-weight:700;
+      text-transform:uppercase;
+      border-radius:10px;
+      transition: transform .12s ease, background .2s ease, opacity .2s ease;
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
+      text-shadow: 0 1px 0 rgba(0,0,0,.45);
+    }
+    .btn:active{ transform: scale(0.985); }
+    .btn:hover{ background:#333; }
+    .btn-outline{ background:transparent; border:1px solid var(--accent-red); color:var(--accent-red); }
+    .btn-danger-zone{
+      margin-top:18px;
+      border:1px solid var(--accent-red);
+      color:var(--accent-red);
+      opacity:0.75;
+      font-size:.9em;
+      background:transparent;
+    }
+
+    /* --- IMAGES --- */
+    .main-img{ display:block; margin:0 auto 12px auto; border-radius:15px; }
+    .logo-reduced{ width:20%; max-width:80px; }
+
+    /* --- CUSTOM MODAL --- */
+    #custom-modal{
+      position:fixed; inset:0;
+      background-color:var(--modal-bg);
+      z-index:9999;
+      display:flex; align-items:center; justify-content:center;
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      padding: 18px;
+    }
+    .modal-content{
+      background:#141414;
+      border:2px solid #444;
+      padding:24px 18px;
+      border-radius:16px;
+      width: min(440px, 92vw);
+      text-align:center;
+      box-shadow: 0 0 22px rgba(0,0,0,0.8);
+      animation: modalPop .28s ease-out;
+    }
+    @keyframes modalPop{ from{ transform:scale(.86); opacity:0; } to{ transform:scale(1); opacity:1; } }
+    .modal-title{
+      font-size:1.55em; font-weight:800; margin-bottom:10px;
+      color:var(--accent-yellow);
+      text-transform:uppercase;
+      letter-spacing: .8px;
+      text-shadow: 0 2px 0 rgba(0,0,0,.45);
+    }
+    .modal-msg{ font-size:1.05em; margin-bottom:18px; line-height:1.45; color:#e9e9e9; }
+    .modal-actions{ display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
+    .modal-btn{
+      padding:10px 16px;
+      border-radius:10px;
+      cursor:pointer;
+      border:none;
+      font-weight:800;
+      text-transform:uppercase;
+      letter-spacing:.5px;
+      min-width: 120px;
+    }
+    .btn-modal-confirm{ background:var(--accent-green); color:black; }
+    .btn-modal-cancel{ background:#222; color:white; border:1px solid #444; }
+
+    /* --- GENERAL UI BLOCKS --- */
+    .panel{
+      background: rgba(0,0,0,.35);
+      border:1px solid rgba(255,255,255,.10);
+      border-radius: 14px;
+      padding: 12px;
+      box-shadow: var(--glass-shadow);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    .video-box{
+      background:#000;
+      height:150px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      margin: 0 0 10px 0;
+      color:#666;
+      border:1px solid #333;
+      font-size:0.9em;
+      width:100%;
+      border-radius: 12px;
+      overflow:hidden;
+    }
+
+    /* --- HUD MENU --- */
+    #screen-menu.hud{
+      width:100%;
+      max-width:none;
+      padding:0;
+      height: 100vh;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:flex-start;
+      overflow:hidden;
+    }
+
+    .hud-top{
+      position:fixed;
+      top:0;
+      left:0;
+      width:100%;
+      height: 56px;
+      padding: 10px 12px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      z-index: 5;
+      pointer-events:auto;
+    }
+
+    .hud-top .hud-logo{
+      width: 34px; height: 34px;
+      object-fit:contain;
+      opacity: .9;
+      filter: drop-shadow(0 2px 2px rgba(0,0,0,.6));
+    }
+
+    .hud-close{
+      width: 34px; height: 34px;
+      object-fit:contain;
+      opacity: .9;
+      cursor:pointer;
+      filter: drop-shadow(0 2px 2px rgba(0,0,0,.65));
+      transition: transform .12s ease, opacity .2s ease;
+    }
+    .hud-close:active{ transform: scale(.95); opacity: .75; }
+
+    .hud-level{
+      width: min(360px, 56vw);
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(0,0,0,.22);
+      border: 1px solid rgba(255,255,255,.12);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      box-shadow: 0 6px 16px rgba(0,0,0,.35);
+      position: relative;
+      overflow:hidden;
+    }
+    .hud-level .bar{
+      height: 7px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.12);
+      overflow:hidden;
+      position:relative;
+    }
+    .hud-level .bar > span{
+      display:block;
+      height:100%;
+      width: 0%;
+      border-radius: 999px;
+      background: rgba(255, 235, 59, .85);
+      box-shadow: 0 0 10px rgba(255,235,59,.25);
+    }
+    .hud-level .label{
+      margin-top: 3px;
+      font-size: .92em;
+      font-weight: 700;
+      color: rgba(255,255,255,.92);
+      text-align:center;
+      letter-spacing: .6px;
+      text-shadow: 0 2px 0 rgba(0,0,0,.35);
+      line-height: 1.05;
+    }
+
+    .hud-scene{
+      width: min(520px, 100%);
+      padding: 76px 16px 0 16px; /* leave room for top bar */
+      flex: 1 1 auto;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      pointer-events:none;
+    }
+    .hud-alien{
+      width: min(280px, 64vw);
+      max-width: 310px;
+      height:auto;
+      filter: drop-shadow(0 18px 18px rgba(0,0,0,.55));
+      transform: translateZ(0);
+      animation: floaty 4.2s ease-in-out infinite;
+    }
+    @keyframes floaty{
+      0%{ transform: translateY(0px); }
+      50%{ transform: translateY(-8px); }
+      100%{ transform: translateY(0px); }
+    }
+
+    .hud-dock{
+      position:fixed;
+      left:0;
+      width:100%;
+      bottom:0;
+      padding: 12px 14px calc(12px + env(safe-area-inset-bottom)) 14px;
+      z-index: 6;
+      display:flex;
+      justify-content:center;
+      pointer-events:auto;
+    }
+    .hud-dock-inner{
+      width: min(520px, 100%);
+      display:flex;
+      flex-direction:column;
+      gap: 10px;
+    }
+
+    .hud-row{
+      display:flex;
+      gap: 10px;
+      width:100%;
+      align-items:stretch;
+      justify-content:space-between;
+    }
+
+    .hud-btn{
+      border-radius: 14px;
+      border: 1px solid var(--glass-border);
+      background: var(--glass-bg);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      box-shadow: var(--glass-shadow);
+      color: rgba(255,255,255,.96);
+      font-weight: 800;
+      text-transform:uppercase;
+      letter-spacing: .9px;
+      cursor:pointer;
+      padding: 14px 12px;
+      text-shadow: 0 2px 0 rgba(0,0,0,.45);
+      transition: transform .12s ease, background .2s ease, border-color .2s ease;
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      line-height: 1.05;
+    }
+    .hud-btn:active{ transform: scale(.985); }
+    .hud-btn:hover{ background: rgba(0,0,0,.48); border-color: rgba(255,255,255,.18); }
+
+    .hud-major{
+      width: 50%;
+      min-height: 56px;
+      font-size: 1.1em;
+    }
+    .hud-support-center{
+      width: 70%;
+      min-height: 52px;
+      font-size: 1.05em;
+    }
+    .hud-icon{
+      width: 15%;
+      min-height: 52px;
+      padding: 10px;
+    }
+    .hud-icon img{
+      width: 24px;
+      height: 24px;
+      object-fit:contain;
+      filter: drop-shadow(0 2px 2px rgba(0,0,0,.55));
+      opacity:.95;
+    }
+
+    .hud-version{
+      width:100%;
+      text-align:center;
+      font-size: 10px;
+      opacity:.22;
+      letter-spacing: 1px;
+      margin-top: 2px;
+      user-select:none;
+    }
+
+    /* --- LEVELS / EVOLAB --- */
+    #radar-container{
+      position:relative;
+      width:100%;
+      height:350px;
+      margin: 0 auto 16px auto;
+      background:#000;
+      border-radius: 12px;
+      border:1px solid #333;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    canvas{ max-width:100%; max-height:100%; }
+
+    /* --- TEST SCREEN --- */
+    .timer-overlay{
+      background: rgba(0,0,0,.55);
+      padding: 14px 12px;
+      border-radius: 14px;
+      border:1px solid rgba(255,255,255,.10);
+      margin-bottom: 12px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      box-shadow: var(--glass-shadow);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+    .timer-state{
+      font-size: 1.12em;
+      color: var(--accent-pink);
+      margin-bottom: 4px;
+      min-height: 1.4em;
+      font-weight: 700;
+      text-shadow: 0 2px 0 rgba(0,0,0,.35);
+    }
+    .timer-digits{
+      font-size: 3.4em;
+      font-weight: 800;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      letter-spacing: 1px;
+      text-shadow: 0 3px 0 rgba(0,0,0,.35);
+    }
+    .timer-warning{ animation: flashWarning .5s infinite; color: var(--accent-red) !important; }
+    @keyframes flashWarning{ 0%{opacity:1;} 50%{opacity:.25;} 100%{opacity:1;} }
+    .digits-warning{ color: var(--accent-red) !important; }
+
+    .test-ex-title{
+      font-size: 1.35em;
+      font-weight: 900;
+      letter-spacing: .6px;
+      color: var(--accent-yellow);
+      text-transform: uppercase;
+      margin: 8px 0 8px 0;
+      text-shadow: 0 3px 0 rgba(0,0,0,.35);
+    }
+    .test-goal{
+      font-size: 1.18em;
+      font-weight: 800;
+      margin-bottom: 10px;
+      color: rgba(255,255,255,.92);
+      text-shadow: 0 2px 0 rgba(0,0,0,.35);
+    }
+
+    /* --- EXERCISE MEDIA (GIF -> VIDEO) --- */
+    .media-card{
+      display:flex;
+      gap: 12px;
+      align-items:center;
+      justify-content:flex-start;
+      padding: 10px;
+      margin: 10px 0 12px 0;
+      border-radius: 14px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.35);
+      box-shadow: var(--glass-shadow);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      text-align:left;
+    }
+    .media-gif{
+      width: 92px;
+      height: 68px;
+      border-radius: 12px;
+      background:#000;
+      border:1px solid rgba(255,255,255,.10);
+      overflow:hidden;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex: 0 0 auto;
+      cursor:pointer;
+      position:relative;
+    }
+    .media-gif img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      opacity:.95;
+    }
+    .media-gif::after{
+      content:"▶";
+      position:absolute;
+      right:8px;
+      bottom:6px;
+      font-weight:900;
+      font-size: 14px;
+      color: rgba(255,255,255,.92);
+      text-shadow: 0 2px 0 rgba(0,0,0,.55);
+      background: rgba(0,0,0,.35);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 999px;
+      width: 22px;
+      height: 22px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding-left: 1px;
+    }
+    .media-text{
+      flex: 1 1 auto;
+      display:flex;
+      flex-direction:column;
+      gap: 2px;
+    }
+    .media-text .title{
+      font-weight: 900;
+      letter-spacing:.5px;
+      text-transform: uppercase;
+      font-size: 1.02em;
+    }
+    .media-text .sub{
+      font-size: .92em;
+      color: rgba(255,255,255,.72);
+    }
+
+    /* --- TRAINING SCREEN (LOCKED PROGRESSION) --- */
+    #screen-training{
+      min-height: 100vh;
+      display:flex;
+      flex-direction:column;
+      padding-bottom: calc(14px + env(safe-area-inset-bottom));
+    }
+    .training-title{
+      font-size: 2em;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin: 6px 0 12px 0;
+      text-shadow: 0 3px 0 rgba(0,0,0,.35);
+    }
+
+    .week-grid{
+      display:grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-rows: repeat(2, minmax(86px, 1fr));
+      gap: 12px;
+      width:100%;
+      margin: 8px 0 10px 0;
+      flex: 1 1 auto;
+      align-content: stretch;
+    }
+    .day-box{
+      position:relative;
+      background: rgba(0,0,0,.30);
+      border:1px solid rgba(255,255,255,.12);
+      border-radius: 14px;
+      box-shadow: var(--glass-shadow);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap: 4px;
+      cursor:pointer;
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
+      transition: transform .12s ease, opacity .2s ease;
+      overflow:hidden;
+      min-height: 92px;
+    }
+    .day-box:active{ transform: scale(.985); }
+    .day-box .day-n{
+      font-size: 1.75em;
+      font-weight: 900;
+      letter-spacing: .5px;
+    }
+    .day-box .day-name{
+      font-size: .95em;
+      font-weight: 700;
+      color: rgba(255,255,255,.80);
+      margin-top:-2px;
+    }
+    .day-box.done{
+      background: rgba(76,175,80,.85);
+      color: #061006;
+      border-color: rgba(0,0,0,.25);
+      text-shadow:none;
+    }
+    .day-box.done .day-name{ color: rgba(0,0,0,.75); }
+    .day-box.locked{
+      opacity: var(--lock-dim);
+      cursor: pointer;
+      filter: grayscale(0.9);
+    }
+    .lock-badge{
+      position:absolute;
+      top:8px;
+      right:8px;
+      width: 22px;
+      height: 22px;
+      opacity: .9;
+      filter: drop-shadow(0 2px 2px rgba(0,0,0,.6));
+      pointer-events:none;
+    }
+
+    #training-info{
+      color: rgba(255,255,255,.65);
+      margin: 6px 0 6px 0;
+      font-size: .95em;
+      min-height: 24px;
+    }
+
+    /* --- WORKOUT SCREEN --- */
+    #screen-workout{
+      padding-bottom: calc(18px + env(safe-area-inset-bottom));
+    }
+
+    .workout-header{
+      display:flex;
+      flex-direction:column;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .workout-list{
+      display:flex;
+      flex-direction:column;
+      gap: 10px;
+      margin: 10px 0 14px 0;
+      text-align:left;
+    }
+
+    .ex-card{
+      display:flex;
+      gap: 10px;
+      align-items:center;
+      padding: 10px;
+      border-radius: 14px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.32);
+      box-shadow: var(--glass-shadow);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      transition: opacity .2s ease, transform .12s ease;
+    }
+    .ex-status{
+      flex: 0 0 auto;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-weight: 900;
+      font-size: .82em;
+      letter-spacing: .8px;
+      text-transform: uppercase;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.25);
+      color: rgba(255,255,255,.85);
+      min-width: 80px;
+      text-align:center;
+    }
+    .ex-status.done{
+      background: rgba(76,175,80,.85);
+      border-color: rgba(0,0,0,.18);
+      color:#061006;
+      text-shadow:none;
+    }
+    .ex-status.current{
+      background: rgba(255,235,59,.92);
+      border-color: rgba(0,0,0,.18);
+      color:#1a1a1a;
+      text-shadow:none;
+    }
+    .ex-name{
+      flex: 1 1 auto;
+      font-weight: 900;
+      letter-spacing: .4px;
+      text-transform: uppercase;
+      font-size: 1.02em;
+    }
+
+    .workout-chrono-panel{
+      margin-top: 10px;
+    }
+
+    .chrono-controls{
+      display:flex;
+      gap: 10px;
+      width:100%;
+      margin-top: 10px;
+    }
+    .chrono-controls .btn{
+      margin: 0;
+      padding: 10px 10px;
+      font-size: .95em;
+    }
+
+    /* Beat the Boss panel: centered, tight around image + texts */
+    .boss-wrap{
+      display:flex;
+      justify-content:center;
+      margin: 10px 0 12px 0;
+      width:100%;
+    }
+    .boss-panel{
+      display:inline-flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap: 6px;
+      padding: 10px 10px 10px 10px;
+      border-radius: 16px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.32);
+      box-shadow: var(--glass-shadow);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      text-align:center;
+    }
+    #boss-img-preview{
+      width:225px; height:225px; object-fit:contain;
+    }
+    .boss-title{
+      font-weight: 900;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--accent-red);
+      margin-top: 0;
+      font-size: 1.15em;
+      text-shadow: 0 2px 0 rgba(0,0,0,.35);
+    }
+    .boss-sub{
+      font-weight: 800;
+      color: rgba(255,255,255,.92);
+      letter-spacing: .6px;
+      text-shadow: 0 2px 0 rgba(0,0,0,.35);
+    }
+    .boss-grade{
+      font-size: .95em;
+      color: rgba(255,255,255,.70);
+      font-weight: 700;
+      margin-top: -2px;
+    }
+
+    .score-hint{
+      font-size: .95em;
+      color: rgba(255,255,255,.70);
+      margin: 6px 0 6px 0;
+      text-align:left;
+    }
+    .score-row{
+      display:flex;
+      gap: 10px;
+      align-items:center;
+      justify-content:space-between;
+      margin-top: 10px;
+      flex-wrap:wrap;
+    }
+    input[type="number"]{
+      width: 100%;
+      padding: 12px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.12);
+      font-size: 1.15em;
+      background: rgba(0,0,0,.35);
+      color: white;
+      box-shadow: var(--glass-shadow);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      text-align:center;
+      font-family: "Rajdhani", sans-serif;
+      font-weight: 800;
+    }
+
+    /* --- J8 SCREEN --- */
+    #screen-j8{
+      padding-bottom: calc(18px + env(safe-area-inset-bottom));
+    }
+
+    .j8-top{
+      display:flex;
+      flex-direction:column;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .j8-kpi{
+      display:flex;
+      gap: 10px;
+      width:100%;
+    }
+    .kpi{
+      flex:1;
+      padding: 12px 10px;
+      border-radius: 14px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.32);
+      box-shadow: var(--glass-shadow);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+    .kpi .label{
+      font-size: .92em;
+      color: rgba(255,255,255,.70);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .6px;
+    }
+    .kpi .value{
+      font-size: 1.55em;
+      font-weight: 900;
+      margin-top: 2px;
+      color: var(--accent-yellow);
+      text-shadow: 0 2px 0 rgba(0,0,0,.35);
+    }
+
+    .j8-current{
+      padding: 14px 12px;
+      border-radius: 16px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.40);
+      box-shadow: var(--glass-shadow);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      text-align:center;
+    }
+    .j8-current .palier{
+      font-size: 1.05em;
+      color: rgba(255,255,255,.85);
+      font-weight: 800;
+      letter-spacing: .7px;
+      text-transform: uppercase;
+    }
+    .j8-current .reps{
+      font-size: 2.15em;
+      font-weight: 900;
+      color: var(--accent-yellow);
+      margin-top: 4px;
+      text-shadow: 0 3px 0 rgba(0,0,0,.35);
+    }
+    .j8-current .ex{
+      font-size: 1.15em;
+      font-weight: 900;
+      letter-spacing: .5px;
+      text-transform: uppercase;
+      margin-top: 4px;
+    }
+    .btn-validate{
+      background: var(--accent-green);
+      color: #061006;
+      border: none;
+      font-weight: 900;
+      letter-spacing: 1px;
+    }
+    .btn-validate:hover{ background: #66cf6a; }
+
+    /* J8 exercise list */
+    .j8-list{
+      display:flex;
+      flex-direction:column;
+      gap: 10px;
+      margin: 12px 0 14px 0;
+      text-align:left;
+    }
+
+    /* --- TROPHIES --- */
+    .collapsible{
+      margin: 12px 0;
+      border-radius: 14px;
+      overflow:hidden;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.25);
+      box-shadow: var(--glass-shadow);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+    .collapsible summary{
+      list-style:none;
+      cursor:pointer;
+      padding: 14px 12px;
+      font-weight: 900;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      text-align:center; /* requested */
+      user-select:none;
+      position:relative;
+      -webkit-tap-highlight-color: transparent;
+      text-shadow: 0 2px 0 rgba(0,0,0,.35);
+    }
+    .collapsible summary::-webkit-details-marker{ display:none; }
+    .collapsible summary::after{
+      content:"▾";
+      position:absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      opacity:.8;
+      font-size: 18px;
+    }
+    .collapsible[open] summary::after{ content:"▴"; }
+
+    .stats-row{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      padding: 12px;
+    }
+
+    .stat-card{
+      background: rgba(0,0,0,.28);
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: 14px;
+      padding: 10px 8px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap: 6px;
+      min-height: 150px;
+      box-shadow: 0 10px 22px rgba(0,0,0,.35);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      cursor:pointer;
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
+      transition: transform .12s ease, opacity .2s ease, filter .2s ease;
+      position:relative;
+      overflow:hidden;
+    }
+    .stat-card:active{ transform: scale(.985); }
+
+    /* Tight/center around image + texts (requested) */
+    .stat-icon{
+      width: 110px;
+      height: 110px;
+      object-fit: contain;
+      margin-bottom: 2px;
+    }
+    .stat-value{
+      font-size: 1.7em;
+      font-weight: 900;
+      color: var(--accent-yellow);
+      text-shadow: 0 2px 0 rgba(0,0,0,.35);
+      line-height: 1;
+    }
+    .stat-label{
+      font-size: 0.88em;
+      color: rgba(255,255,255,.72);
+      text-transform: uppercase;
+      font-weight: 800;
+      letter-spacing: .8px;
+      margin-top: -2px;
+      text-align:center;
+    }
+
+    .gray-card{
+      opacity: .42;
+      filter: grayscale(1);
+    }
+
+    /* smaller helper under unstoppable */
+    .tiny-sub{
+      font-size: 0.82em;
+      color: rgba(255,255,255,.65);
+      margin-top: -2px;
+      font-weight: 700;
+    }
+
+    /* --- Vimeo overlay --- */
+    #video-modal{
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.85);
+      z-index: 9998;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding: 18px;
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+    }
+    #video-modal .video-wrap{
+      width: min(740px, 96vw);
+      aspect-ratio: 16 / 9;
+      background:#000;
+      border:1px solid rgba(255,255,255,.12);
+      border-radius: 16px;
+      overflow:hidden;
+      box-shadow: 0 18px 40px rgba(0,0,0,.55);
+      position: relative;
+    }
+    #video-modal .video-wrap iframe{
+      width:100%;
+      height:100%;
+      border:0;
+      display:block;
+    }
+    #video-modal .close-x{
+      position:absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(0,0,0,.45);
+      border: 1px solid rgba(255,255,255,.14);
+      color: white;
+      font-weight: 900;
+      border-radius: 999px;
+      width: 36px;
+      height: 36px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      cursor:pointer;
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
+      text-shadow: 0 2px 0 rgba(0,0,0,.35);
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app-background"></div>
+  <div id="lightning-container"></div>
+
+  <!-- CUSTOM MODAL -->
+  <div id="custom-modal" class="hidden">
+    <div class="modal-content">
+      <div id="modal-title" class="modal-title">TITRE</div>
+      <div id="modal-msg" class="modal-msg">Message ici</div>
+      <div id="modal-actions" class="modal-actions"></div>
+    </div>
+  </div>
+
+  <!-- VIDEO MODAL (VIMEO) -->
+  <div id="video-modal" class="hidden">
+    <div class="video-wrap">
+      <div class="close-x" onclick="videoUI.close()">✕</div>
+      <iframe id="video-iframe" src="" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+    </div>
+  </div>
+
+  <!-- =========================
+       HUD MENU (NEW)
+  ========================== -->
+  <div id="screen-menu" class="container hud">
+    <!-- Top HUD -->
+    <div class="hud-top">
+      <img src="physiquerush.png" class="hud-logo" alt="Logo" onerror="this.style.display='none'">
+      <div class="hud-level" aria-label="Progression">
+        <div class="bar"><span id="hud-level-fill"></span></div>
+        <div id="hud-level-label" class="label">Niveau 0 / 40</div>
+      </div>
+      <img src="fermer.png" class="hud-close" alt="Quitter" onerror="this.style.display='none'" onclick="app.quitApp()">
+    </div>
+
+    <!-- Scene (empty UI, just hero) -->
+    <div class="hud-scene">
+      <img id="char-img" class="hud-alien" src="evo1.png" alt="Alien" onerror="this.src='https://via.placeholder.com/260x280?text=ALIEN'">
+    </div>
+
+    <!-- Bottom dock -->
+    <div class="hud-dock">
+      <div class="hud-dock-inner">
+        <div class="hud-row">
+          <button class="hud-btn hud-major" onclick="nav.to('screen-levels')">SALLE DES TESTS</button>
+          <button class="hud-btn hud-major" onclick="nav.to('screen-training')">ZONE D'ENTRAÎNEMENT</button>
+        </div>
+
+        <div class="hud-row">
+          <button class="hud-btn hud-icon" onclick="nav.to('screen-trophy')" aria-label="Récompenses">
+            <img src="recompenses.png" alt="" onerror="this.src='https://via.placeholder.com/24?text=★'">
+          </button>
+
+          <button class="hud-btn hud-support-center" onclick="ui.alert('Patience...', 'Le Module Nutri-Rush sera bientôt disponible !')">
+            NUTRI-RUSH
+          </button>
+
+          <button class="hud-btn hud-icon" onclick="window.location.href='https://wa.me/'" aria-label="La Team">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="">
+          </button>
+        </div>
+
+        <div class="hud-version">PhysiqueRUSH® - v2.00</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================
+       LEVELS / TESTS
+  ========================== -->
+  <div id="screen-levels" class="container hidden">
+    <h2 style="margin-top:6px;">SALLE DES TESTS</h2>
+    <button class="btn" onclick="evoLab.init()">Evolution Lab</button>
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+      <button class="btn" onclick="tests.start('Pectoraux')">Test Pecs</button>
+      <button class="btn" onclick="tests.start('Jambes')">Test Jambes</button>
+      <button class="btn" onclick="tests.start('Dos')">Test Dos</button>
+      <button class="btn" onclick="tests.start('Triceps')">Test Triceps</button>
+      <button class="btn" onclick="tests.start('Biceps')">Test Biceps</button>
+    </div>
+    <button class="btn" onclick="nav.to('screen-menu')" style="margin-top:18px;">Retour</button>
+  </div>
+
+  <div id="screen-evolab" class="container hidden">
+    <h3 style="margin-top:6px;">Evolution Lab</h3>
+    <div id="radar-container">
+      <canvas id="radarChart"></canvas>
+    </div>
+    <div id="evolab-global" style="font-size: 1.2em; color: var(--accent-yellow); font-weight: 900; margin-bottom: 10px;"></div>
+    <button class="btn" onclick="nav.to('screen-levels')">Retour</button>
+    <button class="btn btn-danger-zone" onclick="evoLab.resetTests()">⚠️ RÉINITIALISER MES TESTS</button>
+  </div>
+
+  <div id="screen-test" class="container hidden">
+    <h2 id="test-name" style="margin-top:6px;">Test</h2>
+
+    <div class="video-box">[VIDEO VIMEO PLACEHOLDER]</div>
+
+    <div id="test-principle" class="longtext" style="text-align:left; color:rgba(255,255,255,.72); font-size:.95em; line-height:1.35; margin: 6px 0 10px 0;">
+      <!-- set dynamically -->
+    </div>
+
+    <div class="media-card">
+      <div class="media-gif" onclick="videoUI.open(tests.currentMedia?.vimeo)">
+        <img id="test-gif" src="gif_placeholder.gif" alt="GIF" onerror="this.src='https://via.placeholder.com/160x120?text=GIF'">
+      </div>
+      <div class="media-text">
+        <div class="title" id="test-media-title">Aperçu exercice</div>
+        <div class="sub">Touchez le GIF pour ouvrir la vidéo.</div>
+      </div>
+    </div>
+
+    <div class="timer-overlay">
+      <div id="test-instruction-state" class="timer-state">Prêt ?</div>
+      <div id="timer-display" class="timer-digits">08:00</div>
+      <div id="current-palier" style="margin-top: 8px; font-size: 1.05em; color:rgba(255,255,255,.72); font-weight:800;">Palier 10 répétitions</div>
+    </div>
+
+    <div id="test-exercise-name" class="test-ex-title">Exercice</div>
+    <div id="reps-target" class="test-goal">Faîtes 10 répétitions</div>
+
+    <button id="btn-start-test" class="btn" onclick="tests.run()" style="font-weight:900;">LANCER LE TEST</button>
+    <button id="btn-validate-palier" class="btn btn-validate hidden" onclick="tests.validateCurrentPalier()">✅ VALIDER LES RÉPÉTITIONS</button>
+    <button id="btn-fail-test" class="btn hidden" onclick="tests.fail()">J'ai échoué / Fin</button>
+
+    <button id="btn-test-back" class="btn" onclick="tests.quit()">Retour</button>
+  </div>
+
+  <!-- =========================
+       TRAINING
+  ========================== -->
+  <div id="screen-training" class="container hidden">
+    <h2 class="training-title">ZONE D'ENTRAÎNEMENT</h2>
+
+    <div class="week-grid" id="week-grid"></div>
+
+    <div id="training-info" class="longtext">Sélectionnez votre séance du jour.</div>
+
+    <button class="btn btn-danger-zone" onclick="training.resetAll()">⚠️ RÉINITIALISER TOUS LES ENTRAÎNEMENTS</button>
+    <button class="btn" onclick="nav.to('screen-menu')" style="margin-top:auto;">Retour</button>
+  </div>
+
+  <!-- WORKOUT (regular days) -->
+  <div id="screen-workout" class="container hidden">
+    <div class="workout-header">
+      <h2 id="workout-day-title" style="margin:6px 0 0 0;">Jour</h2>
+      <div class="video-box">[VIDEO VIMEO SÉANCE]</div>
+    </div>
+
+    <!-- Current exercise media -->
+    <div class="media-card" id="workout-media">
+      <div class="media-gif" onclick="videoUI.open(training.currentExerciseMedia?.vimeo)">
+        <img id="workout-gif" src="gif_placeholder.gif" alt="GIF" onerror="this.src='https://via.placeholder.com/160x120?text=GIF'">
+      </div>
+      <div class="media-text">
+        <div class="title" id="workout-media-title">Exercice en cours</div>
+        <div class="sub">Touchez le GIF pour ouvrir la vidéo.</div>
+      </div>
+    </div>
+
+    <!-- Chrono -->
+    <div id="workout-chrono-panel" class="timer-overlay workout-chrono-panel hidden">
+      <div id="workout-timer-state" class="timer-state">Exercice 1/4</div>
+      <div id="workout-timer-digits" class="timer-digits">02:00</div>
+
+      <div class="chrono-controls">
+        <button class="btn" id="btn-chrono-start" onclick="training.timer.start()">DÉMARRER</button>
+        <button class="btn" id="btn-chrono-pause" onclick="training.timer.pause()">PAUSE</button>
+      </div>
+      <div class="chrono-controls">
+        <button class="btn btn-outline" id="btn-chrono-resume" onclick="training.timer.resume()">REPRENDRE</button>
+        <button class="btn btn-outline" id="btn-chrono-reset" onclick="training.timer.reset()">RÉINITIALISER</button>
+      </div>
+    </div>
+
+    <button id="btn-start-workout-timer" class="btn" onclick="training.openChrono()">⏱️ OUVRIR LE CHRONO</button>
+
+    <!-- Clear visual list -->
+    <div id="workout-list" class="workout-list"></div>
+
+    <!-- Beat the Boss -->
+    <div class="boss-wrap" id="boss-wrap">
+      <div class="boss-panel">
+        <div class="boss-title">BEAT THE BOSS</div>
+        <img id="boss-img-preview" src="" alt="Boss" onerror="this.src='https://via.placeholder.com/225?text=BTB'">
+        <div id="boss-grade" class="boss-grade">Grade : Biomasse Inerte</div>
+        <div id="boss-score-target" class="boss-sub">Score à battre: 100</div>
+      </div>
+    </div>
+
+    <!-- Validation -->
+    <div id="validation-zone">
+      <div class="score-hint longtext">Entrez ici le <b>total de répétitions</b> réalisées sur toute la séance (somme de tous les exercices).</div>
+      <input type="number" id="workout-score" placeholder="Total de répétitions">
+      <button class="btn btn-validate" onclick="training.validateSession()">VALIDER LA SÉANCE</button>
+    </div>
+
+    <button id="btn-cancel-session" class="btn hidden" style="background: transparent; color: var(--accent-red); border: 1px solid var(--accent-red);" onclick="training.cancelSession()">ANNULER / INVALIDER</button>
+    <button class="btn" id="btn-workout-back" onclick="training.quit()">Retour</button>
+  </div>
+
+  <!-- J8 Ascension Challenge -->
+  <div id="screen-j8" class="container hidden">
+    <h2 id="j8-title" style="margin-top:6px;">J8 - Ascension Challenge</h2>
+
+    <div class="video-box">[VIDEO VIMEO PLACEHOLDER]</div>
+
+    <div id="j8-principle" class="longtext" style="text-align:left; color:rgba(255,255,255,.72); font-size:.95em; line-height:1.35; margin: 6px 0 10px 0;">
+      <!-- intentionally concise; score calc explained at the end -->
+      Validez chaque exercice dès que le nombre requis est atteint. Le challenge dure 8 minutes.
+    </div>
+
+    <div class="j8-top">
+      <div class="j8-kpi">
+        <div class="kpi">
+          <div class="label">Temps restant</div>
+          <div class="value" id="j8-time">08:00</div>
+        </div>
+        <div class="kpi">
+          <div class="label">Progression</div>
+          <div class="value" id="j8-progress">0 / 5</div>
+        </div>
+      </div>
+
+      <div class="j8-current">
+        <div class="palier" id="j8-palier-label">Palier 10 répétitions</div>
+        <div class="reps" id="j8-reps">10 répétitions</div>
+        <div class="ex" id="j8-ex">Exercice</div>
+      </div>
+
+      <div class="media-card">
+        <div class="media-gif" onclick="videoUI.open(j8.currentMedia?.vimeo)">
+          <img id="j8-gif" src="gif_placeholder.gif" alt="GIF" onerror="this.src='https://via.placeholder.com/160x120?text=GIF'">
+        </div>
+        <div class="media-text">
+          <div class="title" id="j8-media-title">Exercice en cours</div>
+          <div class="sub">Touchez le GIF pour ouvrir la vidéo.</div>
+        </div>
+      </div>
+
+      <button class="btn btn-validate" id="btn-j8-validate" onclick="j8.validate()">✅ VALIDER L’EXERCICE</button>
+      <button class="btn" id="btn-j8-start" onclick="j8.start()">▶️ DÉMARRER LE CHALLENGE</button>
+      <button class="btn btn-outline" id="btn-j8-pause" onclick="j8.pause()">PAUSE</button>
+      <button class="btn btn-outline" id="btn-j8-resume" onclick="j8.resume()">REPRENDRE</button>
+      <button class="btn btn-outline" id="btn-j8-reset" onclick="j8.reset()">RÉINITIALISER</button>
+    </div>
+
+    <div id="j8-list" class="j8-list"></div>
+
+    <div id="j8-validation-zone" class="hidden">
+      <div class="score-hint longtext">Score du challenge (calculé automatiquement) :</div>
+      <input type="number" id="j8-score" placeholder="Score" disabled>
+      <button class="btn btn-validate" onclick="j8.saveSession()">VALIDER LA SÉANCE</button>
+    </div>
+
+    <button id="btn-j8-cancel-session" class="btn hidden" style="background: transparent; color: var(--accent-red); border: 1px solid var(--accent-red);" onclick="j8.cancelSession()">ANNULER / INVALIDER</button>
+    <button class="btn" onclick="j8.quit()">Retour</button>
+  </div>
+
+  <!-- =========================
+       TROPHIES
+  ========================== -->
+  <div id="screen-trophy" class="container hidden">
+    <h2 style="margin-top:6px;">RÉCOMPENSES ET STATS</h2>
+
+    <div style="margin-bottom: 10px; padding: 10px;">
+      <img id="trophy-char-img" src="" style="width: 200px; margin: 0 auto; display:block;" onerror="this.src='https://via.placeholder.com/200x240?text=ALIEN'">
+      <div id="trophy-next-evo" style="color: rgba(255,255,255,.72); font-size: 0.95em; margin-top: 8px; font-style: italic;"></div>
+    </div>
+
+    <details class="collapsible" open>
+      <summary>TROPHÉES</summary>
+      <div class="stats-row" id="trophy-cards"></div>
+    </details>
+
+    <details class="collapsible">
+      <summary>BOSS VAINCUS</summary>
+      <div class="stats-row" id="boss-cards"></div>
+    </details>
+
+    <details class="collapsible">
+      <summary>STATISTIQUES</summary>
+      <div style="padding: 12px; color: rgba(255,255,255,.55);" class="longtext">
+        <!-- empty for now -->
+      </div>
+    </details>
+
+    <button class="btn" style="margin-top: 14px;" onclick="nav.to('screen-menu')">Retour</button>
+    <button class="btn btn-danger-zone" onclick="gallery.resetRewardsOnly()">⚠️ EFFACER TOUTES LES RÉCOMPENSES</button>
+  </div>
+
+  <script>
+    /* ===========================
+       UI MANAGER
+    ============================ */
+    const ui = {
+      modal: document.getElementById('custom-modal'),
+      title: document.getElementById('modal-title'),
+      msg: document.getElementById('modal-msg'),
+      actions: document.getElementById('modal-actions'),
+
+      show: (title, message, buttons = []) => {
+        ui.title.innerText = title;
+        ui.msg.innerHTML = message;
+        ui.actions.innerHTML = '';
+
+        buttons.forEach(btn => {
+          const b = document.createElement('button');
+          b.className = 'modal-btn ' + (btn.class || '');
+          b.innerText = btn.text;
+          b.onclick = () => {
+            ui.hide();
+            if(btn.onClick) btn.onClick();
+          };
+          ui.actions.appendChild(b);
+        });
+        ui.modal.classList.remove('hidden');
+      },
+      hide: () => ui.modal.classList.add('hidden'),
+      alert: (title, message, callback) => {
+        ui.show(title, message, [{ text: 'OK', class: 'btn-modal-confirm', onClick: callback }]);
+      },
+      confirm: (title, message, onConfirm) => {
+        ui.show(title, message, [
+          { text: 'Annuler', class: 'btn-modal-cancel' },
+          { text: 'Confirmer', class: 'btn-modal-confirm', onClick: onConfirm }
+        ]);
+      },
+      showResult: (score, callback) => {
+        let rank="DÉBUTANT", color="#ff6ec7";
+        if(score >= 3){ rank="INTERMÉDIAIRE"; color="#4caf50"; }
+        if(score >= 5){ rank="AVANCÉ"; color="#ffeb3b"; }
+        if(score >= 7){ rank="EXPERT"; color="#f44336"; }
+
+        const html = `
+          <div style="font-size:3em; font-weight:900; margin-bottom:10px;">${score}</div>
+          <div style="font-size:1.35em; font-weight:900; color:${color}; border:2px solid ${color}; padding:10px; border-radius:12px; display:inline-block; text-transform:uppercase; letter-spacing:.6px;">${rank}</div>
+          <div style="margin-top:14px; color:rgba(255,255,255,.75);">Palier validé</div>
+        `;
+        ui.show("RÉSULTAT DU TEST", html, [{ text: 'CONTINUER', class: 'btn-modal-confirm', onClick: callback }]);
+      }
+    };
+
+    /* ===========================
+       VIDEO UI
+    ============================ */
+    const videoUI = {
+      modal: document.getElementById('video-modal'),
+      iframe: document.getElementById('video-iframe'),
+      open: (url) => {
+        if(!url){ ui.alert("VIDÉO", "Lien Vimeo non défini pour cet exercice."); return; }
+        // Basic embed support (expects full embed url or normal vimeo url)
+        let src = url;
+        // If it's a vimeo page url, you can replace with your embed URL later
+        if(url.includes("vimeo.com/") && !url.includes("player.vimeo.com")){
+          const id = url.split("vimeo.com/").pop().split(/[?#]/)[0];
+          src = "https://player.vimeo.com/video/" + id;
+        }
+        videoUI.iframe.src = src;
+        videoUI.modal.classList.remove('hidden');
+      },
+      close: () => {
+        videoUI.iframe.src = "";
+        videoUI.modal.classList.add('hidden');
+      }
+    };
+
+    /* ===========================
+       AUDIO
+    ============================ */
+    const audio = {
+      ctx: null,
+      init: () => {
+        if(!audio.ctx) audio.ctx = new (window.AudioContext || window.webkitAudioContext)();
+      },
+      beep: (type) => {
+        audio.init();
+        const osc = audio.ctx.createOscillator();
+        const gain = audio.ctx.createGain();
+        osc.connect(gain);
+        gain.connect(audio.ctx.destination);
+        osc.type = 'sine';
+
+        if(type === 'long'){
+          osc.frequency.setValueAtTime(600, audio.ctx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(300, audio.ctx.currentTime + 0.5);
+          gain.gain.setValueAtTime(0.45, audio.ctx.currentTime);
+          osc.start();
+          osc.stop(audio.ctx.currentTime + 0.6);
+        } else if(type === 'end'){
+          // "special" ending beep: two quick beeps
+          osc.frequency.setValueAtTime(920, audio.ctx.currentTime);
+          gain.gain.setValueAtTime(0.16, audio.ctx.currentTime);
+          osc.start();
+          osc.stop(audio.ctx.currentTime + 0.12);
+          setTimeout(()=>audio.beep('short'), 160);
+        } else {
+          osc.frequency.value = 880;
+          gain.gain.setValueAtTime(0.12, audio.ctx.currentTime);
+          osc.start();
+          osc.stop(audio.ctx.currentTime + 0.1);
+        }
+      }
+    };
+
+    /* ===========================
+       BACKGROUND FX (UNCHANGED)
+    ============================ */
+    const lightning = {
+      container: document.getElementById('lightning-container'),
+      images: ['eclair1.png','eclair2.png','eclair3.png'],
+      init: () => { lightning.schedule(); },
+      schedule: () => {
+        const delay = Math.random() * (5000 - 300) + 300;
+        setTimeout(() => { lightning.flash(); lightning.schedule(); }, delay);
+      },
+      flash: () => {
+        const imgName = lightning.images[Math.floor(Math.random() * lightning.images.length)];
+        const img = document.createElement('img');
+        img.src = imgName;
+        img.className = 'lightning-flash';
+        if(imgName === 'eclair1.png'){
+          img.style.left='0px';
+          img.style.top=(Math.random()*80)+'%';
+        } else {
+          img.style.top='0px';
+          img.style.left=(Math.random()*80)+'%';
+        }
+        lightning.container.appendChild(img);
+        setTimeout(()=>{ img.remove(); }, 150);
+      }
+    };
+
+    /* ===========================
+       DATA / DB
+    ============================ */
+    const db = {
+      load: () => JSON.parse(localStorage.getItem('physiqueRushDB')) || db.default(),
+      save: (data) => localStorage.setItem('physiqueRushDB', JSON.stringify(data)),
+      default: () => ({
+        stats: { Pectoraux:0, Jambes:0, Dos:0, Triceps:0, Biceps:0 },
+        history: { originalStats: { Pectoraux:0, Jambes:0, Dos:0, Triceps:0, Biceps:0 } },
+
+        // training cycle
+        cycleStart: 1, // J1..J8, then J9..J16, etc.
+        sessions: {},  // key: "J<number>" -> { validated:true, score:number, date:"YYYY-MM-DD", bossUndo?:{}, bossBeat?:bool }
+        records: {},
+
+        // Boss progress per slot (1..7) and difficulty (1..4)
+        bossProgress: {}, // key "S<slot>-D<diff>" -> { target:100, gradeIndex:0, maxGradeIndex:0 } gradeIndex increments when beaten
+
+        // Trophies
+        unstoppable: { streak: 0, achieved: false }, // 21 consecutive trainings
+        fury: { streak: 0, best: 0, lastDate: null }, // consecutive real days with >= 1 training
+      })
+    };
+    let data = db.load();
+
+    /* ===========================
+       CORE APP
+    ============================ */
+    const app = {
+      MAX_LEVEL: 40,
+
+      getGlobalLevel: () => {
+        let sum=0;
+        for(const k in data.stats) sum += data.stats[k];
+        return sum;
+      },
+
+      getFunctionalLevel: (muscle) => {
+        const v = data.stats[muscle];
+        return v === 0 ? 1 : v;
+      },
+
+      getCharImage: (level) => {
+        if(level < 5) return 'evo1.png';
+        if(level <= 10) return 'evo1.png';
+        if(level <= 15) return 'evo2.png';
+        if(level <= 19) return 'evo3.png';
+        if(level <= 23) return 'evo4.png';
+        if(level <= 26) return 'evo5.png';
+        if(level <= 29) return 'evo6.png';
+        if(level <= 32) return 'evo7.png';
+        if(level <= 34) return 'evo8.png';
+        if(level <= 36) return 'evo9.png';
+        if(level <= 38) return 'evo10.png';
+        if(level === 39) return 'evo11.png';
+        return 'evo12.png';
+      },
+
+      updateCharacter: () => {
+        const lvl = app.getGlobalLevel();
+        const imgName = app.getCharImage(lvl);
+        const char = document.getElementById('char-img');
+        if(char) char.src = imgName;
+
+        // HUD progress
+        const fill = document.getElementById('hud-level-fill');
+        const label = document.getElementById('hud-level-label');
+        if(fill){
+          const pct = Math.max(0, Math.min(100, (lvl / app.MAX_LEVEL) * 100));
+          fill.style.width = pct.toFixed(1) + '%';
+        }
+        if(label){
+          label.innerText = `Niveau ${lvl} / ${app.MAX_LEVEL}`;
+        }
+      },
+
+      getLevelColor: (val) => {
+        if(val <= 2) return '#ff6ec7';
+        if(val <= 4) return '#4caf50';
+        if(val <= 6) return '#ffeb3b';
+        return '#f44336';
+      },
+
+      todayISO: () => {
+        const d = new Date();
+        const yyyy = d.getFullYear();
+        const mm = String(d.getMonth()+1).padStart(2,'0');
+        const dd = String(d.getDate()).padStart(2,'0');
+        return `${yyyy}-${mm}-${dd}`;
+      },
+
+      daysBetween: (aISO, bISO) => {
+        // b - a in days
+        const a = new Date(aISO + "T00:00:00");
+        const b = new Date(bISO + "T00:00:00");
+        return Math.round((b - a) / (1000*60*60*24));
+      },
+
+      quitApp: () => {
+        try { window.close(); } catch(e){}
+        window.location.href = 'about:blank';
+      }
+    };
+
+    /* ===========================
+       NAV
+    ============================ */
+    const nav = {
+      to: (id) => {
+        document.querySelectorAll('.container').forEach(d => d.classList.add('hidden'));
+        document.getElementById(id).classList.remove('hidden');
+
+        if(id === 'screen-menu') app.updateCharacter();
+        if(id === 'screen-training') training.init();
+        if(id === 'screen-trophy') gallery.render();
+        if(id === 'screen-levels') app.updateCharacter();
+      }
+    };
+
+    /* ===========================
+       TESTS (validation + beeps)
+    ============================ */
+    const tests = {
+      currentTest: null,
+      interval: null,
+      started: false,
+      palierValidatedThisMinute: false,
+      lastValidatedPalier: 0,
+
+      // media placeholders per muscle
+      media: {
+        'Pectoraux': { gif:'test_pectoraux.gif', vimeo:'https://vimeo.com/000000001', title:'Pompes Dead-Stop' },
+        'Jambes': { gif:'test_jambes.gif', vimeo:'https://vimeo.com/000000002', title:'Fentes Sautées' },
+        'Dos': { gif:'test_dos.gif', vimeo:'https://vimeo.com/000000003', title:'Rowing Corner Coudes Écartés' },
+        'Triceps': { gif:'test_triceps.gif', vimeo:'https://vimeo.com/000000004', title:'Dips Chaise Jambes Tendues' },
+        'Biceps': { gif:'test_biceps.gif', vimeo:'https://vimeo.com/000000005', title:'Drag Curl au Sol' }
+      },
+
+      start: (muscle) => {
+        tests.currentTest = muscle;
+        tests.started = false;
+        tests.palierValidatedThisMinute = false;
+        tests.lastValidatedPalier = 0;
+
+        document.getElementById('test-name').innerText = "Test " + muscle;
+
+        const exName = tests.media[muscle]?.title || "Exercice";
+        document.getElementById('test-exercise-name').innerText = exName;
+
+        document.getElementById('timer-display').innerText = "08:00";
+        document.getElementById('timer-display').classList.remove('digits-warning');
+
+        const state = document.getElementById('test-instruction-state');
+        state.innerText = "Prêt ?";
+        state.classList.remove('timer-warning');
+
+        document.getElementById('current-palier').innerText = "Palier 10 répétitions";
+        document.getElementById('reps-target').innerText = "Faîtes 10 répétitions";
+
+        document.getElementById('btn-start-test').classList.remove('hidden');
+        document.getElementById('btn-validate-palier').classList.add('hidden');
+        document.getElementById('btn-fail-test').classList.add('hidden');
+
+        // principle text
+        document.getElementById('test-principle').innerText =
+          `Objectif : valider chaque minute le nombre de répétitions demandé sur "${exName}". ` +
+          `Cliquez sur "VALIDER" dès que c'est fait. Si la minute suivante démarre sans validation, le test s'arrête et garde le dernier palier validé.`;
+
+        // media
+        const m = tests.media[muscle] || { gif:'gif_placeholder.gif', vimeo:null, title:'Aperçu exercice' };
+        tests.currentMedia = m;
+        document.getElementById('test-gif').src = m.gif;
+        document.getElementById('test-media-title').innerText = m.title;
+
+        nav.to('screen-test');
+      },
+
+      run: () => {
+        audio.init();
+        tests.started = true;
+
+        document.getElementById('btn-start-test').classList.add('hidden');
+        document.getElementById('btn-validate-palier').classList.remove('hidden');
+        document.getElementById('btn-fail-test').classList.remove('hidden');
+
+        // Scroll down so that the "Retour" button ends up at the bottom visible region while running
+        setTimeout(() => {
+          document.getElementById('btn-test-back').scrollIntoView({ behavior:'smooth', block:'end' });
+        }, 250);
+
+        let totalSeconds = 8 * 60;
+        let secondsInMinute = 60;
+
+        let palier = 1;      // palier 1 = 10 reps
+        let reps = 10;
+
+        tests.lastValidatedPalier = 0;
+        tests.palierValidatedThisMinute = false;
+
+        const updateUIForPalier = () => {
+          document.getElementById('current-palier').innerText = `Palier ${reps} répétitions`;
+          document.getElementById('reps-target').innerText = `Faîtes ${reps} répétitions`;
+        };
+
+        updateUIForPalier();
+        audio.beep('long');
+
+        clearInterval(tests.interval);
+        tests.interval = setInterval(() => {
+          totalSeconds--;
+          secondsInMinute--;
+
+          const min = Math.floor(totalSeconds / 60);
+          const sec = totalSeconds % 60;
+
+          const timerEl = document.getElementById('timer-display');
+          timerEl.innerText = `0${min}:${sec < 10 ? '0'+sec : sec}`;
+
+          // 10 last seconds: beep each second + red blinking "Préparez-vous !" + digits red
+          const stateDiv = document.getElementById('test-instruction-state');
+          const inLast10 = (secondsInMinute <= 10 && secondsInMinute > 0);
+
+          if(inLast10){
+            stateDiv.innerText = "PRÉPAREZ-VOUS !";
+            stateDiv.classList.add('timer-warning');
+            timerEl.classList.add('digits-warning');
+            audio.beep('short');
+          } else {
+            stateDiv.classList.remove('timer-warning');
+            timerEl.classList.remove('digits-warning');
+            stateDiv.innerText = tests.palierValidatedThisMinute ? "Palier validé - vous pouvez récupérer jusqu'à la fin de la minute." : "En cours...";
+          }
+
+          // minute ended -> check validation
+          if(secondsInMinute <= 0){
+            if(totalSeconds <= 0){
+              // end: score is last validated palier (max 8)
+              tests.finish(tests.lastValidatedPalier);
+              return;
+            }
+
+            if(!tests.palierValidatedThisMinute){
+              // auto-stop as failure
+              tests.finish(tests.lastValidatedPalier);
+              return;
+            }
+
+            // new minute begins: increment palier + reps
+            audio.beep('long');
+            palier++;
+            reps += 2;
+            secondsInMinute = 60;
+            tests.palierValidatedThisMinute = false;
+
+            updateUIForPalier();
+            stateDiv.innerText = "GO !";
+          }
+        }, 1000);
+      },
+
+      validateCurrentPalier: () => {
+        if(!tests.started) return;
+        if(tests.palierValidatedThisMinute) return;
+
+        // Determine current reps based on current palier label
+        const palTxt = document.getElementById('current-palier').innerText;
+        const repsNow = parseInt(palTxt.replace(/\D/g,'')) || 10;
+
+        tests.palierValidatedThisMinute = true;
+
+        // score for tests = palier number validated, where palier 1..8
+        // palier number = (repsNow-10)/2 + 1
+        const palierIndex = Math.max(1, Math.round((repsNow - 10)/2) + 1);
+        tests.lastValidatedPalier = Math.min(8, palierIndex);
+
+        // Message includes next target
+        const timerTxt = document.getElementById('timer-display').innerText; // 0x:yy
+        const minutesRemaining = parseInt(timerTxt.split(':')[0].replace('0','')) || 0;
+        const nextReps = repsNow + 2;
+        const nextMin = minutesRemaining - 1; // at start of next palier
+        const stateDiv = document.getElementById('test-instruction-state');
+        stateDiv.innerHTML =
+          `Palier validé - vous pouvez récupérer jusqu'à la fin de la minute.<br>` +
+          `<span style="font-size:.92em; color:rgba(255,255,255,.75);">Lorsque le compte à rebours affichera "0${Math.max(0,nextMin)} : 00" vous devrez faire ${nextReps} répétitions.</span>`;
+      },
+
+      fail: () => {
+        tests.finish(tests.lastValidatedPalier);
+      },
+
+      finish: (score) => {
+        clearInterval(tests.interval);
+        tests.started = false;
+
+        data.stats[tests.currentTest] = score;
+        db.save(data);
+
+        app.updateCharacter();
+        ui.showResult(score, () => nav.to('screen-levels'));
+      },
+
+      quit: () => {
+        clearInterval(tests.interval);
+        tests.started = false;
+        nav.to('screen-levels');
+      }
+    };
+
+    /* ===========================
+       EVOLAB
+    ============================ */
+    const evoLab = {
+      chart: null,
+      init: () => {
+        nav.to('screen-evolab');
+        evoLab.render(data.stats);
+        document.getElementById('evolab-global').innerText = "Niveau Global: " + app.getGlobalLevel() + " / 40";
+      },
+      render: (statsObj) => {
+        const ctx = document.getElementById('radarChart').getContext('2d');
+        const values = [statsObj.Pectoraux, statsObj.Jambes, statsObj.Dos, statsObj.Triceps, statsObj.Biceps];
+        const displayValues = values.map(v => v === 0 ? 1 : v);
+        const pointColors = displayValues.map(v => app.getLevelColor(v));
+
+        if(evoLab.chart) evoLab.chart.destroy();
+
+        evoLab.chart = new Chart(ctx, {
+          type:'radar',
+          data:{
+            labels:['Pectoraux','Jambes','Dos','Triceps','Biceps'],
+            datasets:[{
+              data:displayValues,
+              backgroundColor:'rgba(255,235,59,0.2)',
+              borderColor:'#fff',
+              borderWidth:1,
+              pointBackgroundColor:pointColors,
+              pointBorderColor:'#fff',
+              pointRadius:6
+            }]
+          },
+          options:{
+            maintainAspectRatio:false,
+            scales:{
+              r:{
+                min:0, max:8,
+                ticks:{ stepSize:1, display:false },
+                grid:{ color:'#444' },
+                pointLabels:{ color:'#fff', font:{ size:11, weight:'bold' } },
+                angleLines:{ color:'#444' }
+              }
+            },
+            plugins:{ legend:{ display:false } }
+          }
+        });
+      },
+      resetTests: () => {
+        ui.confirm("RÉINITIALISATION", "Voulez-vous vraiment effacer tous vos résultats de tests ? Votre niveau global reviendra à 0.", () => {
+          data.stats = { Pectoraux:0, Jambes:0, Dos:0, Triceps:0, Biceps:0 };
+          db.save(data);
+          evoLab.init();
+          app.updateCharacter();
+          ui.alert("TERMINÉ", "Données réinitialisées.");
+        });
+      }
+    };
+
+    /* ===========================
+       TRAINING (cycle 8, locked progression, boss grade/target)
+    ============================ */
+    const bossGrades = [
+      "Biomasse Inerte",
+      "Larve Incubatrice",
+      "Micro-Drone de Surveillance",
+      "Symbiote Mineur",
+      "Éclaireur Synaptique",
+      "Fantassin de Ruche",
+      "Maraudeur d'Élite",
+      "Centurion Bio-Mécanique",
+      "Technomancien Orbital",
+      "Superviseur de Couvée",
+      "Primus Tacticien",
+      "Inquisiteur Neural",
+      "Archonte Psionique",
+      "Exécuteur Planétaire",
+      "Seigneur de Guerre Galactique",
+      "Maître-Esprit",
+      "Omniscient Cosmique"
+    ];
+
+    const training = {
+      // Slots 1..8 (8 = challenge)
+      slots: [
+        { slot:1, name:'Pectoraux' },
+        { slot:2, name:'Jambes (Poly)' },
+        { slot:3, name:'Dos' },
+        { slot:4, name:'Tri/Bi' },
+        { slot:5, name:'Pectoraux' },
+        { slot:6, name:'Jambes (Iso)' },
+        { slot:7, name:'Dos' },
+        { slot:8, name:'Ascension' }
+      ],
+
+      selected: { dayNumber:null, slot:null },
+      currentTimeStructure: [],
+      currentExercises: [],
+      currentBossMeta: null,
+      currentExerciseIndex: 0,
+      currentExerciseMedia: null,
+
+      getDifficultyIndex: (lvl) => {
+        if(lvl<=2) return 1;
+        if(lvl<=4) return 2;
+        if(lvl<=6) return 3;
+        return 4;
+      },
+      diffLabel: (diffIdx) => (diffIdx===1?'Débutant':diffIdx===2?'Intermédiaire':diffIdx===3?'Avancé':'Expert'),
+
+      // Boss image mapping requirements:
+      // - beginner biomasse inert training: biomasse1.png ; trophy: biomasse0.png
+      // - intermediate biomasse inert training: biomasse11.png ; trophy: biomasse00.png
+      bossImageTraining: (diffIdx, gradeIndex) => {
+        // gradeIndex: 0-based in bossGrades
+        if(gradeIndex === 0){
+          if(diffIdx === 1) return 'biomasse1.png';
+          if(diffIdx === 2) return 'biomasse11.png';
+        }
+        // fallback
+        return `btb${diffIdx}.png`;
+      },
+      bossImageTrophy: (diffIdx, gradeIndex) => {
+        if(gradeIndex === 0){
+          if(diffIdx === 1) return 'biomasse0.png';
+          if(diffIdx === 2) return 'biomasse00.png';
+        }
+        // fallback
+        return `boss${diffIdx}.png`;
+      },
+
+      // Determine which slot is currently playable (first not validated within current cycle)
+      getCycleDays: () => {
+        const start = data.cycleStart || 1;
+        return training.slots.map(s => ({
+          slot: s.slot,
+          dayNumber: start + (s.slot - 1),
+          name: s.name
+        }));
+      },
+
+      getFirstUnvalidatedSlot: () => {
+        const days = training.getCycleDays();
+        for(const d of days){
+          const key = 'J' + d.dayNumber;
+          if(!data.sessions[key] || !data.sessions[key].validated) return d.slot;
+        }
+        return null; // cycle completed
+      },
+
+      init: () => {
+        const grid = document.getElementById('week-grid');
+        grid.innerHTML = '';
+
+        const days = training.getCycleDays();
+        const firstUnvalidatedSlot = training.getFirstUnvalidatedSlot();
+
+        days.forEach(d => {
+          const key = 'J' + d.dayNumber;
+          const validated = !!(data.sessions[key] && data.sessions[key].validated);
+          const isPlayable = (firstUnvalidatedSlot === d.slot);
+
+          const el = document.createElement('div');
+          el.className = 'day-box';
+
+          el.innerHTML = `
+            <div class="day-n">J${d.dayNumber}</div>
+            <div class="day-name">${d.slot === 8 ? 'Ascension' : d.name}</div>
+          `;
+
+          if(validated){
+            el.classList.add('done');
+            el.innerHTML += `<div style="font-weight:900; margin-top:2px;">✔</div>`;
+          }
+
+          if(!isPlayable && !validated){
+            el.classList.add('locked');
+            const lock = document.createElement('img');
+            lock.src = 'verrou.png';
+            lock.className = 'lock-badge';
+            lock.onerror = function(){ this.style.display='none'; };
+            el.appendChild(lock);
+          }
+
+          el.onclick = () => {
+            if(!isPlayable && !validated){
+              ui.alert("VERROUILLÉ", "Il faut d'abord valider la séance précédente, avant d'affronter celle-ci.");
+              return;
+            }
+            training.openDay(d.dayNumber, d.slot);
+          };
+
+          grid.appendChild(el);
+        });
+
+        // Info line
+        const slot = firstUnvalidatedSlot;
+        if(slot){
+          const dayNumber = (data.cycleStart || 1) + (slot - 1);
+          document.getElementById('training-info').innerText = `Séance disponible : J${dayNumber}.`;
+        } else {
+          document.getElementById('training-info').innerText = `Cycle terminé.`;
+        }
+      },
+
+      resetAll: () => {
+        ui.confirm("RÉINITIALISATION", "Voulez-vous vraiment réinitialiser tous les entraînements et supprimer toutes les récompenses ?", () => {
+          data.cycleStart = 1;
+          data.sessions = {};
+          data.records = {};
+          data.bossProgress = {};
+          data.unstoppable = { streak:0, achieved:false };
+          data.fury = { streak:0, best:0, lastDate:null };
+          db.save(data);
+          ui.alert("TERMINÉ", "Tout a été réinitialisé.", () => {
+            training.init();
+            nav.to('screen-training');
+          });
+        });
+      },
+
+      // Build workouts for each slot
+      getWorkoutDetails: (slot) => {
+        const getLvl = (m) => app.getFunctionalLevel(m);
+        const getCatCode = (lvl) => {
+          const idx = training.getDifficultyIndex(lvl);
+          return idx === 1 ? 'beg' : idx === 2 ? 'int' : idx === 3 ? 'adv' : 'exp';
+        };
+
+        let timeStructure = [];
+        let exercises = [];
+        let primaryMuscleLvl = 1;
+
+        if(slot === 1 || slot === 5){
+          primaryMuscleLvl = getLvl('Pectoraux');
+          timeStructure = [120,120,120,120];
+          const lvl = getCatCode(primaryMuscleLvl);
+          if(lvl === 'beg') exercises = ["Pompes Excentrique","Pompes Genoux Partielles","Pompes Genoux Excentriques","Pompes Corner"];
+          if(lvl === 'int') exercises = ["Pompes Dead-Stop","Pompes Jambe Traversante","Pompes Excentriques","Pompes Genoux Partielles"];
+          if(lvl === 'adv') exercises = ["Pompes Décalage Pliométriques","Pompes Horloge","Pompes Dead-Stop","Pompes Jambe Traversante"];
+          if(lvl === 'exp') exercises = ["Pompes Archer Unilatérales","Pompes Diamant","Pompes Décalage Pliométriques","Pompes Horloge"];
+        }
+        else if(slot === 2){
+          primaryMuscleLvl = getLvl('Jambes');
+          const idx = training.getDifficultyIndex(primaryMuscleLvl);
+          if(idx <= 2){
+            timeStructure = [240,240];
+            exercises = (idx===1)
+              ? ["Fentes Arrières Basses","Frog Jumps"]
+              : ["Fentes Sautées","Fentes Arrières Basses"];
+          } else {
+            timeStructure = [480];
+            exercises = (idx===3)
+              ? ["Single Leg Landmines"]
+              : ["Levitation Squat Unilateral"];
+          }
+        }
+        else if(slot === 3 || slot === 7){
+          primaryMuscleLvl = getLvl('Dos');
+          timeStructure = [120,120,120,120];
+          const lvl = getCatCode(primaryMuscleLvl);
+          const rowName = (slot === 7) ? "RC" : "Rowing Corner";
+          if(lvl === 'beg') exercises = [`${rowName} Coudes Écartés`,"Chandelier","Superman Row Supination","Snow Angels"];
+          if(lvl === 'int') exercises = [`${rowName} Coudes Tendus`,`${rowName} Coudes Écartés`,"Chandelier","Superman Row Supination"];
+          if(lvl === 'adv') exercises = [`${rowName} Champion`,`${rowName} Coudes Tendus`,`${rowName} Coudes Écartés`,"Chandelier"];
+          if(lvl === 'exp') exercises = [`${rowName} Coudes Serrés`,`${rowName} Champion`,`${rowName} Coudes Tendus`,`${rowName} Coudes Écartés`];
+        }
+        else if(slot === 4){
+          primaryMuscleLvl = getLvl('Triceps');
+          timeStructure = [240,240];
+          const lTri = getCatCode(primaryMuscleLvl);
+          const lBi  = getCatCode(getLvl('Biceps'));
+          const triEx = (lTri==='beg') ? "Wall Triceps Extension" : (lTri==='int') ? "Pompes du Sphinx" : (lTri==='adv') ? "Pompes Tigre Genoux" : "Pompes Tigre";
+          const biEx  = (lBi==='beg') ? "Sock Drag Curl" : (lBi==='int') ? "Corner Curl Unilatéral" : (lBi==='adv') ? "Drag Curl au sol" : "Rotation Drag Curl Unilatéral";
+          // 2 blocks, but keep as two "exercises" for timer clarity
+          exercises = [`Triceps: ${triEx}`, `Biceps: ${biEx}`];
+        }
+        else if(slot === 6){
+          primaryMuscleLvl = getLvl('Jambes');
+          timeStructure = [240,240];
+          const lvl = getCatCode(primaryMuscleLvl);
+          if(lvl === 'beg') exercises = ["Leg Extension de l'Ours","Pont Piétinement"];
+          if(lvl === 'int') exercises = ["Corner Sissy Squat","Leg Curl Glissé Alterné"];
+          if(lvl === 'adv') exercises = ["Sissy Squat","Leg Curl Glissé"];
+          if(lvl === 'exp') exercises = ["Sissy Squat Partiel Bas","Leg Curl Glissé Unilatéral"];
+        }
+
+        const diffIdx = training.getDifficultyIndex(primaryMuscleLvl);
+
+        // Boss target/grade per slot+diff
+        const bossKey = `S${slot}-D${diffIdx}`;
+        if(!data.bossProgress[bossKey]){
+          data.bossProgress[bossKey] = { target: 100, gradeIndex: 0 };
+          db.save(data);
+        }
+        const bossState = data.bossProgress[bossKey];
+
+        const bossTarget = bossState.target;
+        const gradeIdx = bossState.gradeIndex; // 0..16
+        const gradeName = bossGrades[gradeIdx] || bossGrades[bossGrades.length-1];
+
+        const bossImg = training.bossImageTraining(diffIdx, gradeIdx);
+
+        // Basic media placeholders per exercise
+        const media = exercises.map(ex => ({
+          name: ex,
+          gif: `gif_${ex.toLowerCase().replace(/[^a-z0-9]+/g,'_')}.gif`,
+          vimeo: null // set your vimeo links later
+        }));
+
+        return {
+          exercises,
+          media,
+          timeStructure,
+          primaryMuscleLvl,
+          diffIdx,
+          bossKey,
+          bossTarget,
+          gradeIdx,
+          gradeName,
+          bossImg
+        };
+      },
+
+      openDay: (dayNumber, slot) => {
+        training.selected = { dayNumber, slot };
+        if(slot === 8){
+          // open J8 screen
+          j8.open(dayNumber);
+          return;
+        }
+
+        const wk = training.getWorkoutDetails(slot);
+        training.currentTimeStructure = wk.timeStructure.slice();
+        training.currentExercises = wk.exercises.slice();
+        training.currentBossMeta = {
+          bossKey: wk.bossKey,
+          diffIdx: wk.diffIdx,
+          target: wk.bossTarget,
+          gradeIdx: wk.gradeIdx,
+          gradeName: wk.gradeName
+        };
+        training.currentExerciseIndex = 0;
+
+        document.getElementById('workout-day-title').innerText = `J${dayNumber}: ${training.slots[slot-1].name}`;
+        training.renderExerciseList();
+
+        // Boss panel
+        document.getElementById('boss-img-preview').src = wk.bossImg;
+        document.getElementById('boss-score-target').innerText = `Score à battre: ${wk.bossTarget}`;
+        document.getElementById('boss-grade').innerText = `Grade (${training.diffLabel(wk.diffIdx)}) : ${wk.gradeName}`;
+
+        // Media for current exercise
+        training.currentExerciseMedia = wk.media[0] || { gif:'gif_placeholder.gif', vimeo:null, name:'Exercice' };
+        document.getElementById('workout-gif').src = training.currentExerciseMedia.gif;
+        document.getElementById('workout-media-title').innerText = training.currentExerciseMedia.name;
+
+        // Chrono panel reset
+        training.timer.stop(true);
+        document.getElementById('workout-chrono-panel').classList.add('hidden');
+        document.getElementById('btn-start-workout-timer').classList.remove('hidden');
+
+        // Validation UI based on session state
+        const key = 'J' + dayNumber;
+        if(data.sessions[key] && data.sessions[key].validated){
+          document.getElementById('validation-zone').classList.add('hidden');
+          document.getElementById('btn-cancel-session').classList.remove('hidden');
+          document.getElementById('workout-score').value = data.sessions[key].score ?? '';
+        } else {
+          document.getElementById('validation-zone').classList.remove('hidden');
+          document.getElementById('btn-cancel-session').classList.add('hidden');
+          document.getElementById('workout-score').value = '';
+        }
+
+        nav.to('screen-workout');
+      },
+
+      renderExerciseList: () => {
+        const list = document.getElementById('workout-list');
+        list.innerHTML = '';
+
+        const total = training.currentExercises.length;
+
+        training.currentExercises.forEach((ex, idx) => {
+          const card = document.createElement('div');
+          card.className = 'ex-card';
+
+          let status = "À venir";
+          let statusCls = "";
+          if(idx < training.currentExerciseIndex){ status = "Fait"; statusCls = "done"; }
+          if(idx === training.currentExerciseIndex){ status = "Actuel"; statusCls = "current"; }
+
+          card.innerHTML = `
+            <div class="ex-status ${statusCls}">${status}</div>
+            <div class="ex-name">${ex}</div>
+          `;
+          card.dataset.idx = idx;
+          list.appendChild(card);
+        });
+
+        // update media title
+        const currentEx = training.currentExercises[training.currentExerciseIndex] || "Exercice";
+        document.getElementById('workout-media-title').innerText = currentEx;
+
+        // Ensure last exercise can be identified for scroll requests
+        const cards = list.querySelectorAll('.ex-card');
+        if(cards.length){
+          cards[cards.length-1].id = "last-exercise-card";
+        }
+      },
+
+      openChrono: () => {
+        document.getElementById('btn-start-workout-timer').classList.add('hidden');
+        document.getElementById('workout-chrono-panel').classList.remove('hidden');
+
+        // Prepare timer with current exercise duration
+        const dur = training.currentTimeStructure[training.currentExerciseIndex] ?? 0;
+        training.timer.set(dur);
+
+        // When starting first exercise: scroll so that last exercise is visible at bottom
+        if(training.currentExerciseIndex === 0){
+          setTimeout(() => {
+            const last = document.getElementById('last-exercise-card');
+            if(last) last.scrollIntoView({ behavior:'smooth', block:'end' });
+          }, 250);
+        }
+      },
+
+      timer: {
+        interval: null,
+        state: 'idle', // idle, running, paused
+        timeLeft: 0,
+
+        set: (seconds) => {
+          training.timer.timeLeft = seconds;
+          training.timer.state = 'idle';
+          training.timer.render();
+          training.timer.renderState();
+        },
+
+        render: () => {
+          const min = Math.floor(training.timer.timeLeft / 60);
+          const sec = training.timer.timeLeft % 60;
+          document.getElementById('workout-timer-digits').innerText = `0${min}:${sec < 10 ? '0'+sec : sec}`;
+        },
+
+        renderState: () => {
+          const total = training.currentExercises.length;
+          document.getElementById('workout-timer-state').innerText = `Exercice ${training.currentExerciseIndex + 1} / ${total}`;
+        },
+
+        start: () => {
+          audio.init();
+          if(training.timer.state === 'running') return;
+
+          if(training.timer.timeLeft <= 0){
+            // if at 0, reset to duration then start
+            const dur = training.currentTimeStructure[training.currentExerciseIndex] ?? 0;
+            training.timer.timeLeft = dur;
+          }
+
+          training.timer.state = 'running';
+          audio.beep('long');
+          clearInterval(training.timer.interval);
+
+          training.timer.interval = setInterval(() => {
+            training.timer.timeLeft--;
+            training.timer.render();
+
+            if(training.timer.timeLeft <= 3 && training.timer.timeLeft > 0) audio.beep('short');
+
+            if(training.timer.timeLeft <= 0){
+              clearInterval(training.timer.interval);
+              training.timer.state = 'idle';
+              audio.beep('long');
+
+              // move to next exercise (without auto-start)
+              const total = training.currentExercises.length;
+              if(training.currentExerciseIndex < total - 1){
+                training.currentExerciseIndex++;
+                training.renderExerciseList();
+                training.timer.renderState();
+
+                // update media (placeholder)
+                training.currentExerciseMedia = { gif:`gif_placeholder.gif`, vimeo:null, name: training.currentExercises[training.currentExerciseIndex] };
+                document.getElementById('workout-gif').src = training.currentExerciseMedia.gif;
+
+                // set time for next
+                const dur = training.currentTimeStructure[training.currentExerciseIndex] ?? 0;
+                training.timer.set(dur);
+              } else {
+                // finished session -> notification + scroll to bottom so Retour visible
+                ui.alert("SÉANCE TERMINÉE", "Séance terminée ! Il reste à entrer le total de répétitions et valider la séance.", () => {
+                  // scroll to bottom for back button visibility
+                  setTimeout(() => {
+                    document.getElementById('btn-workout-back').scrollIntoView({ behavior:'smooth', block:'end' });
+                  }, 80);
+                });
+
+                training.timer.set(0);
+                document.getElementById('workout-timer-state').innerText = "TERMINÉ !";
+              }
+            }
+          }, 1000);
+
+          training.timer.renderState();
+        },
+
+        pause: () => {
+          if(training.timer.state !== 'running') return;
+          clearInterval(training.timer.interval);
+          training.timer.state = 'paused';
+        },
+
+        resume: () => {
+          if(training.timer.state !== 'paused') return;
+          training.timer.start();
+        },
+
+        reset: () => {
+          clearInterval(training.timer.interval);
+          training.timer.state = 'idle';
+          const dur = training.currentTimeStructure[training.currentExerciseIndex] ?? 0;
+          training.timer.timeLeft = dur;
+          training.timer.render();
+          training.timer.renderState();
+        },
+
+        stop: (silent=false) => {
+          clearInterval(training.timer.interval);
+          training.timer.state = 'idle';
+          training.timer.timeLeft = 0;
+          if(!silent) training.timer.render();
+        }
+      },
+
+      // Boss beaten logic: if score > target -> increase target by ~5% (rounded int) and grade++ (capped)
+      applyBossWin: () => {
+        const meta = training.currentBossMeta;
+        if(!meta) return { bossWon:false };
+
+        const key = meta.bossKey;
+        const st = data.bossProgress[key] || { target:100, gradeIndex:0 };
+
+        const prev = { target: st.target, gradeIndex: st.gradeIndex };
+
+        // target +5% rounded int
+        st.target = Math.max(1, Math.round(st.target * 1.05));
+        // grade up to cap
+        st.gradeIndex = Math.min(bossGrades.length - 1, st.gradeIndex + 1);
+
+        data.bossProgress[key] = st;
+
+        return { bossWon:true, undo: { key, prev } };
+      },
+
+      validateSession: () => {
+        const score = parseInt(document.getElementById('workout-score').value) || 0;
+        const dayKey = 'J' + training.selected.dayNumber;
+
+        // record (by dayKey)
+        const prevRecord = data.records[dayKey] || 0;
+        if(score > prevRecord && prevRecord > 0){
+          // record message later
+        }
+        data.records[dayKey] = score;
+
+        // boss check
+        let bossWon = false;
+        let bossUndo = null;
+        let msg = "Séance validée.";
+        if(training.currentBossMeta){
+          const target = training.currentBossMeta.target;
+          if(score > target){
+            const res = training.applyBossWin();
+            bossWon = res.bossWon;
+            bossUndo = res.undo;
+            msg += "<br><b>BOSS BATTU !</b>";
+          }
+        }
+
+        // unstoppable streak (21 trainings in a row in-app)
+        data.unstoppable.streak = (data.unstoppable.streak || 0) + 1;
+        if(data.unstoppable.streak >= 21) data.unstoppable.achieved = true;
+
+        // fury streak (real days)
+        const today = app.todayISO();
+        if(!data.fury.lastDate){
+          data.fury.streak = 1;
+        } else {
+          const diff = app.daysBetween(data.fury.lastDate, today);
+          if(diff === 0){
+            // same day => no extra
+          } else if(diff === 1){
+            data.fury.streak = (data.fury.streak || 0) + 1;
+          } else {
+            data.fury.streak = 1;
+          }
+        }
+        data.fury.lastDate = today;
+        data.fury.best = Math.max(data.fury.best || 0, data.fury.streak || 0);
+
+        // save session
+        data.sessions[dayKey] = {
+          validated: true,
+          score,
+          date: today,
+          bossWon,
+          bossUndo
+        };
+
+        db.save(data);
+
+        ui.alert("FÉLICITATIONS", msg, () => {
+          // if this is J8? (handled elsewhere). For normal slot:
+          // unlock next day auto via locking system
+          training.init();
+          nav.to('screen-training');
+        });
+      },
+
+      cancelSession: () => {
+        const dayKey = 'J' + training.selected.dayNumber;
+        const session = data.sessions[dayKey];
+        if(!session || !session.validated){
+          nav.to('screen-training');
+          return;
+        }
+
+        ui.confirm("ANNULATION", "Voulez-vous vraiment annuler cette séance ? Cela effacera le statut validé et les récompenses associées.", () => {
+          // undo boss if won
+          if(session.bossWon && session.bossUndo){
+            const { key, prev } = session.bossUndo;
+            data.bossProgress[key] = { ...prev };
+          }
+
+          // undo unstoppable streak conservatively: reset to 0 (simple & safe)
+          data.unstoppable.streak = 0;
+          data.unstoppable.achieved = false;
+
+          delete data.sessions[dayKey];
+          db.save(data);
+
+          ui.alert("INFO", "Séance annulée.", () => {
+            training.init();
+            nav.to('screen-training');
+          });
+        });
+      },
+
+      quit: () => {
+        training.timer.stop(true);
+        nav.to('screen-training');
+      }
+    };
+
+    /* ===========================
+       J8 (Ascension Challenge)
+    ============================ */
+    const j8 = {
+      dayNumber: null,
+      timer: null,
+      running: false,
+      paused: false,
+      timeLeft: 8 * 60,
+
+      // paliers: 10,12,14...
+      repsTarget: 10,
+      palierCountCompleted: 0,
+      idxInPalier: 0,
+
+      exercises: [],
+
+      currentMedia: null,
+
+      open: (dayNumber) => {
+        j8.dayNumber = dayNumber;
+
+        document.getElementById('j8-title').innerText = `J${dayNumber} - Ascension Challenge`;
+
+        // Build exercise list required:
+        // - "le 2ème exercice du J1 (selon palier pectoraux)" + 4 fixed
+        // We'll resolve "2ème ex du J1" using current pecs level
+        const wkJ1 = training.getWorkoutDetails(1);
+        const ex2 = wkJ1.exercises[1] || "Exercice Pectoraux (2)";
+        j8.exercises = [
+          ex2,
+          "Fentes du sprinteur (Gauche)",
+          "Fentes du sprinteur (Droite)",
+          "Side Elbow Press-Up (Gauche)",
+          "Side Elbow Press-Up (Droite)"
+        ].map(name => ({
+          name,
+          gif: `gif_${name.toLowerCase().replace(/[^a-z0-9]+/g,'_')}.gif`,
+          vimeo: null
+        }));
+
+        // Reset UI state
+        j8.reset(true);
+
+        // show cancel if validated
+        const key = 'J' + dayNumber;
+        if(data.sessions[key] && data.sessions[key].validated){
+          document.getElementById('btn-j8-cancel-session').classList.remove('hidden');
+          document.getElementById('j8-validation-zone').classList.remove('hidden');
+          document.getElementById('j8-score').value = data.sessions[key].score ?? 0;
+        } else {
+          document.getElementById('btn-j8-cancel-session').classList.add('hidden');
+          document.getElementById('j8-validation-zone').classList.add('hidden');
+        }
+
+        nav.to('screen-j8');
+      },
+
+      updateHeader: () => {
+        const min = Math.floor(j8.timeLeft/60);
+        const sec = j8.timeLeft%60;
+        document.getElementById('j8-time').innerText = `0${min}:${sec<10?'0'+sec:sec}`;
+
+        document.getElementById('j8-progress').innerText = `${j8.idxInPalier} / ${j8.exercises.length}`;
+
+        document.getElementById('j8-palier-label').innerText = `Palier ${j8.repsTarget} répétitions`;
+        document.getElementById('j8-reps').innerText = `${j8.repsTarget} répétitions`;
+
+        const current = j8.exercises[j8.idxInPalier] || j8.exercises[0];
+        document.getElementById('j8-ex').innerText = current ? current.name : "Exercice";
+
+        // media
+        j8.currentMedia = current || null;
+        document.getElementById('j8-gif').src = current?.gif || 'gif_placeholder.gif';
+        document.getElementById('j8-media-title').innerText = current?.name || 'Exercice en cours';
+      },
+
+      renderList: () => {
+        const wrap = document.getElementById('j8-list');
+        wrap.innerHTML = '';
+        j8.exercises.forEach((e, idx) => {
+          const card = document.createElement('div');
+          card.className = 'ex-card';
+
+          let status = "À venir";
+          let cls = "";
+          if(idx < j8.idxInPalier){ status="Fait"; cls="done"; }
+          if(idx === j8.idxInPalier){ status="Actuel"; cls="current"; }
+
+          card.innerHTML = `
+            <div class="ex-status ${cls}">${status}</div>
+            <div class="ex-name">${e.name}</div>
+          `;
+          wrap.appendChild(card);
+        });
+      },
+
+      start: () => {
+        if(j8.running) return;
+        audio.init();
+        j8.running = true;
+        j8.paused = false;
+
+        document.getElementById('btn-j8-start').classList.add('hidden');
+
+        audio.beep('long');
+
+        clearInterval(j8.timer);
+        j8.timer = setInterval(() => {
+          if(j8.paused) return;
+
+          j8.timeLeft--;
+          j8.updateHeader();
+
+          // last 3 seconds of global timer
+          if(j8.timeLeft <= 3 && j8.timeLeft > 0) audio.beep('short');
+
+          if(j8.timeLeft <= 0){
+            clearInterval(j8.timer);
+            j8.running = false;
+            audio.beep('end');
+
+            // result compute:
+            // score = paliers completed * 10 + exercises completed in current palier
+            const exDoneInCurrent = j8.idxInPalier; // 0..4
+            const score = (j8.palierCountCompleted * 10) + exDoneInCurrent;
+
+            document.getElementById('j8-score').value = score;
+            document.getElementById('j8-validation-zone').classList.remove('hidden');
+
+            ui.alert("CHALLENGE TERMINÉ", `
+              <b>Paliers complétés :</b> ${j8.palierCountCompleted}<br>
+              <b>Exercices complétés dans le palier en cours :</b> ${exDoneInCurrent} / ${j8.exercises.length}<br><br>
+              <b>Score :</b> ${j8.palierCountCompleted} x 10 + ${exDoneInCurrent} = <b>${score}</b>
+            `);
+          }
+        }, 1000);
+
+        j8.updateHeader();
+      },
+
+      pause: () => {
+        if(!j8.running) return;
+        j8.paused = true;
+      },
+
+      resume: () => {
+        if(!j8.running) return;
+        j8.paused = false;
+      },
+
+      reset: (silent=false) => {
+        clearInterval(j8.timer);
+        j8.running = false;
+        j8.paused = false;
+        j8.timeLeft = 8*60;
+
+        j8.repsTarget = 10;
+        j8.palierCountCompleted = 0;
+        j8.idxInPalier = 0;
+
+        document.getElementById('btn-j8-start').classList.remove('hidden');
+        if(!silent) audio.beep('long');
+
+        j8.renderList();
+        j8.updateHeader();
+      },
+
+      validate: () => {
+        if(!j8.running) return;
+
+        // move to next exercise
+        j8.idxInPalier++;
+
+        if(j8.idxInPalier >= j8.exercises.length){
+          // palier completed
+          j8.palierCountCompleted++;
+          j8.repsTarget += 2;
+          j8.idxInPalier = 0;
+          audio.beep('long');
+        } else {
+          audio.beep('short');
+        }
+
+        j8.renderList();
+        j8.updateHeader();
+      },
+
+      saveSession: () => {
+        const score = parseInt(document.getElementById('j8-score').value) || 0;
+        const dayKey = 'J' + j8.dayNumber;
+        const today = app.todayISO();
+
+        // unstoppable streak continues
+        data.unstoppable.streak = (data.unstoppable.streak || 0) + 1;
+        if(data.unstoppable.streak >= 21) data.unstoppable.achieved = true;
+
+        // fury streak (real day logic)
+        if(!data.fury.lastDate){
+          data.fury.streak = 1;
+        } else {
+          const diff = app.daysBetween(data.fury.lastDate, today);
+          if(diff === 0){
+            // same day => no change
+          } else if(diff === 1){
+            data.fury.streak = (data.fury.streak || 0) + 1;
+          } else {
+            data.fury.streak = 1;
+          }
+        }
+        data.fury.lastDate = today;
+        data.fury.best = Math.max(data.fury.best || 0, data.fury.streak || 0);
+
+        data.sessions[dayKey] = { validated:true, score, date: today, bossWon:false, bossUndo:null };
+
+        db.save(data);
+
+        ui.alert("SÉANCE VALIDÉE", "Ascension Challenge validé.", () => {
+          // when J8 validated, go back to new cycle start +8
+          data.cycleStart = (data.cycleStart || 1) + 8;
+          db.save(data);
+          training.init();
+          nav.to('screen-training');
+        });
+      },
+
+      cancelSession: () => {
+        const dayKey = 'J' + j8.dayNumber;
+        const session = data.sessions[dayKey];
+        if(!session || !session.validated){
+          nav.to('screen-training');
+          return;
+        }
+
+        ui.confirm("ANNULATION", "Voulez-vous vraiment annuler cette séance ? Cela effacera le statut validé.", () => {
+          // reset unstoppable conservatively
+          data.unstoppable.streak = 0;
+          data.unstoppable.achieved = false;
+
+          delete data.sessions[dayKey];
+          db.save(data);
+
+          ui.alert("INFO", "Séance annulée.", () => {
+            training.init();
+            nav.to('screen-training');
+          });
+        });
+      },
+
+      quit: () => {
+        clearInterval(j8.timer);
+        j8.running = false;
+        nav.to('screen-training');
+      }
+    };
+
+    /* ===========================
+       GALLERY (collapsible categories, grayscale if not earned, unstoppable remaining days)
+    ============================ */
+    const gallery = {
+      render: () => {
+        // Character image
+        document.getElementById('trophy-char-img').src = app.getCharImage(app.getGlobalLevel());
+
+        // Next evolution text
+        const lvl = app.getGlobalLevel();
+        const thresholds = [10,15,19,23,26,29,32,34,36,38,39,40];
+        const next = thresholds.find(t => t > lvl);
+        let evoText = "";
+        if(next){
+          const diff = next - lvl;
+          evoText = `Plus que ${diff} niveau${diff>1?'x':''} avant évolution !`;
+        } else if(lvl >= 40){
+          evoText = "Niveau maximum atteint !";
+        } else {
+          evoText = "Continuez l'entraînement !";
+        }
+        document.getElementById('trophy-next-evo').innerText = evoText;
+
+        // TROPHIES (Performances only)
+        const trophyWrap = document.getElementById('trophy-cards');
+        trophyWrap.innerHTML = '';
+
+        const recordCount = Object.keys(data.records || {}).length;
+
+        // Furie: show streak
+        const furyStreak = data.fury?.streak || 0;
+
+        // Unstoppable remaining days
+        const unstreak = data.unstoppable?.streak || 0;
+        const unAch = !!data.unstoppable?.achieved;
+        const remaining = Math.max(0, 21 - unstreak);
+
+        const trophies = [
+          {
+            key:'records',
+            title:'Records Battus',
+            value: recordCount,
+            img:'record.png',
+            obtained: recordCount > 0,
+            info: "Nombre de records enregistrés."
+          },
+          {
+            key:'furie',
+            title:'Furie',
+            value: furyStreak,
+            img:'fury.png',
+            obtained: furyStreak > 0,
+            info: "Validez au moins un entraînement par jour pendant 7 jours consécutifs."
+          },
+          {
+            key:'unstoppable',
+            title:'UNSTOPPABLE',
+            value: unAch ? 1 : 0,
+            img:'unstoppable.png',
+            obtained: unAch,
+            sub: unAch ? "" : `(encore ${remaining} jours)`,
+            info: "Obtenu si vous ne ratez aucun entraînement pendant 3 semaines d'affilée."
+          }
+        ];
+
+        trophies.forEach(t => {
+          const card = document.createElement('div');
+          card.className = 'stat-card';
+          if(!t.obtained) card.classList.add('gray-card');
+
+          card.innerHTML = `
+            <img src="${t.img}" class="stat-icon" onerror="this.src='https://via.placeholder.com/120?text=T'">
+            <span class="stat-value">${t.value}</span>
+            <span class="stat-label">${t.title}</span>
+            ${t.sub ? `<div class="tiny-sub">${t.sub}</div>` : ``}
+          `;
+
+          card.onclick = () => ui.alert("TROPHÉE", t.info);
+          trophyWrap.appendChild(card);
+        });
+
+        // BOSS VAINCUS
+        const bossWrap = document.getElementById('boss-cards');
+        bossWrap.innerHTML = '';
+
+        // We show bosses achieved per bossProgress entries; also show at least biomasse for beginner & intermediate in gray if none
+        const ensured = [
+          { slot:1, diff:1 },
+          { slot:1, diff:2 }
+        ];
+
+        const bossEntries = [];
+
+        // From progress map: each beaten increments gradeIndex. We consider grades achieved are 0..gradeIndex-1 (each win increases after win).
+        // For display, show ALL grades up to current gradeIndex as obtained "1", plus next grade as not obtained.
+        for(const key in (data.bossProgress || {})){
+          const m = key.match(/^S(\d+)-D(\d+)$/);
+          if(!m) continue;
+          const slot = parseInt(m[1],10);
+          const diff = parseInt(m[2],10);
+          const st = data.bossProgress[key];
+
+          // Show current grade (gradeIndex) as "current boss state", but "vaincu" are grades already passed.
+          // We'll display grade 0..st.gradeIndex (inclusive) as cards, obtained if i < st.gradeIndex
+          for(let gi=0; gi<=Math.min(st.gradeIndex, bossGrades.length-1); gi++){
+            const obtained = gi < st.gradeIndex; // you have beaten and moved past it
+            bossEntries.push({ slot, diff, gradeIndex: gi, obtained });
+          }
+        }
+
+        // ensure minimal presence for beginner & intermediate biomasse if not present
+        ensured.forEach(e => {
+          const exists = bossEntries.some(b => b.slot===e.slot && b.diff===e.diff && b.gradeIndex===0);
+          if(!exists){
+            bossEntries.push({ slot:e.slot, diff:e.diff, gradeIndex:0, obtained:false });
+          }
+        });
+
+        // Deduplicate
+        const uniq = new Map();
+        bossEntries.forEach(b => {
+          const k = `${b.slot}-${b.diff}-${b.gradeIndex}`;
+          if(!uniq.has(k)) uniq.set(k, b);
+          else {
+            // if any says obtained, keep obtained
+            const prev = uniq.get(k);
+            uniq.set(k, { ...prev, obtained: prev.obtained || b.obtained });
+          }
+        });
+
+        // Sort (diff then grade)
+        const arr = Array.from(uniq.values()).sort((a,b) => {
+          if(a.diff !== b.diff) return a.diff - b.diff;
+          if(a.gradeIndex !== b.gradeIndex) return a.gradeIndex - b.gradeIndex;
+          return a.slot - b.slot;
+        });
+
+        arr.forEach(b => {
+          const card = document.createElement('div');
+          card.className = 'stat-card';
+          if(!b.obtained) card.classList.add('gray-card');
+
+          const gradeName = bossGrades[b.gradeIndex] || bossGrades[bossGrades.length-1];
+          const img = training.bossImageTrophy(b.diff, b.gradeIndex);
+
+          card.innerHTML = `
+            <img src="${img}" class="stat-icon" onerror="this.src='https://via.placeholder.com/120?text=Boss'">
+            <span class="stat-value">${b.obtained ? 1 : 0}</span>
+            <span class="stat-label">${training.diffLabel(b.diff)} - ${gradeName}</span>
+          `;
+
+          card.onclick = () => ui.alert("BOSS", `Grade : <b>${gradeName}</b><br>Niveau : <b>${training.diffLabel(b.diff)}</b>`);
+          bossWrap.appendChild(card);
+        });
+      },
+
+      resetRewardsOnly: () => {
+        ui.confirm("RESET", "Voulez-vous vraiment effacer TOUTES vos récompenses ? Cela n'affectera pas votre niveau de tests.", () => {
+          data.bossProgress = {};
+          data.records = {};
+          data.unstoppable = { streak:0, achieved:false };
+          data.fury = { streak:0, best:0, lastDate:null };
+          db.save(data);
+          gallery.render();
+          ui.alert("TERMINÉ", "Toutes les récompenses ont été effacées.");
+        });
+      }
+    };
+
+    /* ===========================
+       INIT
+    ============================ */
+    // Show menu by default
+    document.getElementById('screen-menu').classList.remove('hidden');
+    app.updateCharacter();
+    lightning.init();
+
+    if('serviceWorker' in navigator){
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js');
+      });
+    }
+  </script>
+</body>
+</html>
