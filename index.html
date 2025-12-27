@@ -7,7 +7,6 @@
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#ffeb3b" />
 
-  <!-- Rajdhani font (all app text) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet" />
@@ -34,8 +33,6 @@
       align-items:center;
       min-height:100vh;
       background:transparent;
-      /* on évite le “padding-bottom” global (ça peut créer du scroll),
-         on gère les safe-areas localement (HUD et écrans flex) */
       padding:0;
       overflow-x:hidden;
     }
@@ -256,7 +253,7 @@
       flex-direction:column;
       align-items:center;
       justify-content:flex-start;
-      overflow:hidden; /* pas de scroll sur le menu */
+      overflow:hidden;
     }
     .glass{
       background:rgba(0,0,0,0.40);
@@ -310,7 +307,7 @@
       filter:drop-shadow(0 10px 18px rgba(0,0,0,0.55));
     }
 
-    /* ✅ Ticker corrigé : départ réellement hors écran à droite (pas au centre) */
+    /* ✅ Ticker : Vitesse réduite de 25% (4.8s -> 6.4s) */
     .legend-ticker{
       width:min(520px, 92vw);
       height:26px;
@@ -324,24 +321,24 @@
       position:absolute;
       white-space:nowrap;
       top:0;
-      left:100%;         /* le bord gauche du texte démarre au bord droit du container */
+      left:100%;
       font-size:1.05em;
       font-weight:600;
       will-change:left;
     }
     .legend-ticker span.run{
-      animation:legendRunLeft 4.8s linear forwards; /* animation sur left => fiable quelle que soit la longueur */
+      animation:legendRunLeft 6.4s linear forwards; /* 4.8s / 0.75 = 6.4s */
     }
     @keyframes legendRunLeft{
       from{ left:100%; }
-      to{ left:-220%; }  /* assez loin pour sortir entièrement même si le texte est court */
+      to{ left:-220%; }
     }
 
     .menu-scene{
       flex:1 1 auto;
       width:100%;
       display:flex;align-items:center;justify-content:center;
-      padding:10px 10px 170px 10px; /* laisse la place au HUD fixé en bas */
+      padding:10px 10px 170px 10px;
       box-sizing:border-box;
       z-index:1;
       pointer-events:none;
@@ -378,7 +375,6 @@
       box-sizing:border-box;
     }
 
-    /* ✅ 4 boutons identiques (2x2) avec label à gauche + image à droite */
     .hud-grid{
       display:grid;
       grid-template-columns:1fr 1fr;
@@ -401,7 +397,7 @@
       justify-content:space-between;
       overflow:hidden;
       box-sizing:border-box;
-      height:62px; /* hauteur identique pour tous (minimiser l’augmentation) */
+      height:62px;
     }
     .hud-btn:active{transform:scale(.985);}
 
@@ -414,20 +410,21 @@
       box-sizing:border-box;
       min-width:0;
     }
+    /* ✅ Boutons HUD : texte réduit et multi-lignes autorisés */
     .hud-btn-left span{
-      font-size:.92em; /* petit */
+      font-size:.80em; 
       font-weight:900;
       letter-spacing:1px;
       text-transform:uppercase;
-      line-height:1.05;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
+      line-height:1.1;
+      white-space:normal;
+      overflow:visible;
+      text-overflow:clip;
       opacity:.95;
     }
     .hud-btn-right{
       flex:0 0 auto;
-      width:62px;                 /* zone image, égale à la hauteur => carré */
+      width:62px;
       height:100%;
       display:flex;
       align-items:center;
@@ -437,7 +434,7 @@
       box-sizing:border-box;
     }
     .hud-btn-right img{
-      height:100%;                /* ✅ l’image prend toute la hauteur du bouton */
+      height:100%;
       width:auto;
       object-fit:contain;
       display:block;
@@ -466,7 +463,7 @@
       box-sizing:border-box;
       display:flex;
       flex-direction:column;
-      overflow:hidden; /* ✅ pas de scroll */
+      overflow:hidden;
     }
     #screen-training h2{
       margin:6px 0 6px 0;
@@ -480,7 +477,6 @@
       text-align:center;
     }
 
-    /* ✅ La grille occupe l’espace restant (4 rangées) */
     #screen-training .week-grid{
       flex:1 1 auto;
       min-height:0;
@@ -506,7 +502,6 @@
       line-height:1.05;
     }
 
-    /* ✅ Zone boutons: compacte, mais visible, sans espace vide */
     .training-actions{
       flex:0 0 auto;
       display:flex;
@@ -520,7 +515,6 @@
       border-radius:14px;
     }
 
-    /* Toggle Dos sans angle */
     .toggle-row{
       display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;
       padding:10px 12px;border-radius:14px;border:1px solid #333;background:#101010;
@@ -535,7 +529,6 @@
   <div id="app-background"></div>
   <div id="lightning-container"></div>
 
-  <!-- MODAL -->
   <div id="custom-modal" class="hidden">
     <div class="modal-content">
       <div id="modal-title" class="modal-title">TITRE</div>
@@ -544,9 +537,7 @@
     </div>
   </div>
 
-  <!-- MENU -->
   <div id="screen-menu" class="container hud-menu">
-    <!-- Topbar -->
     <div class="menu-topbar" aria-label="Barre supérieure">
       <div class="topbar-slot left">
         <img src="physiquerush.png" class="top-icon" alt="PhysiqueRush" onclick="nav.to('screen-menu')" />
@@ -567,13 +558,11 @@
     <div class="menu-title-area" aria-label="Bannière">
       <img src="massiveimpact.png" class="banner-img" alt="Massive Impact" />
 
-      <!-- ✅ Ticker (corrigé) -->
       <div class="legend-ticker" aria-label="Légende défilante">
         <span id="legend-ticker-text"></span>
       </div>
     </div>
 
-    <!-- Zone Médiane -->
     <div class="menu-scene" aria-label="Scène principale">
       <div id="char-display" class="char-scene">
         <img id="char-img" class="char-float" src="evo1.png" alt="Alien" onerror="this.src='https://via.placeholder.com/250x300?text=Alien'">
@@ -591,7 +580,6 @@
       </div>
     </div>
 
-    <!-- ✅ HUD bas : 4 boutons identiques -->
     <div class="hud glass" aria-label="Arche de Commande">
       <div class="hud-grid">
         <div class="hud-btn" onclick="nav.to('screen-levels')" aria-label="Salle des tests">
@@ -615,11 +603,10 @@
         </div>
       </div>
 
-      <div class="menu-version">physiquerush® - v2.11</div>
+      <div class="menu-version">physiquerush® - v2.12</div>
     </div>
   </div>
 
-  <!-- LEVELS -->
   <div id="screen-levels" class="container hidden">
     <h2>SALLE DES TESTS</h2>
     <button class="btn" onclick="evoLab.init()">Evolution Lab</button>
@@ -634,7 +621,6 @@
     <button class="btn" onclick="nav.to('screen-menu')" style="margin-top:20px;">Retour</button>
   </div>
 
-  <!-- EVOLAB -->
   <div id="screen-evolab" class="container hidden">
     <h3>Evolution Lab</h3>
     <div id="radar-container"><canvas id="radarChart"></canvas></div>
@@ -643,7 +629,6 @@
     <button class="btn btn-danger-zone" onclick="evoLab.resetTests()">⚠️ RÉINITIALISER MES TESTS</button>
   </div>
 
-  <!-- TEST -->
   <div id="screen-test" class="container hidden">
     <h2 id="test-name">Test</h2>
     <div class="video-box">[VIDEO VIMEO PLACEHOLDER — présentation du test]</div>
@@ -683,7 +668,6 @@
     <button id="btn-test-retour" class="btn" onclick="tests.quit()">Retour</button>
   </div>
 
-  <!-- TRAINING -->
   <div id="screen-training" class="hidden">
     <h2>ZONE D'ENTRAÎNEMENT</h2>
     <div class="subtle">
@@ -698,13 +682,11 @@
     </div>
   </div>
 
-  <!-- WORKOUT -->
   <div id="screen-workout" class="container hidden">
     <h2 id="workout-day-title">Jx</h2>
 
     <div class="workout-wrap">
 
-      <!-- Toggle Dos sans angle -->
       <div id="nocorner-card" class="toggle-row hidden">
         <div style="min-width:240px;">
           <label for="nocorner-toggle">Impossibilité de s'entraîner dans un angle ?</label>
@@ -787,7 +769,6 @@
     </div>
   </div>
 
-  <!-- J8 ASCENSION -->
   <div id="screen-ascension" class="container hidden">
     <h2 id="asc-title">Jx — Ascension Challenge</h2>
 
@@ -867,7 +848,6 @@
     <button class="btn" onclick="ascension.quit()">Retour</button>
   </div>
 
-  <!-- TROPHIES -->
   <div id="screen-trophy" class="container hidden">
     <h2>RÉCOMPENSES ET STATS</h2>
     <div style="margin-bottom:14px;padding:8px;">
@@ -1388,7 +1368,7 @@
       count: () => Object.keys(data.recordsMeta || {}).length
     };
 
-    // --- TESTS (inchangé) ---
+    // --- TESTS ---
     const tests = {
       currentTest: null,
       interval: null,
@@ -1502,6 +1482,7 @@
           tests.totalSeconds--;
           tests.secondsInMinute--;
 
+          // ✅ RETOUR DU COMPTE À REBOURS ROUGE + BIPS + "PRÉPAREZ-VOUS"
           if(tests.secondsInMinute <= 10 && tests.secondsInMinute > 0) {
             stateDiv.innerText = "PRÉPAREZ-VOUS !";
             stateDiv.classList.add('timer-warning');
@@ -2073,9 +2054,10 @@
 
       openCurrentExerciseVideo: () => {
         const ex = training.currentExercises[training.currentIndex];
-        if(ex && ex.meta && ex.meta.alt){
-          const a = ex.meta.alt[0];
-          const b = ex.meta.alt[1];
+        const a = (ex && ex.meta && ex.meta.alt) ? ex.meta.alt[0] : null;
+        const b = (ex && ex.meta && ex.meta.alt) ? ex.meta.alt[1] : null;
+
+        if(a && b){
           ui.show("VIDÉOS — Alternance", `
             <div class="subtle" style="text-align:left;">
               Choisissez l'exercice à afficher.
@@ -2381,7 +2363,7 @@
       }
     };
 
-    // --- ASCENSION (inchangé / repris) ---
+    // --- ASCENSION ---
     const ascension = {
       currentJ: 8,
       totalSeconds: 8*60,
@@ -2603,7 +2585,7 @@
       }
     };
 
-    // --- GALLERY (inchangé) ---
+    // --- GALLERY ---
     const gallery = {
       setLocked: (cardId, locked) => {
         const el = document.getElementById(cardId);
@@ -2733,7 +2715,7 @@
       }
     };
 
-    // --- ✅ Legend ticker (corrigé) ---
+    // --- Legend ticker ---
     const legendTicker = {
       lines: [
         "Protocole d'Évolution Musculaire Rapide",
