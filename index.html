@@ -33,14 +33,25 @@
       flex-direction:column;
       align-items:center;
       min-height:100vh;
-      padding-bottom:50px;
       background:transparent;
+      /* on évite le “padding-bottom” global (ça peut créer du scroll),
+         on gère les safe-areas localement (HUD et écrans flex) */
+      padding:0;
+      overflow-x:hidden;
     }
     #app-background{position:fixed;top:0;left:0;width:100%;height:100%;background-color:var(--bg-color);z-index:-2;}
     #lightning-container{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;pointer-events:none;overflow:hidden;}
     .lightning-flash{position:absolute;max-width:none;opacity:.8;pointer-events:none;}
 
-    .container{width:95%;max-width:500px;padding:20px;text-align:center;position:relative;z-index:1;}
+    .container{
+      width:95%;
+      max-width:500px;
+      padding:20px;
+      text-align:center;
+      position:relative;
+      z-index:1;
+      box-sizing:border-box;
+    }
     .hidden{display:none!important;}
 
     /* BUTTONS */
@@ -49,29 +60,23 @@
       background:var(--card-bg);color:#fff;border:1px solid #333;
       cursor:pointer;text-align:center;font-weight:900;text-transform:uppercase;
       border-radius:10px;transition:.2s;
+      box-sizing:border-box;
     }
     .btn:hover{background:#333;}
     .btn-red{background:var(--accent-red);color:#000;border:none;}
     .btn-outline{background:transparent;border:1px solid var(--accent-red);color:var(--accent-red);}
-    .btn-danger-zone{margin-top:30px;border:1px solid var(--accent-red);color:var(--accent-red);opacity:.7;font-size:.8em;}
+    .btn-danger-zone{margin-top:12px;border:1px solid var(--accent-red);color:var(--accent-red);opacity:.75;font-size:.85em;}
     .btn-small{padding:10px;font-size:.9em;}
     .btn-validate{background:var(--accent-yellow)!important;color:#000!important;border:none!important;font-weight:1000!important;}
 
     /* IMAGES */
     .main-img{display:block;margin:0 auto 15px auto;border-radius:15px;}
-    .logo-reduced{width:20%;max-width:80px;}
     .glow-effect{width:100%;max-width:100%;animation:redPulse 2s infinite ease-in-out;}
     @keyframes redPulse{
       0%{box-shadow:0 0 5px rgba(244,67,54,.3);}
       50%{box-shadow:0 0 25px rgba(244,67,54,.8),0 0 10px rgba(244,67,54,.6);}
       100%{box-shadow:0 0 5px rgba(244,67,54,.3);}
     }
-
-    /* HEADER */
-    #char-display{margin-bottom:20px;margin-top:10px;}
-    #char-img{max-width:250px;display:block;margin:0 auto;transition:transform .3s;}
-    /* (deprecated) kept for backward compatibility */
-    #global-level-badge{display:none;}
 
     /* ELEMENTS */
     .video-box{
@@ -85,30 +90,26 @@
     }
     canvas{max-width:100%;max-height:100%;}
 
-    /* TRAINING GRID - bigger cells + lock */
+    /* TRAINING GRID (base) */
     .week-grid{
       display:grid;
       grid-template-columns:repeat(2, 1fr);
       gap:12px;
-      margin:18px 0 12px 0;
       justify-content:center;
     }
     .day-box{
       position:relative;
-      aspect-ratio:1/1;
       background:#2b2b2b;
       display:flex;
       flex-direction:column;
       align-items:center;
       justify-content:center;
-      font-size:1.02em;
       border-radius:14px;
       cursor:pointer;
       transition:all .2s;
       border:1px solid #444;
-      opacity:1;
-      min-height:148px;
       user-select:none;
+      -webkit-tap-highlight-color: transparent;
     }
     .day-box:hover{transform:scale(1.02);}
     .day-box.done{background:var(--accent-green);color:#000;border:none;font-weight:1000;}
@@ -120,7 +121,7 @@
       background:#000;padding:16px;border-radius:14px;border:1px solid #333;margin-bottom:14px;
       display:flex;flex-direction:column;align-items:center;gap:6px;
     }
-    .timer-digits{font-size:3.2em;font-weight:1000;font-family:'Rajdhani', system-ui, sans-serif;letter-spacing:1px;}
+    .timer-digits{font-size:3.2em;font-weight:1000;letter-spacing:1px;}
     .timer-digits.warning{color:var(--accent-red);}
     .timer-state{font-size:1.05em;color:var(--accent-pink);min-height:1.5em;font-weight:1000;letter-spacing:.5px;}
     .timer-warning{animation:flashWarning .5s infinite;color:var(--accent-red)!important;}
@@ -129,6 +130,7 @@
     input[type="number"]{
       width:140px;padding:10px;text-align:center;border-radius:12px;border:1px solid #444;
       font-size:1.1em;background:#111;color:#fff;outline:none;
+      box-sizing:border-box;
     }
     input[type="number"]:focus{border-color:var(--accent-yellow);box-shadow:0 0 10px rgba(255,235,59,.15);}
     input[readonly]{opacity:.85}
@@ -173,7 +175,7 @@
     .score-inline label{font-weight:1000;color:#fff;}
     .score-help{color:#888;font-size:.9em;margin-top:-4px;}
 
-    /* BEAT THE BOSS — resserré/cintré + centré */
+    /* BEAT THE BOSS */
     .boss-section{
       border:1px solid #3a3a3a;padding:6px 6px 8px 6px;border-radius:14px;background:#151515;
       display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;width:fit-content;margin:8px auto;
@@ -184,11 +186,11 @@
     #boss-img-preview{width:225px;height:225px;object-fit:contain;margin:0;}
     #boss-score-target{font-size:1.0em;font-weight:1000;color:#fff;margin:0;line-height:1.05;}
 
-    /* RÉCOMPENSES — cards cintrées + lock visuel */
+    /* RÉCOMPENSES */
     .stats-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
     .stat-card{
       background:#1a1a1a;border:1px solid #444;border-radius:14px;padding:8px 6px 10px 6px;
-      display:flex;flex-direction:column;align-items:center;justify-content:center;height:auto;cursor:pointer;overflow:hidden;
+      display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;overflow:hidden;
     }
     .stat-card:active{transform:scale(.98);}
     .stat-icon{width:130px;height:130px;object-fit:contain;margin:0 0 4px 0;}
@@ -243,12 +245,18 @@
     }
     .test-do{font-size:1.35em;font-weight:1000;color:#fff;margin:0 0 10px 0;text-align:center;}
     .test-do b{color:var(--accent-yellow);}
-    .menu-version{margin-top:8px;font-size:.55em;opacity:.25;text-align:center;letter-spacing:1px;}
 
     /* ========================= HUD MENU (Main Screen) ========================= */
     .hud-menu{
-      width:100%;max-width:none;padding:0;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
-      overflow:hidden;
+      width:100%;
+      max-width:none;
+      padding:0;
+      height:100vh;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:flex-start;
+      overflow:hidden; /* pas de scroll sur le menu */
     }
     .glass{
       background:rgba(0,0,0,0.40);
@@ -264,7 +272,7 @@
       -webkit-backdrop-filter:blur(6px);
     }
 
-    /* TOPBAR — 3 icônes hors encadré, même taille, visibles */
+    /* TOPBAR */
     .menu-topbar{
       position:fixed;
       top:10px; left:10px; right:10px;
@@ -275,11 +283,7 @@
       padding:0;
       pointer-events:auto;
     }
-    .topbar-slot{
-      flex:1 1 0;
-      display:flex;
-      align-items:center;
-    }
+    .topbar-slot{flex:1 1 0;display:flex;align-items:center;}
     .topbar-slot.left{justify-content:flex-start;}
     .topbar-slot.center{justify-content:center;}
     .topbar-slot.right{justify-content:flex-end;}
@@ -306,7 +310,7 @@
       filter:drop-shadow(0 10px 18px rgba(0,0,0,0.55));
     }
 
-    /* Legend ticker (1 ligne à la fois, scroll droite -> gauche) */
+    /* ✅ Ticker corrigé : départ réellement hors écran à droite (pas au centre) */
     .legend-ticker{
       width:min(520px, 92vw);
       height:26px;
@@ -319,25 +323,25 @@
     .legend-ticker span{
       position:absolute;
       white-space:nowrap;
-      left:0; top:0;
-      transform:translateX(110%);
+      top:0;
+      left:100%;         /* le bord gauche du texte démarre au bord droit du container */
       font-size:1.05em;
       font-weight:600;
-      will-change:transform;
+      will-change:left;
     }
     .legend-ticker span.run{
-      animation:legendRun 4.8s linear forwards;
+      animation:legendRunLeft 4.8s linear forwards; /* animation sur left => fiable quelle que soit la longueur */
     }
-    @keyframes legendRun{
-      from{transform:translateX(110%);}
-      to{transform:translateX(-120%);}
+    @keyframes legendRunLeft{
+      from{ left:100%; }
+      to{ left:-220%; }  /* assez loin pour sortir entièrement même si le texte est court */
     }
 
     .menu-scene{
       flex:1 1 auto;
       width:100%;
       display:flex;align-items:center;justify-content:center;
-      padding:10px 10px 170px 10px;
+      padding:10px 10px 170px 10px; /* laisse la place au HUD fixé en bas */
       box-sizing:border-box;
       z-index:1;
       pointer-events:none;
@@ -364,18 +368,18 @@
     .nutri-icon{width:26px;height:26px;object-fit:contain;display:block;opacity:.95;}
     .nutri-points{font-size:1.25em;font-weight:700;letter-spacing:.5px;}
 
+    /* HUD bas */
     .hud{
       position:fixed;left:10px;right:10px;bottom:10px;z-index:12;
       display:flex;flex-direction:column;gap:12px;
-      padding:14px 12px calc(14px + env(safe-area-inset-bottom));
+      padding:12px 12px calc(12px + env(safe-area-inset-bottom));
       border-radius:20px;
       pointer-events:auto;
+      box-sizing:border-box;
     }
-    .hud-row{display:flex;gap:12px;align-items:stretch;justify-content:center;}
-    .hud-major .hud-btn-major{flex:1 1 0;min-width:0;}
 
-    /* Réorganisé (sans bouton WhatsApp en bas) -> 2 colonnes symétriques */
-    .hud-support{
+    /* ✅ 4 boutons identiques (2x2) avec label à gauche + image à droite */
+    .hud-grid{
       display:grid;
       grid-template-columns:1fr 1fr;
       gap:12px;
@@ -383,54 +387,140 @@
     }
 
     .hud-btn{
-      border-radius:16px;border:1px solid rgba(255,255,255,0.14);
-      color:#fff;cursor:pointer;text-transform:uppercase;font-weight:700;letter-spacing:1px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,0.14);
+      color:#fff;
+      cursor:pointer;
       transition:transform .15s ease, background .15s ease, border-color .15s ease;
       text-shadow:0 2px 10px rgba(0,0,0,0.85);
       user-select:none;
       -webkit-tap-highlight-color: transparent;
+      background:rgba(0,0,0,0.30);
+      display:flex;
+      align-items:stretch;
+      justify-content:space-between;
+      overflow:hidden;
+      box-sizing:border-box;
+      height:62px; /* hauteur identique pour tous (minimiser l’augmentation) */
     }
     .hud-btn:active{transform:scale(.985);}
-    .hud-btn-major{
-      height:62px;font-size:1.15em;padding:0 10px;display:flex;align-items:center;justify-content:center;
-    }
-    .hud-btn-nutri{
-      height:54px;font-size:1.05em;padding:0 10px;display:flex;align-items:center;justify-content:center;
-      white-space:nowrap; /* une seule ligne */
-    }
 
-    /* Icônes (sans <button>) */
-    .hud-icon{
-      height:54px;padding:0;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;
+    .hud-btn-left{
+      flex:1 1 auto;
+      display:flex;
+      align-items:center;
+      justify-content:flex-start;
+      padding:0 10px 0 12px;
+      box-sizing:border-box;
+      min-width:0;
     }
-    .hud-icon-img{
-      width:clamp(38px, 7vw, 56px);
-      height:clamp(38px, 7vw, 56px);
-      object-fit:contain;display:block;
+    .hud-btn-left span{
+      font-size:.92em; /* petit */
+      font-weight:900;
+      letter-spacing:1px;
+      text-transform:uppercase;
+      line-height:1.05;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      opacity:.95;
+    }
+    .hud-btn-right{
+      flex:0 0 auto;
+      width:62px;                 /* zone image, égale à la hauteur => carré */
+      height:100%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      border-left:1px solid rgba(255,255,255,0.12);
+      background:linear-gradient(180deg, rgba(255,255,255,0.06), rgba(0,0,0,0.22));
+      box-sizing:border-box;
+    }
+    .hud-btn-right img{
+      height:100%;                /* ✅ l’image prend toute la hauteur du bouton */
+      width:auto;
+      object-fit:contain;
+      display:block;
       filter:drop-shadow(0 6px 14px rgba(0,0,0,0.45));
-      cursor:pointer;
-    }
-    /* recompenses plus grande */
-    .hud-icon-img.big{
-      width:clamp(46px, 9vw, 66px);
-      height:clamp(46px, 9vw, 66px);
     }
 
-    .hud-icon::before{
-      content:"";position:absolute;inset:1px;border-radius:14px;pointer-events:none;
-      background:
-        radial-gradient(circle at 18% 35%, rgba(255,235,59,0.16), transparent 55%),
-        radial-gradient(circle at 82% 65%, rgba(0,190,255,0.12), transparent 58%),
-        linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.00) 55%, rgba(0,0,0,0.18));
-      opacity:0.85;
-    }
-    .hud-icon::after{
-      content:"";position:absolute;left:10px;right:10px;top:10px;height:1px;pointer-events:none;
-      background:linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
-      opacity:0.45;
+    .menu-version{
+      margin-top:2px;
+      font-size:.55em;
+      opacity:.22;
+      text-align:center;
+      letter-spacing:1px;
     }
 
-    /* Toggle (Dos sans angle) */
+    @media (hover:hover){
+      .hud-btn:hover{border-color:rgba(255,235,59,0.35);background:rgba(0,0,0,0.48);}
+      .top-icon:hover{filter:brightness(1.08) drop-shadow(0 10px 14px rgba(0,0,0,0.55));}
+    }
+
+    /* ========================= TRAINING SCREEN: tout tient sans scroll ========================= */
+    #screen-training{
+      height:100vh;
+      max-width:500px;
+      width:95%;
+      padding:16px 14px calc(16px + env(safe-area-inset-bottom));
+      box-sizing:border-box;
+      display:flex;
+      flex-direction:column;
+      overflow:hidden; /* ✅ pas de scroll */
+    }
+    #screen-training h2{
+      margin:6px 0 6px 0;
+      font-size:1.55em;
+      letter-spacing:2px;
+      text-transform:uppercase;
+      line-height:1.0;
+    }
+    #screen-training .subtle{
+      margin:0 0 10px 0;
+      text-align:center;
+    }
+
+    /* ✅ La grille occupe l’espace restant (4 rangées) */
+    #screen-training .week-grid{
+      flex:1 1 auto;
+      min-height:0;
+      margin:0;
+      gap:10px;
+      grid-template-columns:repeat(2, 1fr);
+      grid-template-rows:repeat(4, 1fr);
+    }
+    #screen-training .day-box{
+      min-height:0;
+      height:100%;
+      padding:8px 6px;
+      box-sizing:border-box;
+    }
+    #screen-training .day-box span:first-child{
+      font-size:clamp(1.15em, 3.7vw, 1.55em);
+      font-weight:1000;
+      line-height:1.0;
+    }
+    #screen-training .day-box span:nth-child(2){
+      margin-top:4px;
+      font-size:clamp(.85em, 3.1vw, 1.0em);
+      line-height:1.05;
+    }
+
+    /* ✅ Zone boutons: compacte, mais visible, sans espace vide */
+    .training-actions{
+      flex:0 0 auto;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      margin-top:10px;
+    }
+    .training-actions .btn{
+      margin:0;
+      padding:12px 12px;
+      border-radius:14px;
+    }
+
+    /* Toggle Dos sans angle */
     .toggle-row{
       display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;
       padding:10px 12px;border-radius:14px;border:1px solid #333;background:#101010;
@@ -438,13 +528,6 @@
     .toggle-row label{font-weight:1000;}
     .toggle-row small{display:block;color:#888;font-weight:600;margin-top:2px;line-height:1.25;}
     .toggle-row input[type="checkbox"]{width:22px;height:22px;accent-color:var(--accent-yellow);cursor:pointer;}
-
-    /* Slightly lower intensity hover for desktop */
-    @media (hover:hover){
-      .hud-btn:hover{border-color:rgba(255,235,59,0.35);background:rgba(0,0,0,0.48);}
-      .top-icon:hover{filter:brightness(1.08) drop-shadow(0 10px 14px rgba(0,0,0,0.55));}
-      .hud-icon-img:hover{filter:brightness(1.08) drop-shadow(0 6px 14px rgba(0,0,0,0.45));}
-    }
   </style>
 </head>
 
@@ -463,7 +546,7 @@
 
   <!-- MENU -->
   <div id="screen-menu" class="container hud-menu">
-    <!-- Topbar (3 icônes hors encadré) -->
+    <!-- Topbar -->
     <div class="menu-topbar" aria-label="Barre supérieure">
       <div class="topbar-slot left">
         <img src="physiquerush.png" class="top-icon" alt="PhysiqueRush" onclick="nav.to('screen-menu')" />
@@ -477,14 +560,14 @@
       </div>
 
       <div class="topbar-slot right">
-        <!-- IMPORTANT: désormais visible en haut à droite -->
         <img src="fermer.png" class="top-icon" alt="Fermer" onclick="appActions.closeApp()" />
       </div>
     </div>
 
     <div class="menu-title-area" aria-label="Bannière">
       <img src="massiveimpact.png" class="banner-img" alt="Massive Impact" />
-      <!-- 1 ligne qui défile (droite -> gauche), 1 texte à la fois -->
+
+      <!-- ✅ Ticker (corrigé) -->
       <div class="legend-ticker" aria-label="Légende défilante">
         <span id="legend-ticker-text"></span>
       </div>
@@ -508,26 +591,31 @@
       </div>
     </div>
 
-    <!-- HUD bas -->
+    <!-- ✅ HUD bas : 4 boutons identiques -->
     <div class="hud glass" aria-label="Arche de Commande">
-      <div class="hud-row hud-major">
-        <div class="hud-btn hud-btn-major glass" onclick="nav.to('screen-levels')">SALLE DES TESTS</div>
-        <div class="hud-btn hud-btn-major glass" onclick="nav.to('screen-training')">ZONE D'ENTRAÎNEMENT</div>
-      </div>
-
-      <!-- Réorganisé : 2 blocs symétriques (Récompenses + Nutri-Rush) -->
-      <div class="hud-row hud-support">
-        <div class="hud-btn hud-icon glass" aria-label="Récompenses et Stats">
-          <!-- image cliquable (pas un bouton) -->
-          <img src="recompenses.png" class="hud-icon-img big" alt="Récompenses" onclick="nav.to('screen-trophy')" />
+      <div class="hud-grid">
+        <div class="hud-btn" onclick="nav.to('screen-levels')" aria-label="Salle des tests">
+          <div class="hud-btn-left"><span>SALLE DES TESTS</span></div>
+          <div class="hud-btn-right"><img src="tests.png" alt="Tests" onerror="this.src='https://via.placeholder.com/62x62?text=T'"></div>
         </div>
 
-        <div class="hud-btn hud-btn-nutri glass" onclick="ui.alert('Patience...', 'Le Module Nutri-Rush sera bientôt disponible !')">
-          NUTRI-RUSH
+        <div class="hud-btn" onclick="nav.to('screen-training')" aria-label="Zone d'entraînement">
+          <div class="hud-btn-left"><span>ZONE D'ENTRAÎNEMENT</span></div>
+          <div class="hud-btn-right"><img src="training.png" alt="Training" onerror="this.src='https://via.placeholder.com/62x62?text=TR'"></div>
+        </div>
+
+        <div class="hud-btn" onclick="ui.alert('Patience...', 'Le Module Nutri-Rush sera bientôt disponible !')" aria-label="Nutri-Rush">
+          <div class="hud-btn-left"><span>NUTRI-RUSH</span></div>
+          <div class="hud-btn-right"><img src="nutri.png" alt="Nutri" onerror="this.src='https://via.placeholder.com/62x62?text=N'"></div>
+        </div>
+
+        <div class="hud-btn" onclick="nav.to('screen-trophy')" aria-label="Récompenses">
+          <div class="hud-btn-left"><span>RÉCOMPENSES</span></div>
+          <div class="hud-btn-right"><img src="recompenses.png" alt="Récompenses" onerror="this.src='https://via.placeholder.com/62x62?text=R'"></div>
         </div>
       </div>
 
-      <div class="menu-version">physiquerush® - v2.05</div>
+      <div class="menu-version">physiquerush® - v2.11</div>
     </div>
   </div>
 
@@ -596,14 +684,18 @@
   </div>
 
   <!-- TRAINING -->
-  <div id="screen-training" class="container hidden">
-    <h2 style="font-size:2em;text-transform:uppercase;letter-spacing:2px;margin-bottom:10px;">ZONE D'ENTRAÎNEMENT</h2>
-    <div class="subtle" style="text-align:center;margin-bottom:10px;">
+  <div id="screen-training" class="hidden">
+    <h2>ZONE D'ENTRAÎNEMENT</h2>
+    <div class="subtle">
       Seul le <b>prochain jour</b> à valider est disponible.
     </div>
+
     <div class="week-grid" id="week-grid"></div>
-    <button class="btn btn-danger-zone" onclick="training.resetAllTrainings()">⚠️ RÉINITIALISER TOUS LES ENTRAÎNEMENTS</button>
-    <button class="btn" onclick="nav.to('screen-menu')" id="btn-training-retour" style="margin-top:10px;">Retour</button>
+
+    <div class="training-actions">
+      <button class="btn btn-danger-zone" onclick="training.resetAllTrainings()">⚠️ RÉINITIALISER TOUS LES ENTRAÎNEMENTS</button>
+      <button class="btn" onclick="nav.to('screen-menu')" id="btn-training-retour">Retour</button>
+    </div>
   </div>
 
   <!-- WORKOUT -->
@@ -1024,7 +1116,7 @@
       }
     };
 
-    // --- BOSS SYSTEM (tiers + grades) ---
+    // --- BOSS SYSTEM ---
     const BOSS_TIERS = [
       { id: 1, name: "Débutant", img: "btb1.png" },
       { id: 2, name: "Intermédiaire", img: "btb2.png" },
@@ -1039,7 +1131,6 @@
       "Maître-Esprit","Omniscient Cosmique"
     ];
 
-    // mode: 'max' (score doit être > cible) ou 'min' (score doit être < cible)
     const boss = {
       key: (slot, tier, mode) => `slot${slot}_tier${tier}_mode${mode}`,
       ensure: (slot, tier, mode) => {
@@ -1048,11 +1139,9 @@
         const k = boss.key(slot, tier, mode);
         if(!data.bossMeta[k]) data.bossMeta[k] = { target: (mode === 'min' ? 6 : 100), gradeIndex: 0, mode };
         if(!data.bossDefeated[k]) data.bossDefeated[k] = {};
-
         data.bossMeta[k].gradeIndex = Math.max(0, Math.min(BOSS_GRADES.length-1, data.bossMeta[k].gradeIndex|0));
         data.bossMeta[k].target = Math.max(0, data.bossMeta[k].target|0);
         data.bossMeta[k].mode = mode;
-
         return data.bossMeta[k];
       },
       getState: (slot, tier, mode) => {
@@ -1074,15 +1163,12 @@
         data.bossDefeated[k][g]++;
 
         if(g >= BOSS_GRADES.length-1) return;
-
         st.gradeIndex = g + 1;
 
         if(mode === 'min') {
-          // plus dur = moins de pauses autorisées
           const newTarget = Math.floor(st.target * 0.95) - 1;
           st.target = Math.max(0, Math.min(st.target - 1, newTarget));
         } else {
-          // plus dur = plus de reps nécessaires
           const newTarget = Math.round(st.target * 1.05);
           st.target = Math.max(st.target + 1, newTarget);
         }
@@ -1108,7 +1194,7 @@
         stats: { Pectoraux:0, Jambes:0, Dos:0, Triceps:0, Biceps:0 },
         history: { originalStats: { Pectoraux:0, Jambes:0, Dos:0, Triceps:0, Biceps:0 } },
         sessions: {},
-        recordsMeta: {},    // { Jx: { best:number, mode:'max'|'min' } }
+        recordsMeta: {},
         bossMeta: {},
         bossDefeated: {},
         furyCount: 0,
@@ -1209,10 +1295,9 @@
       onBossBeatenToday: (todayISO) => {
         normalizeData();
         if(data.furyDates[todayISO]) return;
-
         data.furyDates[todayISO] = true;
-        const last = data.furyDaily.lastDate;
 
+        const last = data.furyDaily.lastDate;
         if(!last){
           data.furyDaily.streak = 1;
           data.furyDaily.lastDate = todayISO;
@@ -1281,7 +1366,7 @@
       getLevelColor: (val) => (val<=2?'#ff6ec7':(val<=4?'#4caf50':(val<=6?'#ffeb3b':'#f44336')))
     };
 
-    // --- RECORDS (max/min) ---
+    // --- RECORDS ---
     const records = {
       updateBest: (Jkey, value, mode) => {
         normalizeData();
@@ -1290,7 +1375,7 @@
 
         if(!prevMeta || prevMeta.mode !== mode){
           data.recordsMeta[Jkey] = { best: value, mode };
-          isRecord = !!prevMeta; // si on change de mode, on considère "nouveau record" seulement si déjà existant (optionnel)
+          isRecord = !!prevMeta;
         } else {
           if(mode === 'max'){
             if(value > prevMeta.best){ prevMeta.best = value; isRecord = true; }
@@ -1303,7 +1388,7 @@
       count: () => Object.keys(data.recordsMeta || {}).length
     };
 
-    // --- TESTS ---
+    // --- TESTS (inchangé) ---
     const tests = {
       currentTest: null,
       interval: null,
@@ -1544,7 +1629,7 @@
       }
     };
 
-    // --- TRAINING (infinite J numbers) ---
+    // --- TRAINING ---
     const training = {
       timerInterval: null,
       timerRunning: false,
@@ -1565,12 +1650,7 @@
       selectedJ: null,
       selectedSlot: null,
 
-      // Dos no-corner mode state
-      noCorner: {
-        enabled: false,
-        pauses: 0,
-        pauseRunning: false
-      },
+      noCorner: { enabled:false, pauses:0, pauseRunning:false },
 
       getSlotFromJ: (Jnum) => ((Jnum - 1) % 8) + 1,
       getCycleStart: (Jnum) => Jnum - ((Jnum - 1) % 8),
@@ -1593,7 +1673,6 @@
           vimeo:assets.vimeoFor(n)
         })),
 
-      // Mode Dos sans angle : 4' gauche (alternance), 4' droite (alternance)
       buildNoCornerBackWorkout: () => {
         const leftA = "Knifeman Row (Gauche)";
         const leftB = "Side Elbow Press-Up (Gauche)";
@@ -1603,20 +1682,8 @@
         return {
           tier: training.getDifficultyIndex(app.getFunctionalLevel('Dos')),
           exercises: [
-            {
-              name: `ALTERNANCE 4' — GAUCHE`,
-              duration: 240,
-              gif: assets.gifFor(leftA),
-              vimeo: assets.vimeoFor(leftA),
-              meta: { alt: [leftA, leftB] }
-            },
-            {
-              name: `ALTERNANCE 4' — DROITE`,
-              duration: 240,
-              gif: assets.gifFor(rightA),
-              vimeo: assets.vimeoFor(rightA),
-              meta: { alt: [rightA, rightB] }
-            }
+            { name:`ALTERNANCE 4' — GAUCHE`, duration:240, gif:assets.gifFor(leftA), vimeo:assets.vimeoFor(leftA), meta:{ alt:[leftA,leftB] } },
+            { name:`ALTERNANCE 4' — DROITE`, duration:240, gif:assets.gifFor(rightA), vimeo:assets.vimeoFor(rightA), meta:{ alt:[rightA,rightB] } }
           ],
           introVimeo:"https://player.vimeo.com/video/000000000"
         };
@@ -1707,7 +1774,6 @@
         const currentJ = training.computeCurrentJ();
         const base = training.getCycleStart(currentJ);
         const grid = document.getElementById('week-grid');
-
         grid.innerHTML = '';
 
         for(let i=0;i<8;i++){
@@ -1723,13 +1789,12 @@
           el.className = 'day-box' + (isDone ? ' done' : '') + (isLocked ? ' locked' : '');
 
           el.innerHTML = `
-            <span style="font-size:1.6em;font-weight:1000;">J${Jnum}</span>
-            <span style="margin-top:4px;">${label.name}</span>
+            <span>J${Jnum}</span>
+            <span>${label.name}</span>
             ${isDone ? '<span style="margin-top:6px;font-weight:1000;">✔</span>' : ''}
             ${isLocked ? `<img src="verrou.png" class="lock-badge" onerror="this.style.display='none'">` : ''}
           `;
 
-          // IMPORTANT: réparation du clic (sécurisé)
           el.addEventListener('click', (ev) => {
             ev.preventDefault();
             ev.stopPropagation();
@@ -1744,8 +1809,6 @@
 
           grid.appendChild(el);
         }
-
-        window.scrollTo({ top: 0, behavior:'auto' });
       },
 
       resetAllTrainings: () => {
@@ -1772,7 +1835,6 @@
         training.selectedJ = Jnum;
         training.selectedSlot = training.getSlotFromJ(Jnum);
 
-        // Reset noCorner runtime state
         training.noCorner.enabled = false;
         training.noCorner.pauses = 0;
         training.noCorner.pauseRunning = false;
@@ -1783,19 +1845,16 @@
           return;
         }
 
-        // Prépare workout (normal au départ)
         const wk = training.getWorkoutDetailsForSlot(training.selectedSlot);
         training.currentWorkoutIntroVimeo = wk.introVimeo;
         training.currentTier = wk.tier;
 
-        // show/hide no-corner toggle only for Dos slots (3/7)
         const noCornerCard = document.getElementById('nocorner-card');
         const noCornerToggle = document.getElementById('nocorner-toggle');
         const isBackDay = (training.selectedSlot === 3 || training.selectedSlot === 7);
         noCornerCard.classList.toggle('hidden', !isBackDay);
         noCornerToggle.checked = false;
 
-        // If session exists and was saved in no-corner mode, restore toggle
         const key = training.sessionKey(Jnum);
         const prevSession = data.sessions[key];
         const restoreNoCorner = !!(prevSession && prevSession.undoData && prevSession.undoData.noCornerMode);
@@ -1803,23 +1862,19 @@
           noCornerToggle.checked = true;
         }
 
-        // Hook toggle
         noCornerToggle.onchange = () => {
           if(!isBackDay) return;
           training.setNoCornerMode(!!noCornerToggle.checked);
         };
 
-        // Apply mode (restored or default)
         if(isBackDay && restoreNoCorner){
           training.setNoCornerMode(true);
         } else {
           training.setNoCornerMode(false);
         }
 
-        // Boss UI is updated inside setNoCornerMode()
         document.getElementById('workout-day-title').innerText = `J${Jnum}: ${training.slotLabels[training.selectedSlot-1].name}`;
 
-        // Existing session: show cancel + restore score field
         if(prevSession) {
           document.getElementById('btn-cancel-session').classList.remove('hidden');
           if(prevSession.undoData && prevSession.undoData.noCornerMode){
@@ -1847,7 +1902,6 @@
         training.noCorner.enabled = !!enabled;
         training.noCorner.pauseRunning = false;
 
-        // Build exercises
         let wk;
         if(training.noCorner.enabled){
           wk = training.buildNoCornerBackWorkout();
@@ -1855,7 +1909,6 @@
           training.currentWorkoutIntroVimeo = wk.introVimeo;
           training.currentTier = wk.tier;
 
-          // Score UI: pauses
           document.getElementById('score-label').innerText = "Pauses de 10s (score)";
           const scoreInput = document.getElementById('workout-score');
           scoreInput.value = String(training.noCorner.pauses|0);
@@ -1877,7 +1930,6 @@
           training.currentWorkoutIntroVimeo = wk.introVimeo;
           training.currentTier = wk.tier;
 
-          // Score UI: reps
           const scoreInput = document.getElementById('workout-score');
           scoreInput.readOnly = false;
           scoreInput.placeholder = "Ex: 132";
@@ -1890,16 +1942,13 @@
           document.getElementById('nocorner-pauses-pill').classList.add('hidden');
         }
 
-        // Reset timeline
         training.currentIndex = 0;
         training.timeLeft = training.currentExercises[0]?.duration || 0;
         training.timerStopAll();
         training.timerRunning = false;
         training.timerPaused = false;
 
-        // Update boss panel
         training.refreshBossPanel();
-
         training.renderWorkoutUI();
         training.updateTimerUI("Prêt — exercice 1");
         training.updateControlButtons();
@@ -1912,8 +1961,8 @@
 
         let bossImg = tierInfo.img;
         if(bossState.gradeIndex === 0){
-          if(training.currentTier === 1) bossImg = training.noCorner.enabled ? "biomasse1.png" : "biomasse1.png";
-          if(training.currentTier === 2) bossImg = training.noCorner.enabled ? "biomasse11.png" : "biomasse11.png";
+          if(training.currentTier === 1) bossImg = "biomasse1.png";
+          if(training.currentTier === 2) bossImg = "biomasse11.png";
         }
 
         document.getElementById('boss-img-preview').src = bossImg;
@@ -1926,7 +1975,6 @@
         document.getElementById('boss-grade-line').innerText = `Grade: ${bossState.gradeName}`;
       },
 
-      timerInterval: null,
       currentExercises: [],
       currentIndex: 0,
       timeLeft: 0,
@@ -1949,7 +1997,6 @@
       renderWorkoutUI: () => {
         const ex = training.currentExercises[training.currentIndex];
 
-        // Current title
         if(ex && ex.meta && ex.meta.alt){
           document.getElementById('exercise-name-current').innerHTML = `
             ${ex.name}
@@ -2001,7 +2048,6 @@
         training.updateControlButtons();
         training.refreshBossPanel();
 
-        // If no-corner mode, keep score input synced
         if(training.noCorner.enabled){
           document.getElementById('workout-score').value = String(training.noCorner.pauses|0);
           training.updateNoCornerPausesPill();
@@ -2027,7 +2073,6 @@
 
       openCurrentExerciseVideo: () => {
         const ex = training.currentExercises[training.currentIndex];
-        // If alternance, propose 2 choices (G/D)
         if(ex && ex.meta && ex.meta.alt){
           const a = ex.meta.alt[0];
           const b = ex.meta.alt[1];
@@ -2171,14 +2216,12 @@
         if(pill) pill.innerText = `⏸️ Pauses: ${training.noCorner.pauses|0}`;
       },
 
-      // Pause 10s (+1) : signal visuel + sonore + reprise auto
       nocornerPause10: () => {
         if(!training.noCorner.enabled) return;
         if(training.noCorner.pauseRunning) return;
 
         audio.init();
 
-        // Stop main timer during pause
         const wasRunning = training.timerRunning && !training.timerPaused;
         training.timerStopAll();
         training.timerRunning = false;
@@ -2212,15 +2255,12 @@
             state.classList.remove('timer-warning');
             digits.classList.remove('warning');
 
-            // restore digits view
             digits.innerText = originalDigits;
             state.innerText = "Reprise ✅";
             audio.beep('long');
 
-            // Resume main timer if it was running
             training.timerPaused = false;
             if(wasRunning){
-              // restart interval
               training.timerStartOrResume();
             } else {
               training.updateTimerUI("Prêt (pause ajoutée)");
@@ -2251,11 +2291,9 @@
         const Jkey = training.sessionKey(Jnum);
 
         const mode = training.noCorner.enabled ? 'min' : 'max';
-
-        // score source
         let score;
         if(training.noCorner.enabled){
-          score = training.noCorner.pauses|0; // auto
+          score = training.noCorner.pauses|0;
         } else {
           score = parseInt(document.getElementById('workout-score').value) || 0;
         }
@@ -2263,18 +2301,13 @@
         const bState = boss.getState(slot, training.currentTier, mode);
         const bossTarget = bState.target;
 
-        const tierInfo = BOSS_TIERS.find(t=>t.id===training.currentTier) || BOSS_TIERS[0];
-
-        // Record
         const recordRes = records.updateBest(Jkey, score, mode);
-
         let msg = "Séance validée.";
         if(recordRes.isRecord) msg += "<br><b>RECORD BATTU !</b>";
 
         const today = dateUtil.localISO();
         training.bumpCompletedDateForSession(Jkey, today);
 
-        // Boss condition
         const didBeatBoss = (mode === 'min') ? (score < bossTarget) : (score > bossTarget);
         if(didBeatBoss) {
           msg += "<br><b>BOSS BATTU !</b>";
@@ -2282,9 +2315,6 @@
 
           if(slot >= 1 && slot <= 7) {
             furie.onBossBeatenToday(today);
-            if(data.furyDaily.streak === 0 && data.furyCount > 0 && Object.keys(data.furyDates).length >= 7) {
-              msg += "<br><b>TROPHÉE GAGNÉ : FURIE !</b>";
-            }
           }
         }
 
@@ -2351,7 +2381,7 @@
       }
     };
 
-    // --- ASCENSION (slot 8) ---
+    // --- ASCENSION (inchangé / repris) ---
     const ascension = {
       currentJ: 8,
       totalSeconds: 8*60,
@@ -2448,7 +2478,6 @@
       start: () => {
         if(ascension.running) return;
         audio.init();
-
         ascension.running = true;
         ascension.paused = false;
         audio.beep('long');
@@ -2516,8 +2545,6 @@
       saveScore: (score) => {
         normalizeData();
         const Jkey = `J${ascension.currentJ}`;
-
-        // record max
         records.updateBest(Jkey, score, 'max');
 
         const today = dateUtil.localISO();
@@ -2576,7 +2603,7 @@
       }
     };
 
-    // --- GALLERY ---
+    // --- GALLERY (inchangé) ---
     const gallery = {
       setLocked: (cardId, locked) => {
         const el = document.getElementById(cardId);
@@ -2696,7 +2723,7 @@
     // --- NAV ---
     const nav = {
       to: (id) => {
-        document.querySelectorAll('.container').forEach(d => d.classList.add('hidden'));
+        document.querySelectorAll('.container, #screen-training').forEach(d => d.classList.add('hidden'));
         const el = document.getElementById(id);
         if(el) el.classList.remove('hidden');
 
@@ -2706,7 +2733,7 @@
       }
     };
 
-    // --- Legend ticker (horizontal loop) ---
+    // --- ✅ Legend ticker (corrigé) ---
     const legendTicker = {
       lines: [
         "Protocole d'Évolution Musculaire Rapide",
@@ -2719,7 +2746,7 @@
         const runOnce = () => {
           legendTicker.el.classList.remove('run');
           legendTicker.el.textContent = legendTicker.lines[legendTicker.idx];
-          // restart animation
+          // restart animation cleanly
           void legendTicker.el.offsetWidth;
           legendTicker.el.classList.add('run');
 
