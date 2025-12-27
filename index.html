@@ -25,7 +25,6 @@
       --card-bg:#1e1e1e;
       --modal-bg:rgba(0,0,0,0.85);
     }
-
     body{
       margin:0;
       font-family:'Rajdhani', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
@@ -46,8 +45,10 @@
 
     /* BUTTONS */
     .btn{
-      display:block;width:100%;padding:15px;margin:10px 0;background:var(--card-bg);color:#fff;border:1px solid #333;
-      cursor:pointer;text-align:center;font-weight:900;text-transform:uppercase;border-radius:10px;transition:.2s;
+      display:block;width:100%;padding:15px;margin:10px 0;
+      background:var(--card-bg);color:#fff;border:1px solid #333;
+      cursor:pointer;text-align:center;font-weight:900;text-transform:uppercase;
+      border-radius:10px;transition:.2s;
     }
     .btn:hover{background:#333;}
     .btn-red{background:var(--accent-red);color:#000;border:none;}
@@ -66,15 +67,17 @@
       100%{box-shadow:0 0 5px rgba(244,67,54,.3);}
     }
 
-    /* HEADER (deprecated) */
+    /* HEADER */
     #char-display{margin-bottom:20px;margin-top:10px;}
     #char-img{max-width:250px;display:block;margin:0 auto;transition:transform .3s;}
+    /* (deprecated) kept for backward compatibility */
     #global-level-badge{display:none;}
 
     /* ELEMENTS */
     .video-box{
-      background:#000;min-height:120px;display:flex;align-items:center;justify-content:center;margin:0 0 16px 0;color:#777;
-      border:1px solid #333;font-size:.85em;width:100%;border-radius:12px;padding:10px;box-sizing:border-box;
+      background:#000;min-height:120px;display:flex;align-items:center;justify-content:center;
+      margin:0 0 16px 0;color:#777;border:1px solid #333;font-size:.85em;
+      width:100%;border-radius:12px;padding:10px;box-sizing:border-box;
     }
     #radar-container{
       position:relative;width:100%;height:350px;margin:0 auto 20px auto;background:#000;border-radius:10px;border:1px solid #333;
@@ -82,13 +85,30 @@
     }
     canvas{max-width:100%;max-height:100%;}
 
-    /* TRAINING GRID */
+    /* TRAINING GRID - bigger cells + lock */
     .week-grid{
-      display:grid;grid-template-columns:repeat(2, 1fr);gap:12px;margin:18px 0 12px 0;justify-content:center;
+      display:grid;
+      grid-template-columns:repeat(2, 1fr);
+      gap:12px;
+      margin:18px 0 12px 0;
+      justify-content:center;
     }
     .day-box{
-      position:relative;aspect-ratio:1/1;background:#2b2b2b;display:flex;flex-direction:column;align-items:center;justify-content:center;
-      font-size:1.02em;border-radius:14px;cursor:pointer;transition:all .2s;border:1px solid #444;opacity:1;min-height:148px;
+      position:relative;
+      aspect-ratio:1/1;
+      background:#2b2b2b;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      font-size:1.02em;
+      border-radius:14px;
+      cursor:pointer;
+      transition:all .2s;
+      border:1px solid #444;
+      opacity:1;
+      min-height:148px;
+      user-select:none;
     }
     .day-box:hover{transform:scale(1.02);}
     .day-box.done{background:var(--accent-green);color:#000;border:none;font-weight:1000;}
@@ -100,17 +120,18 @@
       background:#000;padding:16px;border-radius:14px;border:1px solid #333;margin-bottom:14px;
       display:flex;flex-direction:column;align-items:center;gap:6px;
     }
-    .timer-digits{
-      font-size:3.2em;font-weight:1000;font-family:'Rajdhani', system-ui, sans-serif;letter-spacing:1px;
-    }
+    .timer-digits{font-size:3.2em;font-weight:1000;font-family:'Rajdhani', system-ui, sans-serif;letter-spacing:1px;}
     .timer-digits.warning{color:var(--accent-red);}
     .timer-state{font-size:1.05em;color:var(--accent-pink);min-height:1.5em;font-weight:1000;letter-spacing:.5px;}
     .timer-warning{animation:flashWarning .5s infinite;color:var(--accent-red)!important;}
     @keyframes flashWarning{0%{opacity:1;}50%{opacity:.25;}100%{opacity:1;}}
+
     input[type="number"]{
-      width:140px;padding:10px;text-align:center;border-radius:12px;border:1px solid #444;font-size:1.1em;background:#111;color:#fff;outline:none;
+      width:140px;padding:10px;text-align:center;border-radius:12px;border:1px solid #444;
+      font-size:1.1em;background:#111;color:#fff;outline:none;
     }
     input[type="number"]:focus{border-color:var(--accent-yellow);box-shadow:0 0 10px rgba(255,235,59,.15);}
+    input[readonly]{opacity:.85}
 
     /* WORKOUT LAYOUT */
     .workout-wrap{display:flex;flex-direction:column;gap:12px;text-align:left;}
@@ -119,37 +140,40 @@
     .subtle{color:#888;font-size:.92em;line-height:1.35;}
     .current-exercise{display:flex;gap:12px;align-items:center;}
     .gif-frame{
-      width:110px;height:110px;border-radius:12px;border:1px solid #333;background:#000;overflow:hidden;
-      flex:0 0 110px;display:flex;align-items:center;justify-content:center;cursor:pointer;
+      width:110px;height:110px;border-radius:12px;border:1px solid #333;background:#000;
+      overflow:hidden;flex:0 0 110px;display:flex;align-items:center;justify-content:center;
+      cursor:pointer;
     }
     .gif-frame img{width:100%;height:100%;object-fit:cover;display:block;}
     .exercise-meta{flex:1;}
     .exercise-name{font-weight:1000;font-size:1.08em;color:#fff;margin-bottom:6px;}
-    .exercise-pill{display:inline-block;background:#0d0d0d;border:1px solid #333;border-radius:999px;padding:6px 10px;font-weight:1000;font-size:.85em;color:var(--accent-pink);}
+    .exercise-pill{
+      display:inline-block;background:#0d0d0d;border:1px solid #333;border-radius:999px;padding:6px 10px;
+      font-weight:1000;font-size:.85em;color:var(--accent-pink);
+    }
     .exercise-pill.done{color:#000;background:var(--accent-green);border:none;}
     .exercise-pill.current{color:#000;background:var(--accent-yellow);border:none;}
     .exercise-list{display:flex;flex-direction:column;gap:8px;}
     .exercise-row{
-      display:flex;align-items:center;justify-content:space-between;gap:10px;background:#101010;border:1px solid #2a2a2a;border-radius:12px;padding:10px 12px;
+      display:flex;align-items:center;justify-content:space-between;gap:10px;background:#101010;border:1px solid #2a2a2a;
+      border-radius:12px;padding:10px 12px;cursor:pointer;
     }
     .exercise-row .left{display:flex;flex-direction:column;gap:4px;}
     .exercise-row .name{font-weight:1000;color:#fff;font-size:.95em;}
     .exercise-row .time{color:#777;font-size:.85em;}
     .exercise-row.current{border-color:rgba(255,235,59,.6);box-shadow:0 0 10px rgba(255,235,59,.1);}
     .exercise-row.done{opacity:.7;}
-    .timer-controls{display:flex;gap:10px;flex-wrap:wrap;}
+
+    .timer-controls{display:flex;gap:10px;flex-wrap:wrap;width:100%;}
     .timer-controls .btn{margin:0;flex:1 1 30%;}
+    .timer-controls .btn-wide{flex:1 1 100%;}
+
     .score-area{display:flex;flex-direction:column;gap:10px;}
     .score-inline{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;}
     .score-inline label{font-weight:1000;color:#fff;}
     .score-help{color:#888;font-size:.9em;margin-top:-4px;}
 
-    /* DOS OPTION TOGGLE */
-    .toggle-row{display:flex;gap:10px;align-items:center;user-select:none;}
-    .toggle-row input{transform:scale(1.2);}
-    .toggle-row span{font-weight:1000;color:#fff;}
-
-    /* BEAT THE BOSS */
+    /* BEAT THE BOSS — resserré/cintré + centré */
     .boss-section{
       border:1px solid #3a3a3a;padding:6px 6px 8px 6px;border-radius:14px;background:#151515;
       display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;width:fit-content;margin:8px auto;
@@ -160,7 +184,7 @@
     #boss-img-preview{width:225px;height:225px;object-fit:contain;margin:0;}
     #boss-score-target{font-size:1.0em;font-weight:1000;color:#fff;margin:0;line-height:1.05;}
 
-    /* RÉCOMPENSES */
+    /* RÉCOMPENSES — cards cintrées + lock visuel */
     .stats-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
     .stat-card{
       background:#1a1a1a;border:1px solid #444;border-radius:14px;padding:8px 6px 10px 6px;
@@ -177,18 +201,19 @@
     .stat-card.locked .stat-label{opacity:.75;}
     .stat-card.locked .tiny-under{opacity:.55;}
 
-    /* COLLAPSIBLE (RÉCOMPENSES) */
+    /* COLLAPSIBLE CATEGORIES (RÉCOMPENSES) */
     .accordion{background:#101010;border:1px solid #333;border-radius:14px;overflow:hidden;margin:12px 0;}
     details.accordion-item{border-top:1px solid #262626;}
     details.accordion-item:first-child{border-top:none;}
     details.accordion-item > summary{
-      list-style:none;cursor:pointer;padding:14px 14px;position:relative;display:flex;align-items:center;justify-content:center;user-select:none;
+      list-style:none;cursor:pointer;padding:14px 14px;position:relative;display:flex;align-items:center;justify-content:center;
+      user-select:none;
     }
     details.accordion-item > summary::-webkit-details-marker{display:none;}
     .acc-title{font-weight:1000;text-transform:uppercase;letter-spacing:2px;color:var(--accent-yellow);text-align:center;width:100%;font-size:1.05em;}
     .acc-chevron{
-      position:absolute;right:12px;top:50%;transform:translateY(-50%);width:34px;height:34px;border-radius:12px;border:1px solid #333;
-      display:flex;align-items:center;justify-content:center;color:#aaa;font-size:1.0em;
+      position:absolute;right:12px;top:50%;transform:translateY(-50%);width:34px;height:34px;border-radius:12px;
+      border:1px solid #333;display:flex;align-items:center;justify-content:center;color:#aaa;font-size:1.0em;
     }
     details[open] .acc-chevron{transform:translateY(-50%) rotate(180deg);}
     .acc-body{padding:12px 12px 6px 12px;border-top:1px solid #262626;}
@@ -196,7 +221,8 @@
     /* MODAL */
     #custom-modal{
       position:fixed;top:0;left:0;width:100%;height:100%;
-      background-color:var(--modal-bg);z-index:9999;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(5px);
+      background-color:var(--modal-bg);z-index:9999;display:flex;align-items:center;justify-content:center;
+      backdrop-filter:blur(5px);
     }
     .modal-content{
       background:#1a1a1a;border:2px solid #444;padding:22px;border-radius:16px;width:92%;max-width:430px;text-align:center;
@@ -210,14 +236,19 @@
     .btn-modal-confirm{background:var(--accent-green);color:#000;}
     .btn-modal-cancel{background:#333;color:#fff;border:1px solid #555;}
     .video-iframe{width:100%;height:240px;border:0;border-radius:12px;background:#000;margin-top:10px;}
-    .test-ex-name{font-size:1.25em;font-weight:1000;color:var(--accent-yellow);text-transform:uppercase;letter-spacing:1px;margin:8px 0 6px 0;text-align:center;}
+
+    .test-ex-name{
+      font-size:1.25em;font-weight:1000;color:var(--accent-yellow);text-transform:uppercase;letter-spacing:1px;
+      margin:8px 0 6px 0;text-align:center;
+    }
     .test-do{font-size:1.35em;font-weight:1000;color:#fff;margin:0 0 10px 0;text-align:center;}
     .test-do b{color:var(--accent-yellow);}
     .menu-version{margin-top:8px;font-size:.55em;opacity:.25;text-align:center;letter-spacing:1px;}
 
     /* ========================= HUD MENU (Main Screen) ========================= */
     .hud-menu{
-      width:100%;max-width:none;padding:0;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;overflow:hidden;
+      width:100%;max-width:none;padding:0;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
+      overflow:hidden;
     }
     .glass{
       background:rgba(0,0,0,0.40);
@@ -233,26 +264,39 @@
       -webkit-backdrop-filter:blur(6px);
     }
 
-    /* TOPBAR — 3 icônes hors encadrés */
-    .menu-topbar-plain{
-      position:fixed;top:10px;left:10px;right:10px;z-index:10;
-      display:flex;align-items:center;justify-content:space-between;
+    /* TOPBAR — 3 icônes hors encadré, même taille, visibles */
+    .menu-topbar{
+      position:fixed;
+      top:10px; left:10px; right:10px;
+      z-index:12;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
       padding:0;
       pointer-events:auto;
     }
-    .top-icon{
-      width:42px;height:42px;object-fit:contain;display:block;filter:drop-shadow(0 10px 18px rgba(0,0,0,0.65));
+    .topbar-slot{
+      flex:1 1 0;
+      display:flex;
+      align-items:center;
     }
-    .top-icon.clickable{cursor:pointer;}
-    .top-icon.clickable:active{transform:scale(.98);}
-    .top-center{display:flex;align-items:center;justify-content:center;flex:1;}
-    .top-left,.top-right{display:flex;align-items:center;justify-content:flex-start;min-width:42px;}
-    .top-right{justify-content:flex-end;}
+    .topbar-slot.left{justify-content:flex-start;}
+    .topbar-slot.center{justify-content:center;}
+    .topbar-slot.right{justify-content:flex-end;}
 
-    /* Title area */
+    .top-icon{
+      width:42px;height:42px;object-fit:contain;display:block;
+      filter:drop-shadow(0 10px 14px rgba(0,0,0,0.55));
+      opacity:1;
+      cursor:pointer;
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .top-icon:active{transform:scale(.98);}
+
     .menu-title-area{
       width:min(520px, 92vw);
-      margin-top:78px; /* leaves room for topbar */
+      margin-top:78px;
       display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;
       z-index:2;
       pointer-events:none;
@@ -262,39 +306,46 @@
       filter:drop-shadow(0 10px 18px rgba(0,0,0,0.55));
     }
 
-    /* NEW: legend ticker (1 line, right->left, cycles phrases) */
-    .legend-marquee{
+    /* Legend ticker (1 ligne à la fois, scroll droite -> gauche) */
+    .legend-ticker{
       width:min(520px, 92vw);
-      overflow:hidden;
       height:26px;
-      display:flex;
-      align-items:center;
-      justify-content:flex-start;
-      mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
-      -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
-    }
-    .legend-runner{
-      display:inline-block;
-      white-space:nowrap;
-      font-size:1.05em;
-      font-weight:700;
+      overflow:hidden;
+      position:relative;
       opacity:.92;
       text-shadow:0 2px 10px rgba(0,0,0,0.85);
-      transform:translateX(110%);
-      animation:legendSlide 5.2s linear forwards;
+      pointer-events:none;
     }
-    @keyframes legendSlide{
+    .legend-ticker span{
+      position:absolute;
+      white-space:nowrap;
+      left:0; top:0;
+      transform:translateX(110%);
+      font-size:1.05em;
+      font-weight:600;
+      will-change:transform;
+    }
+    .legend-ticker span.run{
+      animation:legendRun 4.8s linear forwards;
+    }
+    @keyframes legendRun{
       from{transform:translateX(110%);}
-      to{transform:translateX(-110%);}
+      to{transform:translateX(-120%);}
     }
 
     .menu-scene{
-      flex:1 1 auto;width:100%;display:flex;align-items:center;justify-content:center;
-      padding:10px 10px 170px 10px;box-sizing:border-box;z-index:1;pointer-events:none;
+      flex:1 1 auto;
+      width:100%;
+      display:flex;align-items:center;justify-content:center;
+      padding:10px 10px 170px 10px;
+      box-sizing:border-box;
+      z-index:1;
+      pointer-events:none;
     }
     .char-scene{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;}
     .char-float{
-      max-width:min(280px, 70vw);height:auto;display:block;
+      max-width:min(280px, 70vw);
+      height:auto;display:block;
       transform:translateY(-6px);
       animation:alienFloat 3.8s ease-in-out infinite;
       filter:drop-shadow(0 18px 24px rgba(0,0,0,0.6));
@@ -308,63 +359,64 @@
     .level-label{font-size:1.25em;font-weight:700;color:var(--accent-yellow);text-shadow:0 2px 10px rgba(0,0,0,0.85);letter-spacing:.5px;}
     .levelbar{width:100%;height:8px;border-radius:999px;background:rgba(255,255,255,0.12);overflow:hidden;box-shadow:0 6px 18px rgba(0,0,0,0.35);}
     .levelbar-fill{height:100%;width:0%;border-radius:999px;background:rgba(255,235,59,0.72);box-shadow:0 0 18px rgba(255,235,59,0.22);}
-    .nutri-row{
-      display:flex;align-items:center;justify-content:center;gap:10px;padding:6px 12px;border-radius:999px;
-      text-shadow:0 2px 10px rgba(0,0,0,0.85);pointer-events:none;
-    }
+
+    .nutri-row{display:flex;align-items:center;justify-content:center;gap:10px;padding:6px 12px;border-radius:999px;text-shadow:0 2px 10px rgba(0,0,0,0.85);pointer-events:none;}
     .nutri-icon{width:26px;height:26px;object-fit:contain;display:block;opacity:.95;}
     .nutri-points{font-size:1.25em;font-weight:700;letter-spacing:.5px;}
 
     .hud{
-      position:fixed;left:10px;right:10px;bottom:10px;z-index:10;
-      display:flex;flex-direction:column;gap:12px;padding:14px 12px calc(14px + env(safe-area-inset-bottom));
-      border-radius:20px;pointer-events:auto;
+      position:fixed;left:10px;right:10px;bottom:10px;z-index:12;
+      display:flex;flex-direction:column;gap:12px;
+      padding:14px 12px calc(14px + env(safe-area-inset-bottom));
+      border-radius:20px;
+      pointer-events:auto;
     }
     .hud-row{display:flex;gap:12px;align-items:stretch;justify-content:center;}
     .hud-major .hud-btn-major{flex:1 1 0;min-width:0;}
 
-    /* BOTTOM HUD rearranged (Nutri left, Rewards big center, WhatsApp right) */
+    /* Réorganisé (sans bouton WhatsApp en bas) -> 2 colonnes symétriques */
     .hud-support{
       display:grid;
-      grid-template-columns:1.35fr 1fr 1.35fr;
+      grid-template-columns:1fr 1fr;
       gap:12px;
       align-items:stretch;
     }
 
     .hud-btn{
-      border-radius:16px;border:1px solid rgba(255,255,255,0.14);color:#fff;cursor:pointer;
-      text-transform:uppercase;font-weight:700;letter-spacing:1px;
+      border-radius:16px;border:1px solid rgba(255,255,255,0.14);
+      color:#fff;cursor:pointer;text-transform:uppercase;font-weight:700;letter-spacing:1px;
       transition:transform .15s ease, background .15s ease, border-color .15s ease;
       text-shadow:0 2px 10px rgba(0,0,0,0.85);
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
     }
     .hud-btn:active{transform:scale(.985);}
-    .hud-btn-major{height:62px;font-size:1.15em;padding:0 10px;display:flex;align-items:center;justify-content:center;}
-    .hud-btn-nutri{height:58px;font-size:1.05em;padding:0 10px;display:flex;align-items:center;justify-content:center;}
-
-    /* clickable images (NOT buttons) */
-    .hud-icon-link{
-      position:relative;overflow:hidden;
-      border-radius:16px;border:1px solid rgba(255,255,255,0.14);
-      display:flex;align-items:center;justify-content:center;
-      text-decoration:none;
-      cursor:pointer;
-      user-select:none;
+    .hud-btn-major{
+      height:62px;font-size:1.15em;padding:0 10px;display:flex;align-items:center;justify-content:center;
     }
-    .hud-icon-link:active{transform:scale(.985);}
+    .hud-btn-nutri{
+      height:54px;font-size:1.05em;padding:0 10px;display:flex;align-items:center;justify-content:center;
+      white-space:nowrap; /* une seule ligne */
+    }
 
+    /* Icônes (sans <button>) */
+    .hud-icon{
+      height:54px;padding:0;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;
+    }
     .hud-icon-img{
-      width:clamp(34px, 6vw, 46px);
-      height:clamp(34px, 6vw, 46px);
+      width:clamp(38px, 7vw, 56px);
+      height:clamp(38px, 7vw, 56px);
       object-fit:contain;display:block;
       filter:drop-shadow(0 6px 14px rgba(0,0,0,0.45));
+      cursor:pointer;
     }
+    /* recompenses plus grande */
     .hud-icon-img.big{
-      width:clamp(46px, 8vw, 64px);
-      height:clamp(46px, 8vw, 64px);
+      width:clamp(46px, 9vw, 66px);
+      height:clamp(46px, 9vw, 66px);
     }
 
-    /* ship-ish detail (still ok on links) */
-    .hud-icon-link::before{
+    .hud-icon::before{
       content:"";position:absolute;inset:1px;border-radius:14px;pointer-events:none;
       background:
         radial-gradient(circle at 18% 35%, rgba(255,235,59,0.16), transparent 55%),
@@ -372,16 +424,26 @@
         linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.00) 55%, rgba(0,0,0,0.18));
       opacity:0.85;
     }
-    .hud-icon-link::after{
+    .hud-icon::after{
       content:"";position:absolute;left:10px;right:10px;top:10px;height:1px;pointer-events:none;
       background:linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
       opacity:0.45;
     }
 
+    /* Toggle (Dos sans angle) */
+    .toggle-row{
+      display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;
+      padding:10px 12px;border-radius:14px;border:1px solid #333;background:#101010;
+    }
+    .toggle-row label{font-weight:1000;}
+    .toggle-row small{display:block;color:#888;font-weight:600;margin-top:2px;line-height:1.25;}
+    .toggle-row input[type="checkbox"]{width:22px;height:22px;accent-color:var(--accent-yellow);cursor:pointer;}
+
+    /* Slightly lower intensity hover for desktop */
     @media (hover:hover){
       .hud-btn:hover{border-color:rgba(255,235,59,0.35);background:rgba(0,0,0,0.48);}
-      .hud-icon-link:hover{border-color:rgba(255,235,59,0.35);}
-      .top-icon.clickable:hover{filter:brightness(1.08) drop-shadow(0 10px 18px rgba(0,0,0,0.75));}
+      .top-icon:hover{filter:brightness(1.08) drop-shadow(0 10px 14px rgba(0,0,0,0.55));}
+      .hud-icon-img:hover{filter:brightness(1.08) drop-shadow(0 6px 14px rgba(0,0,0,0.45));}
     }
   </style>
 </head>
@@ -401,39 +463,37 @@
 
   <!-- MENU -->
   <div id="screen-menu" class="container hud-menu">
-    <!-- Topbar icons (no encadrés) -->
-    <div class="menu-topbar-plain" aria-label="Barre supérieure">
-      <div class="top-left">
-        <img src="physiquerush.png" class="top-icon clickable" alt="PhysiqueRush"
-             onclick="nav.to('screen-menu')" onerror="this.style.display='none'">
+    <!-- Topbar (3 icônes hors encadré) -->
+    <div class="menu-topbar" aria-label="Barre supérieure">
+      <div class="topbar-slot left">
+        <img src="physiquerush.png" class="top-icon" alt="PhysiqueRush" onclick="nav.to('screen-menu')" />
       </div>
 
-      <div class="top-center">
+      <div class="topbar-slot center">
         <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"
-             class="top-icon clickable" alt="WhatsApp"
-             onclick="window.location.href='https://wa.me/'">
+             class="top-icon"
+             alt="WhatsApp"
+             onclick="window.location.href='https://wa.me/'" />
       </div>
 
-      <div class="top-right">
-        <img src="fermer.png" class="top-icon clickable" alt="Fermer"
-             onclick="appActions.closeApp()" onerror="this.style.display='none'">
+      <div class="topbar-slot right">
+        <!-- IMPORTANT: désormais visible en haut à droite -->
+        <img src="fermer.png" class="top-icon" alt="Fermer" onclick="appActions.closeApp()" />
       </div>
     </div>
 
     <div class="menu-title-area" aria-label="Bannière">
-      <img src="massiveimpact.png" class="banner-img" alt="Massive Impact" onerror="this.style.display='none'">
-
-      <!-- NEW legend ticker -->
-      <div class="legend-marquee" aria-label="Légende (défilement)">
-        <div id="legend-runner" class="legend-runner">Protocole d'Évolution Musculaire Rapide</div>
+      <img src="massiveimpact.png" class="banner-img" alt="Massive Impact" />
+      <!-- 1 ligne qui défile (droite -> gauche), 1 texte à la fois -->
+      <div class="legend-ticker" aria-label="Légende défilante">
+        <span id="legend-ticker-text"></span>
       </div>
     </div>
 
-    <!-- Scene -->
+    <!-- Zone Médiane -->
     <div class="menu-scene" aria-label="Scène principale">
       <div id="char-display" class="char-scene">
         <img id="char-img" class="char-float" src="evo1.png" alt="Alien" onerror="this.src='https://via.placeholder.com/250x300?text=Alien'">
-
         <div class="level-ui">
           <div id="global-level-label" class="level-label">Niveau 0</div>
           <div class="levelbar" role="progressbar" aria-valuemin="0" aria-valuemax="40" aria-valuenow="0">
@@ -448,31 +508,26 @@
       </div>
     </div>
 
-    <!-- HUD bottom -->
+    <!-- HUD bas -->
     <div class="hud glass" aria-label="Arche de Commande">
       <div class="hud-row hud-major">
-        <button class="hud-btn hud-btn-major glass" onclick="nav.to('screen-levels')">SALLE DES TESTS</button>
-        <button class="hud-btn hud-btn-major glass" onclick="nav.to('screen-training')">ZONE D'ENTRAÎNEMENT</button>
+        <div class="hud-btn hud-btn-major glass" onclick="nav.to('screen-levels')">SALLE DES TESTS</div>
+        <div class="hud-btn hud-btn-major glass" onclick="nav.to('screen-training')">ZONE D'ENTRAÎNEMENT</div>
       </div>
 
+      <!-- Réorganisé : 2 blocs symétriques (Récompenses + Nutri-Rush) -->
       <div class="hud-row hud-support">
-        <button class="hud-btn hud-btn-nutri glass"
-                onclick="ui.alert('Patience...', 'Le Module Nutri-Rush sera bientôt disponible !')">
+        <div class="hud-btn hud-icon glass" aria-label="Récompenses et Stats">
+          <!-- image cliquable (pas un bouton) -->
+          <img src="recompenses.png" class="hud-icon-img big" alt="Récompenses" onclick="nav.to('screen-trophy')" />
+        </div>
+
+        <div class="hud-btn hud-btn-nutri glass" onclick="ui.alert('Patience...', 'Le Module Nutri-Rush sera bientôt disponible !')">
           NUTRI-RUSH
-        </button>
-
-        <!-- récompenses.png = image cliquable (plus grande) -->
-        <a class="hud-icon-link glass" href="#" onclick="nav.to('screen-trophy'); return false;" aria-label="Récompenses et Stats">
-          <img src="recompenses.png" class="hud-icon-img big" alt="Récompenses" onerror="this.style.display='none'">
-        </a>
-
-        <!-- WhatsApp = image cliquable (pas un bouton) -->
-        <a class="hud-icon-link glass" href="https://wa.me/" aria-label="La Team (WhatsApp)">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" class="hud-icon-img" alt="WhatsApp">
-        </a>
+        </div>
       </div>
 
-      <div class="menu-version">physiquerush® - v2.04</div>
+      <div class="menu-version">physiquerush® - v2.10</div>
     </div>
   </div>
 
@@ -488,7 +543,6 @@
       <button class="btn" onclick="tests.start('Triceps')">Test Triceps</button>
       <button class="btn" onclick="tests.start('Biceps')">Test Biceps</button>
     </div>
-
     <button class="btn" onclick="nav.to('screen-menu')" style="margin-top:20px;">Retour</button>
   </div>
 
@@ -505,7 +559,6 @@
   <div id="screen-test" class="container hidden">
     <h2 id="test-name">Test</h2>
     <div class="video-box">[VIDEO VIMEO PLACEHOLDER — présentation du test]</div>
-
     <div id="test-principle" class="subtle" style="text-align:left;margin:0 0 12px 0;">—</div>
 
     <div class="card" style="margin-bottom:12px;text-align:left;">
@@ -532,7 +585,6 @@
     </div>
 
     <div id="test-exercise-name" class="test-ex-name">—</div>
-
     <button id="btn-start-test" class="btn btn-red" onclick="tests.run()">LANCER LE TEST</button>
     <button id="btn-validate-palier" class="btn hidden" onclick="tests.validatePalier()" style="background:var(--accent-yellow);color:#000;border:none;">
       ✅ VALIDER (objectif atteint)
@@ -540,7 +592,6 @@
     <button id="btn-fail-test" class="btn hidden" onclick="tests.fail()" style="background:#222;border:1px solid var(--accent-red);color:var(--accent-red);">
       J'AI ÉCHOUÉ / FIN
     </button>
-
     <button id="btn-test-retour" class="btn" onclick="tests.quit()">Retour</button>
   </div>
 
@@ -560,6 +611,19 @@
     <h2 id="workout-day-title">Jx</h2>
 
     <div class="workout-wrap">
+
+      <!-- Toggle Dos sans angle -->
+      <div id="nocorner-card" class="toggle-row hidden">
+        <div style="min-width:240px;">
+          <label for="nocorner-toggle">Impossibilité de s'entraîner dans un angle ?</label>
+          <small>
+            Mode spécial Dos : alternance 4' gauche puis 4' droite. Score = <b>pauses de 10s</b>.
+            Pour battre le boss : faire <b>moins</b> que l'objectif.
+          </small>
+        </div>
+        <input id="nocorner-toggle" type="checkbox" />
+      </div>
+
       <div class="card" style="text-align:center;">
         <h4>Vidéo de présentation</h4>
         <div class="video-box" style="margin:0;">
@@ -567,22 +631,6 @@
             [VIMEO PLACEHOLDER]<br>
             <button class="btn btn-small" style="max-width:260px;margin:12px auto 0 auto;" onclick="training.openWorkoutIntroVideo()">▶️ Ouvrir la vidéo</button>
           </div>
-        </div>
-      </div>
-
-      <!-- NEW: Option Dos -->
-      <div id="dos-alt-card" class="card hidden">
-        <h4>Option DOS</h4>
-        <label class="toggle-row" for="dos-alt-toggle">
-          <input type="checkbox" id="dos-alt-toggle" />
-          <span>Impossibilité de s'entraîner dans un angle ?</span>
-        </label>
-        <div id="dos-alt-desc" class="subtle" style="margin-top:10px;">
-          Si activé : 8 minutes au total.<br>
-          <b>4 minutes côté gauche</b> en alternance libre : <b>Knifeman Row (Gauche)</b> + <b>Side Elbow Press-Up (Gauche)</b>, puis
-          <b>4 minutes côté droit</b> : mêmes exercices à droite.<br><br>
-          <b>Score</b> = nombre total de <b>pauses de 10s</b> réalisées sur les 8 minutes.<br>
-          Pour battre le Boss : faire <b>moins</b> que le seuil affiché.
         </div>
       </div>
 
@@ -597,6 +645,7 @@
             <div style="display:flex;gap:8px;flex-wrap:wrap;">
               <span id="exercise-pill-current" class="exercise-pill current">ACTUEL</span>
               <span id="exercise-duration" class="exercise-pill">⏱️ 02:00</span>
+              <span id="nocorner-pauses-pill" class="exercise-pill hidden">⏸️ Pauses: 0</span>
             </div>
             <div id="exercise-hint" class="subtle" style="margin-top:8px;">À la fin, on passe à l'exercice suivant.</div>
           </div>
@@ -606,13 +655,13 @@
       <div class="timer-overlay" id="workout-chrono-panel">
         <div id="workout-timer-state" class="timer-state">Prêt</div>
         <div id="workout-timer-digits" class="timer-digits">00:00</div>
-        <div class="timer-controls" style="width:100%;margin-top:8px;">
+        <div class="timer-controls" style="margin-top:8px;">
           <button id="btn-timer-start" class="btn btn-small" onclick="training.timerStartOrResume()">▶️ Démarrer</button>
           <button id="btn-timer-pause" class="btn btn-small" onclick="training.timerPause()">⏸️ Pause</button>
           <button id="btn-timer-reset" class="btn btn-small" onclick="training.timerResetCurrent()">🔄 Réinitialiser</button>
-
-          <!-- NEW: Pause 10s counter for DOS alternate -->
-          <button id="btn-pause10" class="btn btn-small hidden" onclick="training.addPause10()">⏱️ +1 pause 10s</button>
+          <button id="btn-nocorner-pause10" class="btn btn-small btn-wide hidden" onclick="training.nocornerPause10()">
+            ⏸️ Pause 10s (+1)
+          </button>
         </div>
       </div>
 
@@ -632,10 +681,10 @@
       <div class="card score-area">
         <h4>Score de la séance</h4>
         <div class="score-inline">
-          <label id="workout-score-label" for="workout-score">Total de répétitions</label>
+          <label id="score-label" for="workout-score">Total de répétitions</label>
           <input type="number" id="workout-score" placeholder="Ex: 132">
         </div>
-        <div id="workout-score-help" class="score-help">
+        <div id="score-help" class="score-help">
           Entrez ici le <b>nombre total de répétitions</b> réalisées sur toute la séance (tous les exercices cumulés).
         </div>
         <button class="btn btn-red" onclick="training.validateSession()">VALIDER LA SÉANCE</button>
@@ -670,7 +719,7 @@
         <div class="timer-overlay" style="margin:0;">
           <div id="asc-timer-state" class="timer-state">Prêt</div>
           <div id="asc-timer-digits" class="timer-digits">08:00</div>
-          <div class="timer-controls" style="width:100%;margin-top:8px;">
+          <div class="timer-controls" style="margin-top:8px;">
             <button id="btn-asc-start" class="btn btn-small" onclick="ascension.start()">▶️ Démarrer</button>
             <button id="btn-asc-pause" class="btn btn-small" onclick="ascension.pause()">⏸️ Pause</button>
             <button id="btn-asc-reset" class="btn btn-small" onclick="ascension.reset()">🔄 Reset</button>
@@ -717,7 +766,9 @@
 
     <div class="card score-area" style="margin-top:8px;">
       <h4>Score du challenge</h4>
-      <div class="subtle" style="margin-top:-4px;">Le score est calculé automatiquement à la fin. Vous pouvez aussi enregistrer / invalider ensuite.</div>
+      <div class="subtle" style="margin-top:-4px;">
+        Le score est calculé automatiquement à la fin. Vous pouvez aussi enregistrer / invalider ensuite.
+      </div>
       <button id="btn-asc-cancel" class="btn hidden" style="background:#222;color:#f44336;border:1px solid #f44336;" onclick="ascension.cancel()">ANNULER / INVALIDER</button>
     </div>
 
@@ -727,7 +778,6 @@
   <!-- TROPHIES -->
   <div id="screen-trophy" class="container hidden">
     <h2>RÉCOMPENSES ET STATS</h2>
-
     <div style="margin-bottom:14px;padding:8px;">
       <img id="trophy-char-img" src="" style="width:190px;margin:0 auto;display:block;">
       <div id="trophy-next-evo" style="color:#aaa;font-size:.9em;margin-top:8px;font-style:italic;"></div>
@@ -746,11 +796,13 @@
               <span id="total-records" class="stat-value">0</span>
               <span class="stat-label">Records Battus</span>
             </div>
+
             <div id="card-fury" class="stat-card" onclick="gallery.explain('fury')">
               <img src="fury.png" class="stat-icon" onerror="this.src='https://via.placeholder.com/130?text=Fury'">
               <span id="fury-count-display" class="stat-value">0</span>
               <span class="stat-label">Furie</span>
             </div>
+
             <div id="card-unstoppable" class="stat-card" onclick="gallery.explain('unstoppable')">
               <img src="unstoppable.png" class="stat-icon smallish" onerror="this.src='https://via.placeholder.com/130?text=GO'">
               <span id="unstoppable-display" class="stat-value">0</span>
@@ -788,7 +840,7 @@
   </div>
 
   <script>
-    // ---------------- UI ----------------
+    // --- UI ---
     const ui = {
       modal: document.getElementById('custom-modal'),
       title: document.getElementById('modal-title'),
@@ -803,12 +855,14 @@
           const b = document.createElement('button');
           b.className = 'modal-btn ' + (btn.class || '');
           b.innerText = btn.text;
-          b.onclick = () => { ui.hide(); if(btn.onClick) btn.onClick(); };
+          b.onclick = () => {
+            ui.hide();
+            if(btn.onClick) btn.onClick();
+          };
           ui.actions.appendChild(b);
         });
         ui.modal.classList.remove('hidden');
       },
-
       hide: () => ui.modal.classList.add('hidden'),
 
       alert: (title, message, callback) =>
@@ -840,14 +894,16 @@
       video: (title, vimeoUrl) => {
         const safeUrl = vimeoUrl || "https://player.vimeo.com/video/000000000";
         const html = `
-          <div class="subtle" style="text-align:left;">Vidéo (placeholder). Remplacez l'URL Vimeo dans le code.</div>
+          <div class="subtle" style="text-align:left;">
+            Vidéo (placeholder). Remplacez l'URL Vimeo dans le code.
+          </div>
           <iframe class="video-iframe" src="${safeUrl}" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
         `;
         ui.show(title, html, [{ text: "FERMER", class: "btn-modal-cancel" }]);
       }
     };
 
-    // ---------------- APP ACTIONS ----------------
+    // --- APP ACTIONS ---
     const appActions = {
       closeApp: () => {
         ui.confirm("QUITTER", "Voulez-vous quitter PhysiqueRush ?", () => {
@@ -857,12 +913,15 @@
       }
     };
 
-    // ---------------- AUDIO ----------------
+    // --- AUDIO ---
     const audio = {
       ctx: null,
-      init: () => { if(!audio.ctx) audio.ctx = new (window.AudioContext || window.webkitAudioContext)(); },
+      init: () => {
+        if(!audio.ctx) audio.ctx = new (window.AudioContext || window.webkitAudioContext)();
+      },
       beep: (type) => {
         audio.init();
+
         if(type === 'end') {
           const t = audio.ctx.currentTime;
           const seq = [
@@ -883,10 +942,13 @@
           });
           return;
         }
+
         const osc = audio.ctx.createOscillator();
         const gain = audio.ctx.createGain();
-        osc.connect(gain); gain.connect(audio.ctx.destination);
+        osc.connect(gain);
+        gain.connect(audio.ctx.destination);
         osc.type = 'sine';
+
         if(type === 'long') {
           osc.frequency.setValueAtTime(600, audio.ctx.currentTime);
           osc.frequency.exponentialRampToValueAtTime(300, audio.ctx.currentTime + 0.5);
@@ -902,18 +964,19 @@
       }
     };
 
-    // ---------------- ASSETS ----------------
+    // --- ASSETS ---
     const assets = {
       slugify: (s) => (s || "")
         .toLowerCase()
         .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
         .replace(/[^a-z0-9]+/g, "-")
         .replace(/(^-|-$)/g, ""),
+
       gifFor: (exerciseName) => `gifs/${assets.slugify(exerciseName)}.gif`,
       vimeoFor: (exerciseName) => `https://player.vimeo.com/video/000000000`
     };
 
-    // ---------------- DATE UTILS ----------------
+    // --- DATE UTILS ---
     const dateUtil = {
       localISO: (d = new Date()) => {
         const y = d.getFullYear();
@@ -932,14 +995,17 @@
       }
     };
 
-    // ---------------- BACKGROUND FX ----------------
+    // --- BACKGROUND FX ---
     const lightning = {
       container: document.getElementById('lightning-container'),
       images: ['eclair1.png','eclair2.png','eclair3.png'],
       init: () => lightning.schedule(),
       schedule: () => {
         const delay = Math.random() * (5000 - 300) + 300;
-        setTimeout(() => { lightning.flash(); lightning.schedule(); }, delay);
+        setTimeout(() => {
+          lightning.flash();
+          lightning.schedule();
+        }, delay);
       },
       flash: () => {
         const imgName = lightning.images[Math.floor(Math.random()*lightning.images.length)];
@@ -958,7 +1024,7 @@
       }
     };
 
-    // ---------------- BOSS SYSTEM ----------------
+    // --- BOSS SYSTEM (tiers + grades) ---
     const BOSS_TIERS = [
       { id: 1, name: "Débutant", img: "btb1.png" },
       { id: 2, name: "Intermédiaire", img: "btb2.png" },
@@ -973,69 +1039,59 @@
       "Maître-Esprit","Omniscient Cosmique"
     ];
 
+    // mode: 'max' (score doit être > cible) ou 'min' (score doit être < cible)
     const boss = {
-      variants: ["std","noCorner"],
-
-      key: (slot, tier, variant="std") => `slot${slot}_tier${tier}_${variant}`,
-
-      defaultTarget: (tier, mode="high") => {
-        // mode "high" = faire PLUS ; mode "low" = faire MOINS (pauses)
-        if(mode === "low") {
-          const map = {1:12, 2:10, 3:8, 4:7};
-          return map[tier] ?? 10;
-        }
-        return 100;
-      },
-
-      ensure: (slot, tier, variant="std", mode="high") => {
+      key: (slot, tier, mode) => `slot${slot}_tier${tier}_mode${mode}`,
+      ensure: (slot, tier, mode) => {
         if(!data.bossMeta) data.bossMeta = {};
         if(!data.bossDefeated) data.bossDefeated = {};
-        const k = boss.key(slot, tier, variant);
-
-        if(!data.bossMeta[k]) data.bossMeta[k] = { target: boss.defaultTarget(tier, mode), gradeIndex: 0 };
+        const k = boss.key(slot, tier, mode);
+        if(!data.bossMeta[k]) data.bossMeta[k] = { target: (mode === 'min' ? 6 : 100), gradeIndex: 0, mode };
         if(!data.bossDefeated[k]) data.bossDefeated[k] = {};
 
         data.bossMeta[k].gradeIndex = Math.max(0, Math.min(BOSS_GRADES.length-1, data.bossMeta[k].gradeIndex|0));
-        data.bossMeta[k].target = Math.max(1, data.bossMeta[k].target|0); // min 1 => on peut viser 0 pause (score < 1)
+        data.bossMeta[k].target = Math.max(0, data.bossMeta[k].target|0);
+        data.bossMeta[k].mode = mode;
+
         return data.bossMeta[k];
       },
-
-      getState: (slot, tier, variant="std", mode="high") => {
-        const st = boss.ensure(slot, tier, variant, mode);
+      getState: (slot, tier, mode) => {
+        const st = boss.ensure(slot, tier, mode);
         return {
           target: st.target|0,
           gradeIndex: st.gradeIndex|0,
           gradeName: BOSS_GRADES[st.gradeIndex|0] || BOSS_GRADES[0],
-          isMax: (st.gradeIndex|0) >= (BOSS_GRADES.length-1)
+          isMax: (st.gradeIndex|0) >= (BOSS_GRADES.length-1),
+          mode
         };
       },
-
-      beat: (slot, tier, variant="std", mode="high") => {
-        const k = boss.key(slot, tier, variant);
-        const st = boss.ensure(slot, tier, variant, mode);
+      beat: (slot, tier, mode) => {
+        const k = boss.key(slot, tier, mode);
+        const st = boss.ensure(slot, tier, mode);
         const g = st.gradeIndex|0;
 
         if(!data.bossDefeated[k][g]) data.bossDefeated[k][g] = 0;
         data.bossDefeated[k][g]++;
 
         if(g >= BOSS_GRADES.length-1) return;
+
         st.gradeIndex = g + 1;
 
-        if(mode === "low") {
-          // plus dur = seuil plus bas
-          const newTarget = Math.round(st.target * 0.92) - 1;
-          st.target = Math.max(1, Math.min(st.target - 1, newTarget));
+        if(mode === 'min') {
+          // plus dur = moins de pauses autorisées
+          const newTarget = Math.floor(st.target * 0.95) - 1;
+          st.target = Math.max(0, Math.min(st.target - 1, newTarget));
         } else {
+          // plus dur = plus de reps nécessaires
           const newTarget = Math.round(st.target * 1.05);
           st.target = Math.max(st.target + 1, newTarget);
         }
       },
-
       sumDefeated: (tier, gradeIndex) => {
         let sum = 0;
         for(let slot=1; slot<=7; slot++){
-          for(const v of boss.variants){
-            const k = boss.key(slot, tier, v);
+          for(const mode of ['max','min']) {
+            const k = boss.key(slot, tier, mode);
             const obj = (data.bossDefeated && data.bossDefeated[k]) ? data.bossDefeated[k] : null;
             if(obj && obj[gradeIndex]) sum += obj[gradeIndex];
           }
@@ -1044,7 +1100,7 @@
       }
     };
 
-    // ---------------- DB ----------------
+    // --- DB ---
     const db = {
       load: () => JSON.parse(localStorage.getItem('physiqueRushDB')) || db.default(),
       save: (data) => localStorage.setItem('physiqueRushDB', JSON.stringify(data)),
@@ -1052,7 +1108,7 @@
         stats: { Pectoraux:0, Jambes:0, Dos:0, Triceps:0, Biceps:0 },
         history: { originalStats: { Pectoraux:0, Jambes:0, Dos:0, Triceps:0, Biceps:0 } },
         sessions: {},
-        records: {},              // NOW: { Jx: {value:number, mode:"high"|"low"} }
+        recordsMeta: {},    // { Jx: { best:number, mode:'max'|'min' } }
         bossMeta: {},
         bossDefeated: {},
         furyCount: 0,
@@ -1063,12 +1119,11 @@
         nutriRushPoints: 0
       })
     };
-
     let data = db.load();
 
     const normalizeData = () => {
       if(!data.sessions) data.sessions = {};
-      if(!data.records) data.records = {};
+      if(!data.recordsMeta) data.recordsMeta = {};
       if(!data.bossMeta) data.bossMeta = {};
       if(!data.bossDefeated) data.bossDefeated = {};
       if(!data.completedDates) data.completedDates = {};
@@ -1078,14 +1133,7 @@
       if(!data.furyDates) data.furyDates = {};
       if(!data.furyDaily) data.furyDaily = { streak: 0, lastDate: null };
       if(typeof data.furyCount !== "number") data.furyCount = 0;
-
-      // Backward compatibility: records were numbers -> convert to {value, mode:"high"}
-      Object.keys(data.records).forEach(k => {
-        const v = data.records[k];
-        if(typeof v === "number") data.records[k] = { value: v|0, mode: "high" };
-      });
     };
-
     normalizeData();
 
     const streak = {
@@ -1147,7 +1195,7 @@
         if(all.length === 0){
           data.furyDaily = { streak: 0, lastDate: null };
         } else {
-          const last = all[all.length-1];
+          let last = all[all.length-1];
           let s = 0;
           let cursor = last;
           while(dates[cursor]){
@@ -1189,10 +1237,10 @@
       }
     };
 
-    // ---------------- APP ----------------
     const app = {
       getGlobalLevel: () => Object.values(data.stats).reduce((a,b)=>a+b,0),
       getFunctionalLevel: (muscle) => (data.stats[muscle] || 0) === 0 ? 1 : data.stats[muscle],
+
       getCharImage: (level) => {
         if(level < 5) return 'evo1.png';
         if(level <= 10) return 'evo1.png';
@@ -1208,6 +1256,7 @@
         if(level === 39) return 'evo11.png';
         return 'evo12.png';
       },
+
       updateCharacter: () => {
         const lvl = app.getGlobalLevel();
         const clamped = Math.max(0, Math.min(40, lvl|0));
@@ -1228,10 +1277,33 @@
         const nutri = document.getElementById('nutri-points');
         if(nutri) nutri.innerText = String((data && typeof data.nutriRushPoints === "number") ? data.nutriRushPoints : 0);
       },
+
       getLevelColor: (val) => (val<=2?'#ff6ec7':(val<=4?'#4caf50':(val<=6?'#ffeb3b':'#f44336')))
     };
 
-    // ---------------- TESTS ----------------
+    // --- RECORDS (max/min) ---
+    const records = {
+      updateBest: (Jkey, value, mode) => {
+        normalizeData();
+        const prevMeta = data.recordsMeta[Jkey];
+        let isRecord = false;
+
+        if(!prevMeta || prevMeta.mode !== mode){
+          data.recordsMeta[Jkey] = { best: value, mode };
+          isRecord = !!prevMeta; // si on change de mode, on considère "nouveau record" seulement si déjà existant (optionnel)
+        } else {
+          if(mode === 'max'){
+            if(value > prevMeta.best){ prevMeta.best = value; isRecord = true; }
+          } else {
+            if(value < prevMeta.best){ prevMeta.best = value; isRecord = true; }
+          }
+        }
+        return { isRecord, best: data.recordsMeta[Jkey].best };
+      },
+      count: () => Object.keys(data.recordsMeta || {}).length
+    };
+
+    // --- TESTS ---
     const tests = {
       currentTest: null,
       interval: null,
@@ -1255,25 +1327,25 @@
         tests.interval = null;
 
         const exName = tests.config[muscle];
-
         document.getElementById('test-name').innerText = "Test " + muscle;
         document.getElementById('test-exercise-name').innerText = exName;
         document.getElementById('test-exercise-highlight').innerText = exName;
-
         document.getElementById('timer-display').innerText = "08:00";
         document.getElementById('timer-display').classList.remove('warning');
 
-        document.getElementById('test-instruction-state').innerText = "Prêt ?";
-        document.getElementById('test-instruction-state').classList.remove('timer-warning');
+        const st = document.getElementById('test-instruction-state');
+        st.innerText = "Prêt ?";
+        st.classList.remove('timer-warning');
 
         document.getElementById('current-palier').innerText = "Palier 1";
         document.getElementById('reps-target').innerHTML = `Faîtes <b>10</b> répétitions`;
         document.getElementById('palier-status').innerHTML = `Cliquez <b>VALIDER</b> dès que vous avez réalisé l'objectif du palier.`;
 
-        document.getElementById('test-principle').innerHTML =
-          `Principe : pendant 8 minutes, vous devez valider chaque palier.<br>
-          Exercice : <b>${exName}</b>. Dès que vous atteignez le nombre de répétitions du palier, appuyez sur <b>VALIDER</b>.
-          Si la minute se termine sans validation, le test s’arrête et vous gardez le dernier palier validé.`;
+        document.getElementById('test-principle').innerHTML = `
+          Principe : pendant 8 minutes, vous devez valider chaque palier.<br>
+          Exercice : <b>${exName}</b>. Dès que vous atteignez le nombre de répétitions du palier, appuyez sur <b>VALIDER</b>.<br>
+          Si la minute se termine sans validation, le test s’arrête et vous gardez le dernier palier validé.
+        `;
 
         document.getElementById('test-gif').src = assets.gifFor(exName);
 
@@ -1364,7 +1436,6 @@
               tests.finish(finalScore);
               return;
             }
-
             if(!tests.palierValidated) {
               tests.finish(tests.lastValidatedPalier);
               return;
@@ -1418,7 +1489,7 @@
       }
     };
 
-    // ---------------- EVOLUTION LAB ----------------
+    // --- EVOLUTION LAB ---
     const evoLab = {
       chart: null,
       init: () => {
@@ -1463,31 +1534,22 @@
         });
       },
       resetTests: () => {
-        ui.confirm(
-          "RÉINITIALISATION",
-          "Voulez-vous vraiment effacer tous vos résultats de tests ? Votre niveau global reviendra à 0.",
-          () => {
-            data.stats = { Pectoraux:0, Jambes:0, Dos:0, Triceps:0, Biceps:0 };
-            db.save(data);
-            evoLab.init();
-            app.updateCharacter();
-            ui.alert("TERMINE", "Données réinitialisées.");
-          }
-        );
+        ui.confirm("RÉINITIALISATION", "Voulez-vous vraiment effacer tous vos résultats de tests ? Votre niveau global reviendra à 0.", () => {
+          data.stats = { Pectoraux:0, Jambes:0, Dos:0, Triceps:0, Biceps:0 };
+          db.save(data);
+          evoLab.init();
+          app.updateCharacter();
+          ui.alert("TERMINE", "Données réinitialisées.");
+        });
       }
     };
 
-    // ---------------- TRAINING ----------------
+    // --- TRAINING (infinite J numbers) ---
     const training = {
       timerInterval: null,
       timerRunning: false,
       timerPaused: false,
       hasAutoScrolledOnFirstStart: false,
-
-      // DOS alt mode runtime state
-      scoreMode: "high",       // "high" = reps, "low" = pauses
-      bossVariant: "std",      // "std" or "noCorner"
-      pause10Count: 0,
 
       slotLabels: [
         { slot:1, name:'Pectoraux' },
@@ -1503,6 +1565,13 @@
       selectedJ: null,
       selectedSlot: null,
 
+      // Dos no-corner mode state
+      noCorner: {
+        enabled: false,
+        pauses: 0,
+        pauseRunning: false
+      },
+
       getSlotFromJ: (Jnum) => ((Jnum - 1) % 8) + 1,
       getCycleStart: (Jnum) => Jnum - ((Jnum - 1) % 8),
       sessionKey: (Jnum) => `J${Jnum}`,
@@ -1515,6 +1584,7 @@
       },
 
       getDifficultyIndex: (lvl) => (lvl<=2?1:(lvl<=4?2:(lvl<=6?3:4))),
+
       buildExercisesFromNames: (names, durationsSec) =>
         names.map((n,i)=>({
           name:n,
@@ -1522,6 +1592,35 @@
           gif:assets.gifFor(n),
           vimeo:assets.vimeoFor(n)
         })),
+
+      // Mode Dos sans angle : 4' gauche (alternance), 4' droite (alternance)
+      buildNoCornerBackWorkout: () => {
+        const leftA = "Knifeman Row (Gauche)";
+        const leftB = "Side Elbow Press-Up (Gauche)";
+        const rightA = "Knifeman Row (Droite)";
+        const rightB = "Side Elbow Press-Up (Droite)";
+
+        return {
+          tier: training.getDifficultyIndex(app.getFunctionalLevel('Dos')),
+          exercises: [
+            {
+              name: `ALTERNANCE 4' — GAUCHE`,
+              duration: 240,
+              gif: assets.gifFor(leftA),
+              vimeo: assets.vimeoFor(leftA),
+              meta: { alt: [leftA, leftB] }
+            },
+            {
+              name: `ALTERNANCE 4' — DROITE`,
+              duration: 240,
+              gif: assets.gifFor(rightA),
+              vimeo: assets.vimeoFor(rightA),
+              meta: { alt: [rightA, rightB] }
+            }
+          ],
+          introVimeo:"https://player.vimeo.com/video/000000000"
+        };
+      },
 
       getWorkoutDetailsForSlot: (slot) => {
         const getLvl = (m) => app.getFunctionalLevel(m);
@@ -1544,8 +1643,8 @@
           if(lvl==='adv') names=["Pompes Décalage Pliométriques","Pompes Horloge","Pompes Dead-Stop","Pompes Jambe Traversante"];
           if(lvl==='exp') names=["Pompes Archer Unilatérales","Pompes Diamant","Pompes Décalage Pliométriques","Pompes Horloge"];
           tier = training.getDifficultyIndex(primaryMuscleLvl);
-
-        } else if(slot === 2) {
+        }
+        else if(slot === 2) {
           primaryMuscleLvl = getLvl('Jambes');
           const idx = training.getDifficultyIndex(primaryMuscleLvl);
           if(idx <= 2) {
@@ -1556,25 +1655,24 @@
             names = (idx===3) ? ["Single Leg Landmines"] : ["Levitation Squat Unilateral"];
           }
           tier = idx;
-
-        } else if(slot === 3 || slot === 7) {
+        }
+        else if(slot === 3 || slot === 7) {
           primaryMuscleLvl = getLvl('Dos');
           structure=[120,120,120,120];
           const lvl = getCatCode(primaryMuscleLvl);
           const rowName = (slot===7) ? "RC" : "Rowing Corner";
-
           if(lvl==='beg') names=[`${rowName} Coudes Écartés`,"Chandelier","Superman Row Supination","Snow Angels"];
           if(lvl==='int') names=[`${rowName} Coudes Tendus`,`${rowName} Coudes Écartés`,"Chandelier","Superman Row Supination"];
           if(lvl==='adv') names=[`${rowName} Champion`,`${rowName} Coudes Tendus`,`${rowName} Coudes Écartés`,"Chandelier"];
           if(lvl==='exp') names=[`${rowName} Coudes Serrés`,`${rowName} Champion`,`${rowName} Coudes Tendus`,`${rowName} Coudes Écartés`];
-
           tier = training.getDifficultyIndex(primaryMuscleLvl);
-
-        } else if(slot === 4) {
+        }
+        else if(slot === 4) {
           primaryMuscleLvl = getLvl('Triceps');
           structure=[240,240];
           const lTri = getCatCode(primaryMuscleLvl);
           const lBi = getCatCode(getLvl('Biceps'));
+
           let triEx="", biEx="";
           if(lTri==='beg') triEx="Wall Triceps Extension";
           else if(lTri==='int') triEx="Pompes du Sphinx";
@@ -1588,8 +1686,8 @@
 
           names=[`Triceps — ${triEx}`,`Biceps — ${biEx}`];
           tier = training.getDifficultyIndex(primaryMuscleLvl);
-
-        } else if(slot === 6) {
+        }
+        else if(slot === 6) {
           primaryMuscleLvl = getLvl('Jambes');
           structure=[240,240];
           const lvl = getCatCode(primaryMuscleLvl);
@@ -1600,11 +1698,7 @@
           tier = training.getDifficultyIndex(primaryMuscleLvl);
         }
 
-        return {
-          tier,
-          exercises: training.buildExercisesFromNames(names, structure),
-          introVimeo:"https://player.vimeo.com/video/000000000"
-        };
+        return { tier, exercises: training.buildExercisesFromNames(names, structure), introVimeo:"https://player.vimeo.com/video/000000000" };
       },
 
       init: () => {
@@ -1613,6 +1707,7 @@
         const currentJ = training.computeCurrentJ();
         const base = training.getCycleStart(currentJ);
         const grid = document.getElementById('week-grid');
+
         grid.innerHTML = '';
 
         for(let i=0;i<8;i++){
@@ -1626,6 +1721,7 @@
 
           const el = document.createElement('div');
           el.className = 'day-box' + (isDone ? ' done' : '') + (isLocked ? ' locked' : '');
+
           el.innerHTML = `
             <span style="font-size:1.6em;font-weight:1000;">J${Jnum}</span>
             <span style="margin-top:4px;">${label.name}</span>
@@ -1633,23 +1729,23 @@
             ${isLocked ? `<img src="verrou.png" class="lock-badge" onerror="this.style.display='none'">` : ''}
           `;
 
-          el.onclick = () => {
+          // IMPORTANT: réparation du clic (sécurisé)
+          el.addEventListener('click', (ev) => {
+            ev.preventDefault();
+            ev.stopPropagation();
+
             if(isLocked){
               const prevJ = Jnum - 1;
               ui.alert("VERROUILLÉ", `Vous devez d'abord valider la séance <b>J${prevJ}</b> avant d'affronter <b>J${Jnum}</b>.`);
               return;
             }
             training.openByJ(Jnum);
-          };
+          });
 
           grid.appendChild(el);
         }
 
-        setTimeout(() => {
-          const btn = document.getElementById('btn-training-retour');
-          if(btn) btn.scrollIntoView({ behavior:'auto', block:'end' });
-          window.scrollTo({ top: 0, behavior:'auto' });
-        }, 0);
+        window.scrollTo({ top: 0, behavior:'auto' });
       },
 
       resetAllTrainings: () => {
@@ -1658,7 +1754,7 @@
           "Voulez-vous vraiment <b>réinitialiser tous les entraînements</b> ?<br><br>Retour à <b>J1</b> et suppression de <b>toutes les récompenses</b>.",
           () => {
             data.sessions = {};
-            data.records = {};
+            data.recordsMeta = {};
             data.bossMeta = {};
             data.bossDefeated = {};
             data.furyCount = 0;
@@ -1676,43 +1772,60 @@
         training.selectedJ = Jnum;
         training.selectedSlot = training.getSlotFromJ(Jnum);
 
-        // J8 special screen
+        // Reset noCorner runtime state
+        training.noCorner.enabled = false;
+        training.noCorner.pauses = 0;
+        training.noCorner.pauseRunning = false;
+
         if(training.selectedSlot === 8) {
           ascension.init(Jnum);
           nav.to('screen-ascension');
           return;
         }
 
-        // reset mode defaults
-        training.scoreMode = "high";
-        training.bossVariant = "std";
-        training.pause10Count = 0;
+        // Prépare workout (normal au départ)
+        const wk = training.getWorkoutDetailsForSlot(training.selectedSlot);
+        training.currentWorkoutIntroVimeo = wk.introVimeo;
+        training.currentTier = wk.tier;
 
-        // DOS option UI
-        const isDosDay = (training.selectedSlot === 3 || training.selectedSlot === 7);
-        const dosCard = document.getElementById('dos-alt-card');
-        const dosToggle = document.getElementById('dos-alt-toggle');
-        if(dosCard) dosCard.classList.toggle('hidden', !isDosDay);
+        // show/hide no-corner toggle only for Dos slots (3/7)
+        const noCornerCard = document.getElementById('nocorner-card');
+        const noCornerToggle = document.getElementById('nocorner-toggle');
+        const isBackDay = (training.selectedSlot === 3 || training.selectedSlot === 7);
+        noCornerCard.classList.toggle('hidden', !isBackDay);
+        noCornerToggle.checked = false;
 
-        // Preload session (if exists) to restore DOS mode
+        // If session exists and was saved in no-corner mode, restore toggle
         const key = training.sessionKey(Jnum);
-        const existing = data.sessions[key] || null;
-        const savedScoreMode = existing?.undoData?.scoreMode || "high";
-        const savedVariant = existing?.undoData?.bossVariant || "std";
-
-        if(isDosDay && dosToggle){
-          const shouldEnableAlt = (savedScoreMode === "low" && savedVariant === "noCorner");
-          dosToggle.checked = !!shouldEnableAlt;
+        const prevSession = data.sessions[key];
+        const restoreNoCorner = !!(prevSession && prevSession.undoData && prevSession.undoData.noCornerMode);
+        if(isBackDay && restoreNoCorner){
+          noCornerToggle.checked = true;
         }
 
-        // build workout (standard first, then apply toggle if needed)
-        training.applyWorkoutBuild();
+        // Hook toggle
+        noCornerToggle.onchange = () => {
+          if(!isBackDay) return;
+          training.setNoCornerMode(!!noCornerToggle.checked);
+        };
 
-        // restore session UI
-        if(existing) {
+        // Apply mode (restored or default)
+        if(isBackDay && restoreNoCorner){
+          training.setNoCornerMode(true);
+        } else {
+          training.setNoCornerMode(false);
+        }
+
+        // Boss UI is updated inside setNoCornerMode()
+        document.getElementById('workout-day-title').innerText = `J${Jnum}: ${training.slotLabels[training.selectedSlot-1].name}`;
+
+        // Existing session: show cancel + restore score field
+        if(prevSession) {
           document.getElementById('btn-cancel-session').classList.remove('hidden');
-          document.getElementById('workout-score').value = existing.score;
-          if(existing.undoData?.scoreMode === "low") training.pause10Count = (existing.score|0);
+          if(prevSession.undoData && prevSession.undoData.noCornerMode){
+            training.noCorner.pauses = (prevSession.score|0);
+          }
+          document.getElementById('workout-score').value = String(prevSession.score ?? "");
         } else {
           document.getElementById('btn-cancel-session').classList.add('hidden');
           document.getElementById('workout-score').value = "";
@@ -1730,125 +1843,87 @@
         window.scrollTo({ top: 0, behavior: 'auto' });
       },
 
-      applyWorkoutBuild: () => {
-        const Jnum = training.selectedJ;
-        const slot = training.selectedSlot;
-        const key = training.sessionKey(Jnum);
+      setNoCornerMode: (enabled) => {
+        training.noCorner.enabled = !!enabled;
+        training.noCorner.pauseRunning = false;
 
-        const isDosDay = (slot === 3 || slot === 7);
-        const dosToggle = document.getElementById('dos-alt-toggle');
-        const enableAlt = !!(isDosDay && dosToggle && dosToggle.checked);
-
-        if(enableAlt){
-          // DOS "no corner" variant
-          training.scoreMode = "low";       // pauses
-          training.bossVariant = "noCorner";
-
-          const dosLvl = app.getFunctionalLevel('Dos');
-          training.currentTier = training.getDifficultyIndex(dosLvl);
-
-          training.currentWorkoutIntroVimeo = "https://player.vimeo.com/video/000000000";
-
-          training.currentExercises = [
-            {
-              name:"Côté Gauche — alternance",
-              duration:240,
-              subNames:["Knifeman Row (Gauche)","Side Elbow Press-Up (Gauche)"],
-              gif: assets.gifFor("Knifeman Row (Gauche)"),
-              vimeo: null
-            },
-            {
-              name:"Côté Droit — alternance",
-              duration:240,
-              subNames:["Knifeman Row (Droite)","Side Elbow Press-Up (Droite)"],
-              gif: assets.gifFor("Knifeman Row (Droite)"),
-              vimeo: null
-            }
-          ];
-
-          training.currentIndex = 0;
-          training.timeLeft = training.currentExercises[0].duration;
-
-          // Pause button visible
-          document.getElementById('btn-pause10').classList.remove('hidden');
-
-          // Score UI for pauses
-          training.updateScoreUI();
-
-        } else {
-          // Standard workout
-          training.scoreMode = "high";
-          training.bossVariant = "std";
-          training.pause10Count = 0;
-
-          document.getElementById('btn-pause10').classList.add('hidden');
-
-          const wk = training.getWorkoutDetailsForSlot(slot);
+        // Build exercises
+        let wk;
+        if(training.noCorner.enabled){
+          wk = training.buildNoCornerBackWorkout();
           training.currentExercises = wk.exercises;
-          training.currentIndex = 0;
-          training.timeLeft = training.currentExercises[0]?.duration || 0;
           training.currentWorkoutIntroVimeo = wk.introVimeo;
           training.currentTier = wk.tier;
 
-          training.updateScoreUI();
-        }
+          // Score UI: pauses
+          document.getElementById('score-label').innerText = "Pauses de 10s (score)";
+          const scoreInput = document.getElementById('workout-score');
+          scoreInput.value = String(training.noCorner.pauses|0);
+          scoreInput.readOnly = true;
+          scoreInput.placeholder = "Auto";
+          document.getElementById('score-help').innerHTML = `
+            Mode Dos sans angle : appuyez sur <b>Pause 10s (+1)</b> quand vous récupérez.<br>
+            <b>Score</b> = nombre total de pauses (automatique).<br>
+            Pour battre le boss : faire <b>moins</b> que l'objectif.
+          `;
 
-        // Title
-        document.getElementById('workout-day-title').innerText = `J${Jnum}: ${training.slotLabels[slot-1].name}`;
+          document.getElementById('btn-nocorner-pause10').classList.remove('hidden');
+          document.getElementById('nocorner-pauses-pill').classList.remove('hidden');
+          training.updateNoCornerPausesPill();
 
-        // Boss UI
-        training.updateBossUI();
-
-        // Ensure score input mirrors pause counter in alt mode
-        if(training.scoreMode === "low"){
-          const v = parseInt(document.getElementById('workout-score').value) || 0;
-          training.pause10Count = v;
-          training.syncPauseScoreInput();
-        }
-      },
-
-      updateScoreUI: () => {
-        const lbl = document.getElementById('workout-score-label');
-        const help = document.getElementById('workout-score-help');
-        const input = document.getElementById('workout-score');
-
-        if(training.scoreMode === "low"){
-          if(lbl) lbl.innerText = "Nombre de pauses de 10s";
-          if(input) input.placeholder = "Ex: 6";
-          if(help) help.innerHTML =
-            `Appuyez sur <b>+1 pause 10s</b> à chaque pause.<br>
-             <b>Score</b> = total de pauses sur 8 minutes.<br>
-             Pour battre le Boss : faire <b>moins</b> que le seuil affiché.`;
         } else {
-          if(lbl) lbl.innerText = "Total de répétitions";
-          if(input) input.placeholder = "Ex: 132";
-          if(help) help.innerHTML =
-            `Entrez ici le <b>nombre total de répétitions</b> réalisées sur toute la séance (tous les exercices cumulés).`;
+          wk = training.getWorkoutDetailsForSlot(training.selectedSlot);
+          training.currentExercises = wk.exercises;
+          training.currentWorkoutIntroVimeo = wk.introVimeo;
+          training.currentTier = wk.tier;
+
+          // Score UI: reps
+          const scoreInput = document.getElementById('workout-score');
+          scoreInput.readOnly = false;
+          scoreInput.placeholder = "Ex: 132";
+          document.getElementById('score-label').innerText = "Total de répétitions";
+          document.getElementById('score-help').innerHTML = `
+            Entrez ici le <b>nombre total de répétitions</b> réalisées sur toute la séance (tous les exercices cumulés).
+          `;
+
+          document.getElementById('btn-nocorner-pause10').classList.add('hidden');
+          document.getElementById('nocorner-pauses-pill').classList.add('hidden');
         }
+
+        // Reset timeline
+        training.currentIndex = 0;
+        training.timeLeft = training.currentExercises[0]?.duration || 0;
+        training.timerStopAll();
+        training.timerRunning = false;
+        training.timerPaused = false;
+
+        // Update boss panel
+        training.refreshBossPanel();
+
+        training.renderWorkoutUI();
+        training.updateTimerUI("Prêt — exercice 1");
+        training.updateControlButtons();
       },
 
-      updateBossUI: () => {
-        const slot = training.selectedSlot;
+      refreshBossPanel: () => {
         const tierInfo = BOSS_TIERS.find(t=>t.id===training.currentTier) || BOSS_TIERS[0];
+        const mode = training.noCorner.enabled ? 'min' : 'max';
+        const bossState = boss.getState(training.selectedSlot, training.currentTier, mode);
 
-        const bState = boss.getState(slot, training.currentTier, training.bossVariant, training.scoreMode === "low" ? "low" : "high");
-
-        // Boss image rule for grade 0
         let bossImg = tierInfo.img;
-        if(bState.gradeIndex === 0){
-          if(training.currentTier === 1) bossImg = "biomasse1.png";
-          else if(training.currentTier === 2) bossImg = "biomasse11.png";
+        if(bossState.gradeIndex === 0){
+          if(training.currentTier === 1) bossImg = training.noCorner.enabled ? "biomasse1.png" : "biomasse1.png";
+          if(training.currentTier === 2) bossImg = training.noCorner.enabled ? "biomasse11.png" : "biomasse11.png";
         }
 
         document.getElementById('boss-img-preview').src = bossImg;
-        document.getElementById('boss-level-line').innerText = `${tierInfo.name}`;
-        document.getElementById('boss-grade-line').innerText = `Grade: ${bState.gradeName}`;
-
-        if(training.scoreMode === "low"){
-          document.getElementById('boss-score-target').innerText = `Pauses max pour battre: ${bState.target}`;
+        if(mode === 'min'){
+          document.getElementById('boss-score-target').innerText = `Objectif: < ${bossState.target} pauses`;
         } else {
-          document.getElementById('boss-score-target').innerText = `Score à battre: ${bState.target}`;
+          document.getElementById('boss-score-target').innerText = "Score à battre: " + bossState.target;
         }
+        document.getElementById('boss-level-line').innerText = `${tierInfo.name}`;
+        document.getElementById('boss-grade-line').innerText = `Grade: ${bossState.gradeName}`;
       },
 
       timerInterval: null,
@@ -1874,18 +1949,23 @@
       renderWorkoutUI: () => {
         const ex = training.currentExercises[training.currentIndex];
 
-        document.getElementById('exercise-name-current').innerText = ex ? ex.name : "—";
-        document.getElementById('exercise-gif').src = ex ? (ex.gif || "https://via.placeholder.com/220x220?text=GIF") : "https://via.placeholder.com/220x220?text=GIF";
-        document.getElementById('exercise-duration').innerText = `⏱️ ${training.formatMMSS(ex?.duration || 0)}`;
-
-        // Hint text: show alternance details in DOS alt mode
-        if(ex && ex.subNames && ex.subNames.length){
+        // Current title
+        if(ex && ex.meta && ex.meta.alt){
+          document.getElementById('exercise-name-current').innerHTML = `
+            ${ex.name}
+            <div class="subtle" style="margin-top:4px;">
+              Alternez : <b>${ex.meta.alt[0]}</b> ⇄ <b>${ex.meta.alt[1]}</b>
+            </div>
+          `;
           document.getElementById('exercise-hint').innerHTML =
-            `Alternance libre pendant ce bloc :<br><b>${ex.subNames[0]}</b> + <b>${ex.subNames[1]}</b><br>
-             (comptez vos pauses de 10s avec <b>+1 pause 10s</b>).`;
+            `Alternez librement. Utilisez <b>Pause 10s (+1)</b> si besoin.`;
         } else {
+          document.getElementById('exercise-name-current').innerText = ex ? ex.name : "—";
           document.getElementById('exercise-hint').innerText = "À la fin, on passe à l'exercice suivant.";
         }
+
+        document.getElementById('exercise-gif').src = ex ? ex.gif : "https://via.placeholder.com/220x220?text=GIF";
+        document.getElementById('exercise-duration').innerText = `⏱️ ${training.formatMMSS(ex?.duration || 0)}`;
 
         const list = document.getElementById('workout-exercise-list');
         list.innerHTML = '';
@@ -1895,18 +1975,21 @@
           row.id = `ex-row-${i}`;
           row.className = 'exercise-row' + (i===training.currentIndex?' current':'') + (i<training.currentIndex?' done':'');
 
-          const extra = (e.subNames && e.subNames.length)
-            ? `<div class="time">${training.formatMMSS(e.duration)} • ${e.subNames[0]} / ${e.subNames[1]}</div>`
+          const rightPill =
+            (i<training.currentIndex) ? "FAIT" : (i===training.currentIndex ? "ACTUEL" : "À VENIR");
+
+          const details = (e.meta && e.meta.alt)
+            ? `<div class="time">4:00 — Alternance</div>`
             : `<div class="time">${training.formatMMSS(e.duration)}</div>`;
 
           row.innerHTML = `
             <div class="left">
               <div class="name">${i===training.currentIndex ? "▶ " : ""}${e.name}</div>
-              ${extra}
+              ${details}
             </div>
             <div>
               <span class="exercise-pill ${i<training.currentIndex ? "done" : (i===training.currentIndex ? "current" : "")}">
-                ${i<trtraining.currentIndex ? "FAIT" : (i===training.currentIndex ? "ACTUEL" : "À VENIR")}
+                ${rightPill}
               </span>
             </div>
           `;
@@ -1916,6 +1999,13 @@
         });
 
         training.updateControlButtons();
+        training.refreshBossPanel();
+
+        // If no-corner mode, keep score input synced
+        if(training.noCorner.enabled){
+          document.getElementById('workout-score').value = String(training.noCorner.pauses|0);
+          training.updateNoCornerPausesPill();
+        }
       },
 
       jumpToExercise: (index) => {
@@ -1928,6 +2018,7 @@
         training.timerRunning = false;
         training.timerPaused = false;
         training.timerStopAll();
+
         training.renderWorkoutUI();
         training.updateTimerUI(`Prêt — exercice ${training.currentIndex+1}`);
       },
@@ -1936,28 +2027,26 @@
 
       openCurrentExerciseVideo: () => {
         const ex = training.currentExercises[training.currentIndex];
-        if(!ex) return;
-
-        // DOS alt: choose one of the 2 videos
-        if(ex.subNames && ex.subNames.length === 2){
-          ui.show(
-            "CHOISIR UNE VIDÉO",
-            `<div class="subtle">Bloc : <b>${ex.name}</b></div>`,
-            [
-              { text: ex.subNames[0], class: "btn-modal-confirm", onClick: () => ui.video("VIDÉO — " + ex.subNames[0], assets.vimeoFor(ex.subNames[0])) },
-              { text: ex.subNames[1], class: "btn-modal-confirm", onClick: () => ui.video("VIDÉO — " + ex.subNames[1], assets.vimeoFor(ex.subNames[1])) },
-              { text: "FERMER", class: "btn-modal-cancel" }
-            ]
-          );
+        // If alternance, propose 2 choices (G/D)
+        if(ex && ex.meta && ex.meta.alt){
+          const a = ex.meta.alt[0];
+          const b = ex.meta.alt[1];
+          ui.show("VIDÉOS — Alternance", `
+            <div class="subtle" style="text-align:left;">
+              Choisissez l'exercice à afficher.
+            </div>
+          `, [
+            { text: a, class: 'btn-modal-confirm', onClick: () => ui.video("VIDÉO — " + a, assets.vimeoFor(a)) },
+            { text: b, class: 'btn-modal-confirm', onClick: () => ui.video("VIDÉO — " + b, assets.vimeoFor(b)) },
+            { text: "FERMER", class: 'btn-modal-cancel' }
+          ]);
           return;
         }
-
-        ui.video("VIDÉO — " + (ex.name || "Exercice"), ex.vimeo || "https://player.vimeo.com/video/000000000");
+        ui.video("VIDÉO — " + (ex?.name || "Exercice"), ex?.vimeo || "https://player.vimeo.com/video/000000000");
       },
 
       updateTimerUI: (stateText) => {
-        document.getElementById('workout-timer-state').innerText =
-          stateText || `Exercice ${training.currentIndex+1}/${training.currentExercises.length}`;
+        document.getElementById('workout-timer-state').innerText = stateText || `Exercice ${training.currentIndex+1}/${training.currentExercises.length}`;
         document.getElementById('workout-timer-digits').innerText = training.formatMMSS(training.timeLeft);
       },
 
@@ -1998,8 +2087,8 @@
 
         training.timerPaused = false;
         training.timerRunning = true;
-
         audio.beep('long');
+
         training.updateControlButtons();
         training.updateTimerUI(`Exercice ${training.currentIndex+1}/${training.currentExercises.length}`);
 
@@ -2017,7 +2106,6 @@
             training.timerInterval = null;
 
             audio.beep('long');
-
             training.currentIndex++;
             training.timerRunning = false;
             training.timerPaused = false;
@@ -2030,18 +2118,15 @@
               training.timeLeft = 0;
               training.renderWorkoutUI();
               training.updateTimerUI("TERMINÉ ✅");
-
               ui.alert(
                 "SÉANCE TERMINÉE ✅",
-                (training.scoreMode === "low")
-                  ? "Chrono terminé !<br><br><b>Entrez / vérifiez votre total de pauses de 10s</b> puis <b>validez</b>."
+                training.noCorner.enabled
+                  ? "Chrono terminé !<br><br><b>Validez la séance</b> (score = pauses automatiques)."
                   : "Chrono terminé !<br><br><b>Il reste à entrer le total de répétitions</b> et à <b>valider la séance</b>.",
                 () => training.scrollToBottom()
               );
-
               setTimeout(() => training.scrollToBottom(), 50);
             }
-
             training.updateControlButtons();
           }
         }, 1000);
@@ -2061,8 +2146,10 @@
         training.timerStopAll();
         training.timerRunning = false;
         training.timerPaused = false;
+
         const ex = training.currentExercises[training.currentIndex];
         training.timeLeft = ex ? ex.duration : 0;
+
         training.updateTimerUI("Réinitialisé");
         training.updateControlButtons();
       },
@@ -2079,18 +2166,68 @@
         return `0${m}:${r < 10 ? '0'+r : r}`;
       },
 
-      // NEW: pause 10 seconds counter (DOS alt mode)
-      syncPauseScoreInput: () => {
-        const input = document.getElementById('workout-score');
-        if(input) input.value = String(training.pause10Count|0);
+      updateNoCornerPausesPill: () => {
+        const pill = document.getElementById('nocorner-pauses-pill');
+        if(pill) pill.innerText = `⏸️ Pauses: ${training.noCorner.pauses|0}`;
       },
 
-      addPause10: () => {
-        if(training.scoreMode !== "low") return;
-        // only meaningful while chrono is running/paused (still ok)
-        training.pause10Count = Math.max(0, (training.pause10Count|0) + 1);
-        training.syncPauseScoreInput();
-        audio.beep('short');
+      // Pause 10s (+1) : signal visuel + sonore + reprise auto
+      nocornerPause10: () => {
+        if(!training.noCorner.enabled) return;
+        if(training.noCorner.pauseRunning) return;
+
+        audio.init();
+
+        // Stop main timer during pause
+        const wasRunning = training.timerRunning && !training.timerPaused;
+        training.timerStopAll();
+        training.timerRunning = false;
+        training.timerPaused = true;
+
+        training.noCorner.pauseRunning = true;
+        training.noCorner.pauses++;
+        training.updateNoCornerPausesPill();
+        document.getElementById('workout-score').value = String(training.noCorner.pauses|0);
+
+        let remain = 10;
+        audio.beep('long');
+
+        const digits = document.getElementById('workout-timer-digits');
+        const state = document.getElementById('workout-timer-state');
+        state.classList.add('timer-warning');
+        digits.classList.add('warning');
+
+        state.innerText = "PAUSE 10s";
+        const originalDigits = training.formatMMSS(training.timeLeft);
+
+        const tick = setInterval(() => {
+          remain--;
+          digits.innerText = `00:${remain < 10 ? '0'+remain : remain}`;
+          if(remain <= 3 && remain > 0) audio.beep('short');
+
+          if(remain <= 0){
+            clearInterval(tick);
+            training.noCorner.pauseRunning = false;
+
+            state.classList.remove('timer-warning');
+            digits.classList.remove('warning');
+
+            // restore digits view
+            digits.innerText = originalDigits;
+            state.innerText = "Reprise ✅";
+            audio.beep('long');
+
+            // Resume main timer if it was running
+            training.timerPaused = false;
+            if(wasRunning){
+              // restart interval
+              training.timerStartOrResume();
+            } else {
+              training.updateTimerUI("Prêt (pause ajoutée)");
+              training.updateControlButtons();
+            }
+          }
+        }, 1000);
       },
 
       bumpCompletedDateForSession: (Jkey, newDateISO) => {
@@ -2109,46 +2246,46 @@
       validateSession: () => {
         normalizeData();
 
-        const score = parseInt(document.getElementById('workout-score').value) || 0;
         const Jnum = training.selectedJ;
         const slot = training.selectedSlot;
         const Jkey = training.sessionKey(Jnum);
 
-        // Record management (high better for normal, low better for pauses)
-        const mode = (training.scoreMode === "low") ? "low" : "high";
-        const prevRec = data.records[Jkey] || null;
-        const prevVal = prevRec ? (prevRec.value|0) : null;
+        const mode = training.noCorner.enabled ? 'min' : 'max';
 
-        const isRecord =
-          (prevVal === null)
-            ? true
-            : (mode === "high" ? (score > prevVal) : (score < prevVal));
+        // score source
+        let score;
+        if(training.noCorner.enabled){
+          score = training.noCorner.pauses|0; // auto
+        } else {
+          score = parseInt(document.getElementById('workout-score').value) || 0;
+        }
+
+        const bState = boss.getState(slot, training.currentTier, mode);
+        const bossTarget = bState.target;
+
+        const tierInfo = BOSS_TIERS.find(t=>t.id===training.currentTier) || BOSS_TIERS[0];
+
+        // Record
+        const recordRes = records.updateBest(Jkey, score, mode);
 
         let msg = "Séance validée.";
-        if(isRecord && prevVal !== null) msg += "<br><b>RECORD BATTU !</b>";
-
-        // save record
-        if(isRecord) data.records[Jkey] = { value: score, mode };
+        if(recordRes.isRecord) msg += "<br><b>RECORD BATTU !</b>";
 
         const today = dateUtil.localISO();
         training.bumpCompletedDateForSession(Jkey, today);
 
-        // Boss logic
-        const bState = boss.getState(slot, training.currentTier, training.bossVariant, mode);
-        const bossTarget = bState.target;
-
-        const didBeatBoss = (mode === "low") ? (score < bossTarget) : (score > bossTarget);
-
+        // Boss condition
+        const didBeatBoss = (mode === 'min') ? (score < bossTarget) : (score > bossTarget);
         if(didBeatBoss) {
           msg += "<br><b>BOSS BATTU !</b>";
-          boss.beat(slot, training.currentTier, training.bossVariant, mode);
+          boss.beat(slot, training.currentTier, mode);
 
           if(slot >= 1 && slot <= 7) {
             furie.onBossBeatenToday(today);
+            if(data.furyDaily.streak === 0 && data.furyCount > 0 && Object.keys(data.furyDates).length >= 7) {
+              msg += "<br><b>TROPHÉE GAGNÉ : FURIE !</b>";
+            }
           }
-
-          // refresh boss display
-          training.updateBossUI();
         }
 
         const beforeUnstoppable = !!data.unstoppableEarned;
@@ -2166,8 +2303,8 @@
             tier: training.currentTier,
             bossGradeAtWin: bState.gradeIndex,
             bossTargetAtWin: bossTarget,
-            scoreMode: mode,
-            bossVariant: training.bossVariant
+            mode,
+            noCornerMode: !!training.noCorner.enabled
           }
         };
 
@@ -2180,33 +2317,30 @@
       },
 
       cancelSession: () => {
-        ui.confirm(
-          "ANNULATION",
-          "Voulez-vous vraiment annuler cette séance ? Cela effacera le statut validé et les récompenses associées.",
-          () => {
-            normalizeData();
-            const Jnum = training.selectedJ;
-            const Jkey = training.sessionKey(Jnum);
+        ui.confirm("ANNULATION", "Voulez-vous vraiment annuler cette séance ? Cela effacera le statut validé et les récompenses associées.", () => {
+          normalizeData();
 
-            const session = data.sessions[Jkey];
-            if(session && session.date) {
-              const d = session.date;
-              if(data.completedDates[d]) {
-                data.completedDates[d]--;
-                if(data.completedDates[d] <= 0) delete data.completedDates[d];
-              }
+          const Jnum = training.selectedJ;
+          const Jkey = training.sessionKey(Jnum);
+
+          const session = data.sessions[Jkey];
+          if(session && session.date) {
+            const d = session.date;
+            if(data.completedDates[d]) {
+              data.completedDates[d]--;
+              if(data.completedDates[d] <= 0) delete data.completedDates[d];
             }
-
-            delete data.sessions[Jkey];
-            furie.recomputeFromSessions();
-            db.save(data);
-
-            ui.alert("INFO", "Séance annulée.", () => {
-              training.init();
-              nav.to('screen-training');
-            });
           }
-        );
+
+          delete data.sessions[Jkey];
+          furie.recomputeFromSessions();
+          db.save(data);
+
+          ui.alert("INFO", "Séance annulée.", () => {
+            training.init();
+            nav.to('screen-training');
+          });
+        });
       },
 
       quit: () => {
@@ -2217,21 +2351,7 @@
       }
     };
 
-    // DOS toggle listener
-    document.getElementById('dos-alt-toggle').addEventListener('change', () => {
-      if(!(training.selectedSlot === 3 || training.selectedSlot === 7)) return;
-      // rebuild current workout in-place (same screen structure)
-      training.applyWorkoutBuild();
-      training.timerStopAll();
-      training.timerRunning = false;
-      training.timerPaused = false;
-      training.hasAutoScrolledOnFirstStart = false;
-      training.renderWorkoutUI();
-      training.updateTimerUI("Prêt — exercice 1");
-      window.scrollTo({ top: 0, behavior: 'auto' });
-    });
-
-    // ---------------- ASCENSION ----------------
+    // --- ASCENSION (slot 8) ---
     const ascension = {
       currentJ: 8,
       totalSeconds: 8*60,
@@ -2294,6 +2414,7 @@
         ascension.exercises.forEach((e, i) => {
           const row = document.createElement('div');
           row.className = 'exercise-row' + (i===ascension.stepIndex?' current':'') + (i<ascension.stepIndex?' done':'');
+
           row.innerHTML = `
             <div class="left">
               <div class="name">${i===ascension.stepIndex ? "▶ " : ""}${e.name}</div>
@@ -2327,6 +2448,7 @@
       start: () => {
         if(ascension.running) return;
         audio.init();
+
         ascension.running = true;
         ascension.paused = false;
         audio.beep('long');
@@ -2355,6 +2477,7 @@
         if(ascension.totalSeconds <= 0) return;
         audio.init();
         audio.beep('long');
+
         ascension.stepIndex++;
         if(ascension.stepIndex >= ascension.exercises.length) {
           ascension.palierCompleted++;
@@ -2362,6 +2485,7 @@
           ascension.targetReps += 2;
         }
         ascension.render();
+
         const card = document.getElementById('asc-current-card');
         if(card) card.scrollIntoView({ behavior:'smooth', block:'start' });
       },
@@ -2383,7 +2507,6 @@
             <b>Formule :</b> paliers ×10 + exercices (palier en cours)
           </div>
         `;
-
         ui.show("CHALLENGE TERMINÉ ✅", html, [
           { text: "ENREGISTRER", class: "btn-modal-confirm", onClick: () => ascension.saveScore(score) },
           { text: "RETOUR", class: "btn-modal-cancel", onClick: () => { training.init(); nav.to('screen-training'); } }
@@ -2394,10 +2517,8 @@
         normalizeData();
         const Jkey = `J${ascension.currentJ}`;
 
-        // record in "high" mode
-        const prev = data.records[Jkey] || null;
-        const prevVal = prev ? (prev.value|0) : null;
-        if(prevVal === null || score > prevVal) data.records[Jkey] = { value: score, mode: "high" };
+        // record max
+        records.updateBest(Jkey, score, 'max');
 
         const today = dateUtil.localISO();
         training.bumpCompletedDateForSession(Jkey, today);
@@ -2406,7 +2527,7 @@
         const current = streak.currentStreakDays();
         if(!data.unstoppableEarned && current >= 21) data.unstoppableEarned = true;
 
-        data.sessions[Jkey] = { validated:true, score:score, date: today, undoData:{ didBeatBoss:false, slot:8, scoreMode:"high", bossVariant:"std" } };
+        data.sessions[Jkey] = { validated:true, score:score, date: today, undoData:{ didBeatBoss:false, slot:8, mode:'max' } };
         db.save(data);
 
         document.getElementById('btn-asc-cancel').classList.remove('hidden');
@@ -2418,27 +2539,30 @@
       },
 
       cancel: () => {
-        ui.confirm(
-          "ANNULATION",
-          "Voulez-vous vraiment annuler / invalider ce challenge ? Cela retirera la validation de la séance.",
-          () => {
-            normalizeData();
-            const Jkey = `J${ascension.currentJ}`;
-            const session = data.sessions[Jkey];
-            if(session && session.date) {
-              const d = session.date;
-              if(data.completedDates[d]) {
-                data.completedDates[d]--;
-                if(data.completedDates[d] <= 0) delete data.completedDates[d];
-              }
+        ui.confirm("ANNULATION", "Voulez-vous vraiment annuler / invalider ce challenge ? Cela retirera la validation de la séance.", () => {
+          normalizeData();
+          const Jkey = `J${ascension.currentJ}`;
+          const session = data.sessions[Jkey];
+
+          if(session && session.date) {
+            const d = session.date;
+            if(data.completedDates[d]) {
+              data.completedDates[d]--;
+              if(data.completedDates[d] <= 0) delete data.completedDates[d];
             }
-            delete data.sessions[Jkey];
-            furie.recomputeFromSessions();
-            db.save(data);
-            document.getElementById('btn-asc-cancel').classList.add('hidden');
-            ui.alert("INFO", `Séance J${ascension.currentJ} invalidée.`, () => { training.init(); nav.to('screen-training'); });
           }
-        );
+
+          delete data.sessions[Jkey];
+          furie.recomputeFromSessions();
+          db.save(data);
+
+          document.getElementById('btn-asc-cancel').classList.add('hidden');
+
+          ui.alert("INFO", `Séance J${ascension.currentJ} invalidée.`, () => {
+            training.init();
+            nav.to('screen-training');
+          });
+        });
       },
 
       stop: () => {
@@ -2452,12 +2576,13 @@
       }
     };
 
-    // ---------------- GALLERY ----------------
+    // --- GALLERY ---
     const gallery = {
       setLocked: (cardId, locked) => {
         const el = document.getElementById(cardId);
         if(!el) return;
-        if(locked) el.classList.add('locked'); else el.classList.remove('locked');
+        if(locked) el.classList.add('locked');
+        else el.classList.remove('locked');
       },
 
       render: () => {
@@ -2466,14 +2591,7 @@
 
         document.getElementById('trophy-char-img').src = app.getCharImage(app.getGlobalLevel());
 
-        // records count (now objects)
-        const recordCount = Object.keys(data.records).filter(k => {
-          const r = data.records[k];
-          if(!r || typeof r.value !== "number") return false;
-          if(r.mode === "low") return r.value >= 0;       // 0 is valid record
-          return (r.value|0) > 0;                         // keep old behavior for reps
-        }).length;
-
+        const recordCount = records.count();
         document.getElementById('total-records').innerText = recordCount;
         gallery.setLocked('card-records', recordCount <= 0);
 
@@ -2498,17 +2616,14 @@
         const lvl = app.getGlobalLevel();
         const thresholds = [10,15,19,23,26,29,32,34,36,38,39,40];
         const next = thresholds.find(t => t > lvl);
-
         let evoText = "";
         if(next) {
           const diff = next - lvl;
           evoText = `Plus que ${diff} niveau${diff > 1 ? 'x' : ''} avant évolution !`;
         } else if (lvl >= 40) evoText = "Niveau Maximum atteint !";
         else evoText = "Continuez l'entraînement !";
-
         document.getElementById('trophy-next-evo').innerText = evoText;
 
-        // Boss Vaincus
         const bossContainer = document.getElementById('boss-trophy-container');
         bossContainer.innerHTML = '';
 
@@ -2538,7 +2653,8 @@
         if(type === 'records') {
           ui.alert("TROPHÉE — RECORDS",
             `<b>Records Battus</b><br><br>
-             Nombre de séances où vous avez enregistré un <b>nouveau record</b> (meilleur score).`);
+             Nombre de séances où vous avez enregistré un score record.<br>
+             Astuce : refaites la même séance et tentez d'améliorer votre score.`);
           return;
         }
         if(type === 'fury') {
@@ -2564,7 +2680,7 @@
           normalizeData();
           data.bossMeta = {};
           data.bossDefeated = {};
-          data.records = {};
+          data.recordsMeta = {};
           data.furyCount = 0;
           data.furyDaily = { streak: 0, lastDate: null };
           data.furyDates = {};
@@ -2577,57 +2693,48 @@
       }
     };
 
-    // ---------------- NAV ----------------
+    // --- NAV ---
     const nav = {
       to: (id) => {
         document.querySelectorAll('.container').forEach(d => d.classList.add('hidden'));
-        document.getElementById(id).classList.remove('hidden');
+        const el = document.getElementById(id);
+        if(el) el.classList.remove('hidden');
+
         if(id === 'screen-menu') app.updateCharacter();
         if(id === 'screen-training') training.init();
         if(id === 'screen-trophy') gallery.render();
       }
     };
 
-    // ---------------- MENU LEGEND (ticker) ----------------
-    const menuLegend = {
-      phrases: [
+    // --- Legend ticker (horizontal loop) ---
+    const legendTicker = {
+      lines: [
         "Protocole d'Évolution Musculaire Rapide",
         "Entraînements Épiques de 8' par Jour",
         "Zéro Matériel"
       ],
-      i: 0,
-      el: document.getElementById('legend-runner'),
-      running: false,
+      idx: 0,
+      el: document.getElementById('legend-ticker-text'),
+      start: () => {
+        const runOnce = () => {
+          legendTicker.el.classList.remove('run');
+          legendTicker.el.textContent = legendTicker.lines[legendTicker.idx];
+          // restart animation
+          void legendTicker.el.offsetWidth;
+          legendTicker.el.classList.add('run');
 
-      playOnce: () => {
-        if(!menuLegend.el) return;
-        menuLegend.el.classList.remove('legend-runner'); // reset
-        void menuLegend.el.offsetWidth;                   // reflow
-        menuLegend.el.textContent = menuLegend.phrases[menuLegend.i];
-        menuLegend.el.classList.add('legend-runner');
-
-        menuLegend.i = (menuLegend.i + 1) % menuLegend.phrases.length;
-      },
-
-      init: () => {
-        if(menuLegend.running || !menuLegend.el) return;
-        menuLegend.running = true;
-
-        menuLegend.el.addEventListener('animationend', () => {
-          // next phrase
-          menuLegend.playOnce();
-        });
-
-        // start now
-        menuLegend.playOnce();
+          legendTicker.idx = (legendTicker.idx + 1) % legendTicker.lines.length;
+        };
+        legendTicker.el.addEventListener('animationend', runOnce);
+        runOnce();
       }
     };
 
-    // ---------------- INIT ----------------
+    // --- INIT ---
     document.getElementById('screen-menu').classList.remove('hidden');
     app.updateCharacter();
     lightning.init();
-    menuLegend.init();
+    legendTicker.start();
 
     if('serviceWorker' in navigator){
       window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js'));
