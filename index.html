@@ -635,7 +635,7 @@
         </div>
       </div>
 
-      <div class="menu-version">physiquerush® - v2.22</div>
+      <div class="menu-version">physiquerush® - v2.23</div>
     </div>
   </div>
 
@@ -912,7 +912,7 @@
       <button class="btn btn-small" onclick="nutri.openQty('vegetables')">Légumes</button>
       <button class="btn btn-small" onclick="nutri.openQty('fruits')">Fruits</button>
       <button class="btn btn-small" onclick="nutri.openQty('water')">Eau</button>
-    </div>faf
+    </div>
   </div>
 
 
@@ -1275,46 +1275,47 @@
     };
 
     // --- DB ---
-    const db = {
-      load: () => JSON.parse(localStorage.getItem('physiqueRushDB')) || db.default(),
-      save: (data) => localStorage.setItem('physiqueRushDB', JSON.stringify(data)),
-default: () => ({
-  stats: { Pectoraux:0, Jambes:0, Dos:0, Triceps:0, Biceps:0 },
-  history: { originalStats: { Pectoraux:0, Jambes:0, Dos:0, Triceps:0, Biceps:0 } },
-  sessions: {},
-  recordsMeta: {},
-  bossMeta: {},
-  bossDefeated: {},
-  furyCount: 0,
-  furyDaily: { streak: 0, lastDate: null },
-  furyDates: {},
-  completedDates: {},
-  unstoppableEarned: false,
+const db = {
+  load: () => {
+    try{
+      const raw = localStorage.getItem('physiqueRushDB');
+      if(!raw) return db.default();
+      const obj = JSON.parse(raw);
+      if(!obj || typeof obj !== "object") return db.default();
+      return obj;
+    } catch(e){
+      return db.default();
+    }
+  },
+  save: (data) => localStorage.setItem('physiqueRushDB', JSON.stringify(data)),
+  default: () => ({
+    stats: { Pectoraux:0, Jambes:0, Dos:0, Triceps:0, Biceps:0 },
+    history: { originalStats: { Pectoraux:0, Jambes:0, Dos:0, Triceps:0, Biceps:0 } },
+    sessions: {},
+    recordsMeta: {},
+    bossMeta: {},
+    bossDefeated: {},
+    furyCount: 0,
+    furyDaily: { streak: 0, lastDate: null },
+    furyDates: {},
+    completedDates: {},
+    unstoppableEarned: false,
+    nutriRushPoints: 0,
+    nutri: {
+      objective: "recomp",
+      points: 0,
+      dayISO: null,
+      dayCounts: {},
+      satiety: { dayISO: null, scans: { breakfast: null, lunch: null, dinner: null }, applied: 0 },
+      lastAction: null,
+      weightTarget: null,
+      weightHistory: [],
+      fatLevel: null,
+      fatHistory: []
+    }
+  })
+};
 
-  // Compat HUD existant (tu affiches déjà nutri-points)
-  nutriRushPoints: 0,
-
-  // ✅ Nouveau module Nutri-Rush (complet)
-  nutri: {
-    objective: "recomp",    // "fatloss" | "recomp" | "mass"
-    points: 0,              // 0..100 (clamp)
-    dayISO: null,           // reset journalier
-    dayCounts: {},          // ex { protein:2, sugar:1 }
-    satiety: {
-  dayISO: null,
-  scans: { breakfast: null, lunch: null, dinner: null },
-  applied: 0
-},
-    lastAction: null,       // undo dernière action
-
-    // (phase 2) poids / gras — prêts mais pas encore utilisés
-    weightTarget: null,
-    weightHistory: [],      // {date:'YYYY-MM-DD', val: 81.2}
-    fatLevel: null,         // 1..10 (silhouettes plus tard)
-    fatHistory: []          // {date:'YYYY-MM-DD', val: 6}
-  }
-})
-    };
     let data = db.load();
 
     const normalizeData = () => {
@@ -3008,7 +3009,7 @@ base: {
   protein:    { S:+7,  M:+11, L:+15 },   // base solide
   vegetables: { S:+4,  M:+7,  L:+10 },   // densité + fibres
   fruits:     { ONE:+3 },                // portion unique (seuil géré ailleurs)
-  water: { S:+1, M:+2, L:+3 }
+  water: { S:+1, M:+2, L:+3 },
 
   // Interférences
   sugar:    { S:-6,  M:-10, L:-14 },     // sucré / desserts / sodas
@@ -3152,15 +3153,15 @@ if(type === "fruits"){
   }
 
   // ✅ Eau : labels custom
-  if(type === "water"){
-    ui.show("Eau", `<div class="subtle">Choisis la quantité d’eau.</div>`, [
-      { text:"1 verre (20–25cl)", class:"btn-modal-confirm", onClick: () => nutri.apply(type, "S") },
-      { text:"50 cl",            class:"btn-modal-confirm", onClick: () => nutri.apply(type, "M") },
-      { text:"1 L",              class:"btn-modal-confirm", onClick: () => nutri.apply(type, "L") },
-      { text:"Annuler",          class:"btn-modal-cancel" }
-    ]);
-    return;
-  }
+if(type === "water"){
+  ui.show("Eau", `<div class="subtle">Choisis la quantité d’eau.</div>`, [
+    { text:"20-25 cl (un verre)", class:"btn-modal-confirm", onClick: () => nutri.apply(type, "S") },
+    { text:"50 cl",              class:"btn-modal-confirm", onClick: () => nutri.apply(type, "M") },
+    { text:"1 litre",            class:"btn-modal-confirm", onClick: () => nutri.apply(type, "L") },
+    { text:"Annuler",            class:"btn-modal-cancel" }
+  ]);
+  return;
+}
 
   // reste inchangé (S/M/L)
   ui.show("Quantité", `<div class="subtle">Choisis la quantité pour <b>${nutri.label(type)}</b>.</div>`, [
@@ -3408,12 +3409,12 @@ const nav = {
       }
     };
 
-    // --- INIT ---
-    document.getElementById('screen-menu').classList.remove('hidden');
-    app.updateCharacter();
-    nutri.ensureDay();
-    lightning.init();
-    legendTicker.start();
+// --- INIT ---
+nav.to('screen-menu'); 
+nutri.ensureDay();
+lightning.init();
+legendTicker.start();
+
 
     if('serviceWorker' in navigator){
       window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js'));
