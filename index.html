@@ -592,7 +592,7 @@
           <div class="hud-btn-right"><img src="training.png" alt="Training" onerror="this.src='https://via.placeholder.com/62x62?text=TR'"></div>
         </div>
 
-        <div class="hud-btn" onclick="ui.alert('Patience...', 'Le Module Nutri-Rush sera bientôt disponible !')" aria-label="Nutri-Rush">
+        <div class="hud-btn" onclick="nav.to('screen-nutri')" aria-label="Nutri-Rush">
           <div class="hud-btn-left"><span>NUTRI-RUSH</span></div>
           <div class="hud-btn-right"><img src="nutri.png" alt="Nutri" onerror="this.src='https://via.placeholder.com/62x62?text=N'"></div>
         </div>
@@ -603,7 +603,7 @@
         </div>
       </div>
 
-      <div class="menu-version">physiquerush® - v2.12</div>
+      <div class="menu-version">physiquerush® - v2.20</div>
     </div>
   </div>
 
@@ -848,6 +848,61 @@
     <button class="btn" onclick="ascension.quit()">Retour</button>
   </div>
 
+<div id="screen-nutri" class="container hidden">
+  <h2>NUTRI-RUSH</h2>
+
+  <div class="card">
+    <h4>Objectif</h4>
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+      <button class="btn btn-small" id="btn-obj-cut" onclick="nutri.setObjective('cut')">CUT</button>
+      <button class="btn btn-small" id="btn-obj-recomp" onclick="nutri.setObjective('recomp')">RECOMP</button>
+      <button class="btn btn-small" id="btn-obj-bulk" onclick="nutri.setObjective('bulk')">LEAN BULK</button>
+    </div>
+    <div class="subtle" id="nutri-obj-desc" style="margin-top:8px;text-align:left;">—</div>
+  </div>
+
+  <div class="card" style="text-align:center;">
+    <h4>Réacteur</h4>
+    <div style="font-size:2.6em;font-weight:1000;color:var(--accent-yellow);line-height:1.0;" id="nutri-points-big">0</div>
+    <div class="subtle" id="nutri-status" style="margin-top:8px;">—</div>
+    <button class="btn btn-small" style="margin-top:10px;" onclick="nutri.openSatietyScan()">🔎 Scan satiété (1×/jour)</button>
+  </div>
+
+  <div class="card">
+    <h4>Ressources</h4>
+    <div class="subtle" style="text-align:left;margin:-4px 0 10px 0;">
+      Ajoute des points selon <b>type</b> + <b>quantité</b>. Rendement décroissant si tu spammes.
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
+      <button class="btn btn-small" onclick="nutri.openQty('protein')">Protéines</button>
+      <button class="btn btn-small" onclick="nutri.openQty('fiber')">Fibres</button>
+      <button class="btn btn-small" onclick="nutri.openQty('water')">Hydratation</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h4>Interférences</h4>
+    <div class="subtle" style="text-align:left;margin:-4px 0 10px 0;">
+      Retire des points selon <b>type</b> + <b>quantité</b>.
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <button class="btn btn-small" onclick="nutri.openQty('sugar')">Sucre</button>
+      <button class="btn btn-small" onclick="nutri.openQty('junk')">Junk</button>
+      <button class="btn btn-small" onclick="nutri.openQty('alcohol')">Alcool</button>
+      <button class="btn btn-small" onclick="nutri.openQty('emotional')">Craquage</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h4>Aujourd’hui</h4>
+    <div class="subtle" id="nutri-today-log" style="text-align:left;">—</div>
+    <button class="btn btn-danger-zone" onclick="nutri.undoLast()">↩ Annuler la dernière action</button>
+  </div>
+
+  <button class="btn" onclick="nav.to('screen-menu')">Retour</button>
+</div>
+
+  
   <div id="screen-trophy" class="container hidden">
     <h2>RÉCOMPENSES ET STATS</h2>
     <div style="margin-bottom:14px;padding:8px;">
@@ -1170,20 +1225,38 @@
     const db = {
       load: () => JSON.parse(localStorage.getItem('physiqueRushDB')) || db.default(),
       save: (data) => localStorage.setItem('physiqueRushDB', JSON.stringify(data)),
-      default: () => ({
-        stats: { Pectoraux:0, Jambes:0, Dos:0, Triceps:0, Biceps:0 },
-        history: { originalStats: { Pectoraux:0, Jambes:0, Dos:0, Triceps:0, Biceps:0 } },
-        sessions: {},
-        recordsMeta: {},
-        bossMeta: {},
-        bossDefeated: {},
-        furyCount: 0,
-        furyDaily: { streak: 0, lastDate: null },
-        furyDates: {},
-        completedDates: {},
-        unstoppableEarned: false,
-        nutriRushPoints: 0
-      })
+default: () => ({
+  stats: { Pectoraux:0, Jambes:0, Dos:0, Triceps:0, Biceps:0 },
+  history: { originalStats: { Pectoraux:0, Jambes:0, Dos:0, Triceps:0, Biceps:0 } },
+  sessions: {},
+  recordsMeta: {},
+  bossMeta: {},
+  bossDefeated: {},
+  furyCount: 0,
+  furyDaily: { streak: 0, lastDate: null },
+  furyDates: {},
+  completedDates: {},
+  unstoppableEarned: false,
+
+  // Compat HUD existant (tu affiches déjà nutri-points)
+  nutriRushPoints: 0,
+
+  // ✅ Nouveau module Nutri-Rush (complet)
+  nutri: {
+    objective: "cut",       // "cut" | "recomp" | "bulk"
+    points: 0,              // 0..100 (clamp)
+    dayISO: null,           // reset journalier
+    dayCounts: {},          // ex { protein:2, sugar:1 }
+    lastSatietyISO: null,   // 1 scan / jour
+    lastAction: null,       // undo dernière action
+
+    // (phase 2) poids / gras — prêts mais pas encore utilisés
+    weightTarget: null,
+    weightHistory: [],      // {date:'YYYY-MM-DD', val: 81.2}
+    fatLevel: null,         // 1..10 (silhouettes plus tard)
+    fatHistory: []          // {date:'YYYY-MM-DD', val: 6}
+  }
+})
     };
     let data = db.load();
 
@@ -1195,6 +1268,18 @@
       if(!data.completedDates) data.completedDates = {};
       if(typeof data.unstoppableEarned !== "boolean") data.unstoppableEarned = false;
       if(typeof data.nutriRushPoints !== "number") data.nutriRushPoints = 0;
+        // ✅ Nutri module (nouveau)
+  if(!data.nutri) data.nutri = db.default().nutri;
+  if(typeof data.nutri.points !== "number") data.nutri.points = 0;
+  if(!data.nutri.objective) data.nutri.objective = "cut";
+  if(!data.nutri.dayCounts) data.nutri.dayCounts = {};
+  if(typeof data.nutri.lastSatietyISO !== "string" && data.nutri.lastSatietyISO !== null) data.nutri.lastSatietyISO = null;
+  if(typeof data.nutri.dayISO !== "string" && data.nutri.dayISO !== null) data.nutri.dayISO = null;
+  if(!("lastAction" in data.nutri)) data.nutri.lastAction = null;
+
+  // 🔁 mirror points -> HUD
+  data.nutriRushPoints = data.nutri.points|0;
+
 
       if(!data.furyDates) data.furyDates = {};
       if(!data.furyDaily) data.furyDaily = { streak: 0, lastDate: null };
@@ -1341,6 +1426,25 @@
 
         const nutri = document.getElementById('nutri-points');
         if(nutri) nutri.innerText = String((data && typeof data.nutriRushPoints === "number") ? data.nutriRushPoints : 0);
+          // ✅ Nutri visual simple (sans images)
+  const p = (data && data.nutri) ? (data.nutri.points|0) : 0;
+  const char = document.getElementById('char-img');
+
+  if(char){
+    if(p < 20){
+      char.style.filter = "grayscale(0.8) contrast(0.85) saturate(0.6)";
+      char.style.opacity = "0.82";
+      char.style.transform = "translateY(-6px) scale(0.94)";
+    } else if(p > 80){
+      char.style.filter = "drop-shadow(0 0 18px rgba(255,235,59,0.35)) saturate(1.2)";
+      char.style.opacity = "1";
+      char.style.transform = "translateY(-6px) scale(1.02)";
+    } else {
+      char.style.filter = "";
+      char.style.opacity = "1";
+      char.style.transform = "translateY(-6px)";
+    }
+  }
       },
 
       getLevelColor: (val) => (val<=2?'#ff6ec7':(val<=4?'#4caf50':(val<=6?'#ffeb3b':'#f44336')))
@@ -2702,6 +2806,283 @@
       }
     };
 
+// --- NUTRI-RUSH ---
+const nutri = {
+  ensureDay: () => {
+    normalizeData();
+    const today = dateUtil.localISO();
+    if(data.nutri.dayISO !== today){
+      data.nutri.dayISO = today;
+      data.nutri.dayCounts = {};
+      data.nutri.lastAction = null;
+      db.save(data);
+    }
+  },
+
+  clampPoints: () => {
+    data.nutri.points = Math.max(0, Math.min(100, Math.round(data.nutri.points)));
+    data.nutriRushPoints = data.nutri.points|0; // miroir HUD existant
+  },
+
+  objectiveDesc: (o) => {
+    if(o === "cut") return "CUT : déficit léger. Tu gagnes surtout en restant dans une satiété contrôlée. Sucre/Junk coûtent plus cher.";
+    if(o === "bulk") return "LEAN BULK : surplus léger propre. Les protéines rapportent davantage. Junk reste pénalisé.";
+    return "RECOMP : stabilité. Tu es récompensé pour la qualité et la régularité.";
+  },
+
+  setObjective: (o) => {
+    normalizeData();
+    data.nutri.objective = o;
+    db.save(data);
+    nutri.render();
+    app.updateCharacter();
+  },
+
+  // Barèmes de base (avant rendement décroissant et modifs par objectif)
+  base: {
+    protein: { S:+4, M:+7, L:+10 },
+    fiber:   { S:+3, M:+5, L:+7  },
+    water:   { S:+2, M:+4, L:+6  },
+
+    sugar:     { S:-4, M:-7, L:-10 },
+    junk:      { S:-5, M:-9, L:-13 },
+    alcohol:   { S:-6, M:-10, L:-15 },
+    emotional: { S:-4, M:-8, L:-12 }
+  },
+
+  // Rendement décroissant par type (anti-spam, mais sans friction)
+  // 1-3 actions/jour => 100%, 4-5 => 50%, 6+ => 20%
+  efficiency: (type) => {
+    nutri.ensureDay();
+    const c = (data.nutri.dayCounts[type] || 0) + 1; // après action
+    if(c <= 3) return 1.0;
+    if(c <= 5) return 0.5;
+    return 0.2;
+  },
+
+  // Ajustements selon l'objectif (intègre le “déficit/maintien/surplus léger” sans calories)
+  modifyDelta: (type, delta, qty) => {
+    const o = data.nutri.objective;
+
+    // CUT (déficit léger) : fibres + ; sucre/junk -
+    if(o === "cut"){
+      if(type === "fiber") delta += (qty === "S" ? 1 : qty === "M" ? 2 : 3);
+      if(type === "sugar" || type === "junk") delta -= (qty === "S" ? 1 : qty === "M" ? 2 : 3);
+    }
+
+    // BULK (surplus léger) : protéines ++ ; junk toujours négatif mais un poil moins
+    if(o === "bulk"){
+      if(type === "protein") delta += (qty === "S" ? 1 : qty === "M" ? 2 : 3);
+      if(type === "junk") delta += 1; // reste négatif, juste moins violent
+    }
+
+    // RECOMP = neutre (pas de modif)
+    return delta;
+  },
+
+  label: (type) => ({
+    protein:"Protéines",
+    fiber:"Fibres",
+    water:"Hydratation",
+    sugar:"Sucre",
+    junk:"Junk",
+    alcohol:"Alcool",
+    emotional:"Craquage"
+  }[type] || type),
+
+  apply: (type, qty) => {
+    nutri.ensureDay();
+    normalizeData();
+
+    const table = nutri.base[type];
+    if(!table) return;
+
+    const raw = table[qty];
+    const eff = nutri.efficiency(type);
+    let delta = Math.round(raw * eff);
+
+    delta = nutri.modifyDelta(type, delta, qty);
+
+    // Enregistrer action pour undo
+    data.nutri.lastAction = {
+      type, qty, delta,
+      date: data.nutri.dayISO
+    };
+
+    // Compteur du jour
+    data.nutri.dayCounts[type] = (data.nutri.dayCounts[type] || 0) + 1;
+
+    // Appliquer
+    data.nutri.points += delta;
+    nutri.clampPoints();
+    db.save(data);
+
+    nutri.render();
+    app.updateCharacter();
+
+    const sign = delta >= 0 ? "+" : "";
+    ui.alert("NUTRI-RUSH", `<b>${nutri.label(type)}</b> — ${qty}<br><br>Impact : <b>${sign}${delta}</b> pts`);
+  },
+
+  undoLast: () => {
+    normalizeData();
+    const a = data.nutri.lastAction;
+    if(!a){
+      ui.alert("INFO", "Aucune action à annuler.");
+      return;
+    }
+    if(a.date !== dateUtil.localISO()){
+      ui.alert("INFO", "Action trop ancienne (jour différent).");
+      return;
+    }
+
+    // Annule le delta
+    data.nutri.points -= a.delta;
+
+    // Annule le compteur
+    data.nutri.dayCounts[a.type] = Math.max(0, (data.nutri.dayCounts[a.type] || 0) - 1);
+    if(data.nutri.dayCounts[a.type] === 0) delete data.nutri.dayCounts[a.type];
+
+    data.nutri.lastAction = null;
+
+    nutri.clampPoints();
+    db.save(data);
+
+    nutri.render();
+    app.updateCharacter();
+    ui.alert("OK", "Dernière action annulée.");
+  },
+
+  openQty: (type) => {
+    ui.show("Quantité", `<div class="subtle">Choisis la quantité pour <b>${nutri.label(type)}</b>.</div>`, [
+      { text:"S", class:"btn-modal-confirm", onClick: () => nutri.apply(type, "S") },
+      { text:"M", class:"btn-modal-confirm", onClick: () => nutri.apply(type, "M") },
+      { text:"L", class:"btn-modal-confirm", onClick: () => nutri.apply(type, "L") },
+      { text:"Annuler", class:"btn-modal-cancel" }
+    ]);
+  },
+
+  statusText: (p) => {
+    if(p <= 20) return "Zone critique : ton avatar s'affaiblit. Remets des ressources propres.";
+    if(p <= 50) return "Stabilisation : tu es sur les rails.";
+    if(p <= 80) return "Zone optimale : excellent comportement nutritionnel.";
+    return "Supernova : discipline maximale aujourd’hui.";
+  },
+
+  render: () => {
+    nutri.ensureDay();
+    normalizeData();
+
+    const p = data.nutri.points|0;
+    const o = data.nutri.objective;
+
+    // points
+    const big = document.getElementById("nutri-points-big");
+    if(big) big.innerText = String(p);
+
+    const st = document.getElementById("nutri-status");
+    if(st) st.innerText = nutri.statusText(p);
+
+    // objectif
+    const desc = document.getElementById("nutri-obj-desc");
+    if(desc) desc.innerText = nutri.objectiveDesc(o);
+
+    const setActive = (id, active) => {
+      const b = document.getElementById(id);
+      if(!b) return;
+      b.style.border = active ? "2px solid var(--accent-yellow)" : "1px solid #333";
+      b.style.opacity = active ? "1" : "0.75";
+    };
+    setActive("btn-obj-cut", o==="cut");
+    setActive("btn-obj-recomp", o==="recomp");
+    setActive("btn-obj-bulk", o==="bulk");
+
+    // log du jour
+    const log = document.getElementById("nutri-today-log");
+    if(log){
+      const c = data.nutri.dayCounts || {};
+      const entries = Object.entries(c);
+      if(entries.length === 0){
+        log.innerHTML = "Aucune action aujourd’hui.";
+      } else {
+        log.innerHTML = entries.map(([k,v]) => `• ${nutri.label(k)} : <b>${v}</b>`).join("<br>");
+      }
+    }
+  },
+
+  // --- Scan satiété (slider 1x/jour) ---
+  openSatietyScan: () => {
+    nutri.ensureDay();
+    normalizeData();
+    const today = dateUtil.localISO();
+
+    if(data.nutri.lastSatietyISO === today){
+      ui.alert("INFO", "Scan satiété déjà fait aujourd’hui ✅");
+      return;
+    }
+
+    const html = `
+      <div class="subtle" style="text-align:left;margin-bottom:10px;">
+        Déplace le curseur : <b>0</b> = faim extrême • <b>10</b> = trop plein.
+      </div>
+
+      <input id="satiety-slider" type="range" min="0" max="10" value="5" style="width:100%;">
+
+      <div style="margin-top:10px;font-weight:1000;">
+        Satiété : <span id="satiety-val">5</span>/10
+      </div>
+
+      <div class="subtle" style="text-align:left;margin-top:8px;">
+        <b>Cibles</b> : CUT 3–6 • RECOMP 4–7 • BULK 6–9
+      </div>
+    `;
+
+    ui.show("SCAN SATIÉTÉ", html, [
+      { text:"Valider", class:"btn-modal-confirm", onClick: () => {
+        const el = document.getElementById("satiety-slider");
+        const v = el ? (parseInt(el.value,10) || 0) : 5;
+        nutri.applySatiety(v);
+      }},
+      { text:"Annuler", class:"btn-modal-cancel" }
+    ]);
+
+    setTimeout(() => {
+      const sl = document.getElementById("satiety-slider");
+      const vv = document.getElementById("satiety-val");
+      if(sl && vv) sl.oninput = () => vv.innerText = sl.value;
+    }, 50);
+  },
+
+  applySatiety: (v) => {
+    normalizeData();
+
+    const o = data.nutri.objective;
+    let ok = false;
+
+    if(o==="cut") ok = (v>=3 && v<=6);
+    else if(o==="recomp") ok = (v>=4 && v<=7);
+    else ok = (v>=6 && v<=9); // bulk
+
+    const delta = ok ? +8 : -6;
+
+    data.nutri.points += delta;
+    data.nutri.lastSatietyISO = dateUtil.localISO();
+
+    // Satiety ne compte pas dans dayCounts (sinon spam), mais tu peux l’ajouter si tu veux.
+    nutri.clampPoints();
+    db.save(data);
+
+    nutri.render();
+    app.updateCharacter();
+
+    ui.alert("SCAN ENREGISTRÉ", ok
+      ? `Zone cible respectée ✅<br><br><b>+8</b> pts`
+      : `Hors zone cible ⚠️<br><br><b>-6</b> pts`
+    );
+  }
+};
+
+    
     // --- NAV ---
     const nav = {
       to: (id) => {
@@ -2712,6 +3093,7 @@
         if(id === 'screen-menu') app.updateCharacter();
         if(id === 'screen-training') training.init();
         if(id === 'screen-trophy') gallery.render();
+        if(id === 'screen-nutri') nutri.render();
       }
     };
 
@@ -2742,6 +3124,7 @@
     // --- INIT ---
     document.getElementById('screen-menu').classList.remove('hidden');
     app.updateCharacter();
+    nutri.ensureDay();
     lightning.init();
     legendTicker.start();
 
