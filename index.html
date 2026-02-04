@@ -635,7 +635,7 @@
         </div>
       </div>
 
-      <div class="menu-version">physiquerush® - v2.23</div>
+      <div class="menu-version">physiquerush® - v2.24</div>
     </div>
   </div>
 
@@ -2945,7 +2945,9 @@ openObjectiveModal: () => {
   nutri.ensureDay();
   normalizeData();
 
-  nutri._pendingObjective = data.nutri.objective; // init = objectif courant
+  if(!nutri._pendingObjective) {
+    nutri._pendingObjective = data.nutri.objective;
+  }
 
   const card = (code) => {
     const active = nutri._pendingObjective === code;
@@ -2997,7 +2999,7 @@ openObjectiveModal: () => {
 
   setObjective: (o) => {
     normalizeData();
-    data.nutri.objective = o;
+    data.nutri.objective = null;
     db.save(data);
     nutri.render();
     app.updateCharacter();
