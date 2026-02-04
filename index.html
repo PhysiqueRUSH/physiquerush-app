@@ -151,13 +151,16 @@
 /* ✅ Nutri-Rush : roue crantée (objectif) */
 .nutri-head{
   display:flex;
-  align-items:center;
-  justify-content:space-between;
+  flex-direction:column;
+  align-items:flex-start;
+  justify-content:flex-start;
   gap:10px;
+  margin-bottom:6px;
 }
+
 .nutri-gear{
-  width:38px;height:38px;
-  border-radius:12px;
+  width:46px;height:46px;           /* ✅ un peu plus grand */
+  border-radius:14px;
   border:1px solid rgba(255,255,255,0.14);
   background:rgba(0,0,0,0.22);
   color:#fff;
@@ -165,7 +168,7 @@
   display:flex;
   align-items:center;
   justify-content:center;
-  font-size:18px;
+  font-size:20px;                   /* ✅ un peu plus grand */
   text-shadow:0 2px 10px rgba(0,0,0,0.85);
   -webkit-tap-highlight-color: transparent;
 }
@@ -632,7 +635,7 @@
         </div>
       </div>
 
-      <div class="menu-version">physiquerush® - v2.21</div>
+      <div class="menu-version">physiquerush® - v2.22</div>
     </div>
   </div>
 
@@ -878,10 +881,10 @@
   </div>
 
 <div id="screen-nutri" class="container hidden">
-  <div class="nutri-head">
-    <h2 style="margin:0;">NUTRI-RUSH</h2>
-    <div class="nutri-gear" onclick="nutri.openObjectiveModal()" title="Objectif">⚙️</div>
-  </div>
+<div class="nutri-head">
+  <h2 style="margin:0;">NUTRI-RUSH</h2>
+  <div class="nutri-gear" onclick="nutri.openObjectiveModal()" title="Objectif">⚙️</div>
+</div>
 
 
   <div class="card" style="text-align:center;">
@@ -900,16 +903,16 @@
   <div class="card">
     <h4 style="color:var(--accent-green);">Ressources Productives</h4>
     <div class="subtle" style="text-align:left;margin:-4px 0 10px 0;">
-      Clique selon ce que tu as réellement consommé (<b>quantité S/M/L</b>).<br>
-      <b>Priorité :</b> Protéines (le plus rentable) → Légumes → Fruits → Eau.<br>
-      ⚠️ Les <b>Fruits</b> rapportent de moins en moins si tu en ajoutes beaucoup (sucre).
-    </div>
+  Clique selon ce que tu as réellement consommé.<br>
+  <b>Fruits :</b> 1 portion = <b>1 fruit / 1 poignée</b>.<br>
+  ⚠️ Au-delà d’un certain nombre de portions (selon ton objectif), les fruits deviennent une <b>interférence</b> et retirent des points.
+</div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
       <button class="btn btn-small" onclick="nutri.openQty('protein')">Protéines</button>
       <button class="btn btn-small" onclick="nutri.openQty('vegetables')">Légumes</button>
       <button class="btn btn-small" onclick="nutri.openQty('fruits')">Fruits</button>
       <button class="btn btn-small" onclick="nutri.openQty('water')">Eau</button>
-    </div>
+    </div>faf
   </div>
 
 
@@ -1520,7 +1523,7 @@ data.nutriRushPoints = (data.nutri.points|0);
 
         if(!prevMeta || prevMeta.mode !== mode){
           data.recordsMeta[Jkey] = { best: value, mode };
-          isRecord = !!prevMeta;
+          isRecord = false;
         } else {
           if(mode === 'max'){
             if(value > prevMeta.best){ prevMeta.best = value; isRecord = true; }
@@ -2869,27 +2872,40 @@ data.nutriRushPoints = (data.nutri.points|0);
 
 // --- NUTRI-RUSH ---
 const nutri = {
-  ensureDay: () => {
-    normalizeData();
-    const today = dateUtil.localISO();
+ensureDay: () => {
+  normalizeData();
+  const today = dateUtil.localISO();
 
-    // reset journalier actions
-    if(data.nutri.dayISO !== today){
-      data.nutri.dayISO = today;
-      data.nutri.dayCounts = {};
-      data.nutri.lastAction = null;
-      db.save(data);
-    }
+  // ✅ reset journalier complet
+  if(data.nutri.dayISO !== today){
+    data.nutri.dayISO = today;
+    data.nutri.dayCounts = {};
+    data.nutri.lastAction = null;
 
-    // reset journalier satiety
+    // ✅ le score retombe à 0 chaque jour
+    data.nutri.points = 0;
+    data.nutriRushPoints = 0;
+
+    // ✅ reset satiété (3 scans / jour)
     if(!data.nutri.satiety) data.nutri.satiety = { dayISO:null, scans:{breakfast:null,lunch:null,dinner:null}, applied:0 };
-    if(data.nutri.satiety.dayISO !== today){
-      data.nutri.satiety.dayISO = today;
-      data.nutri.satiety.scans = { breakfast:null, lunch:null, dinner:null };
-      data.nutri.satiety.applied = 0;
-      db.save(data);
-    }
-  },
+    data.nutri.satiety.dayISO = today;
+    data.nutri.satiety.scans = { breakfast:null, lunch:null, dinner:null };
+    data.nutri.satiety.applied = 0;
+
+    db.save(data);
+  }
+
+  // sécurité : si satiety.dayISO absent, on l’aligne
+  if(!data.nutri.satiety) data.nutri.satiety = { dayISO:today, scans:{breakfast:null,lunch:null,dinner:null}, applied:0 };
+  if(data.nutri.satiety.dayISO !== today){
+    data.nutri.satiety.dayISO = today;
+    data.nutri.satiety.scans = { breakfast:null, lunch:null, dinner:null };
+    data.nutri.satiety.applied = 0;
+    db.save(data);
+  }
+},
+
+
 
   clampPoints: () => {
     data.nutri.points = Math.max(0, Math.min(100, Math.round(data.nutri.points)));
@@ -2904,52 +2920,79 @@ const nutri = {
   },
 
   // ✅ Explications plus claires
-  objectiveDesc: (o) => {
-    if(o === "cut"){
-      return "Objectif : perdre de la graisse. On récompense la satiété maîtrisée et la qualité alimentaire. Les interférences coûtent plus cher.";
-    }
-    if(o === "bulk"){
-      return "Objectif : prise de muscle. Les protéines sont ultra rentables. On tolère mieux le volume, mais le junk reste pénalisant.";
-    }
-    return "Objectif : améliorer la composition corporelle. On récompense la régularité : protéines + légumes + interférences limitées.";
-  },
+objectiveDesc: (o) => {
+  if(o === "cut"){
+    return "Priorité au contrôle : protéines + légumes, interférences très rares. Les fruits deviennent une interférence dès un certain seuil.";
+  }
+  if(o === "bulk"){
+    return "Priorité à la construction : protéines constantes, volume mieux toléré. Les fruits restent une ressource plus longtemps, mais le junk reste pénalisant.";
+  }
+  return "Priorité à la régularité : protéines + légumes au quotidien, interférences limitées. Les fruits basculent en interférence à seuil intermédiaire.";
+},
 
-  openObjectiveModal: () => {
-    nutri.ensureDay();
-    normalizeData();
 
-    const current = data.nutri.objective;
+fruitThreshold: (o) => {
+  // ⚠️ “à partir de X portions” = dès la Xème portion incluse
+  if(o === "cut")   return 3; // sèche
+  if(o === "bulk")  return 5; // prise de masse
+  return 4;                 // recomp (défaut)
+},
 
-    const line = (code) => {
-      const active = current === code;
-      const title = nutri.objectiveTitle(code);
-      const desc = nutri.objectiveDesc(code);
-      return `
-        <div style="text-align:left;border:1px solid #333;border-radius:14px;padding:12px;margin:10px 0;background:${active ? "rgba(255,235,59,0.10)" : "rgba(0,0,0,0.18)"};">
-          <div style="font-weight:1000;color:${active ? "var(--accent-yellow)" : "#fff"};margin-bottom:6px;">
-            ${title} ${active ? "✅" : ""}
-          </div>
-          <div class="subtle" style="margin:0;">${desc}</div>
+_pendingObjective: null,
+  
+openObjectiveModal: () => {
+  nutri.ensureDay();
+  normalizeData();
+
+  nutri._pendingObjective = data.nutri.objective; // init = objectif courant
+
+  const card = (code) => {
+    const active = nutri._pendingObjective === code;
+    const title = nutri.objectiveTitle(code);
+    const desc = nutri.objectiveDesc(code);
+
+    return `
+      <div
+        onclick="nutri.pickObjective('${code}')"
+        style="
+          text-align:left;
+          border:1px solid #333;
+          border-radius:14px;
+          padding:12px;
+          margin:10px 0;
+          cursor:pointer;
+          background:${active ? "rgba(255,235,59,0.12)" : "rgba(0,0,0,0.18)"};
+        "
+      >
+        <div style="font-weight:1000;color:${active ? "var(--accent-yellow)" : "#fff"};margin-bottom:6px;">
+          ${title} ${active ? "✅" : ""}
         </div>
-      `;
-    };
-
-    const html = `
-      <div class="subtle" style="text-align:left;margin-bottom:8px;">
-        Choisis ton objectif (tu peux le changer quand tu veux).
+        <div class="subtle" style="margin:0;">${desc}</div>
       </div>
-      ${line("cut")}
-      ${line("recomp")}
-      ${line("bulk")}
     `;
+  };
 
-    ui.show("OBJECTIF NUTRI-RUSH", html, [
-      { text: "Perte de Graisse", class: "btn-modal-confirm", onClick: () => nutri.setObjective("cut") },
-      { text: "Recomposition", class: "btn-modal-confirm", onClick: () => nutri.setObjective("recomp") },
-      { text: "Prise de Masse", class: "btn-modal-confirm", onClick: () => nutri.setObjective("bulk") },
-      { text: "Fermer", class: "btn-modal-cancel" }
-    ]);
-  },
+  const html = `
+    <div class="subtle" style="text-align:left;margin-bottom:8px;">
+      Sélectionne ton objectif, puis <b>VALIDER</b>.
+    </div>
+    ${card("cut")}
+    ${card("recomp")}
+    ${card("bulk")}
+  `;
+
+  ui.show("OBJECTIF NUTRI-RUSH", html, [
+    { text: "VALIDER", class: "btn-modal-confirm", onClick: () => nutri.setObjective(nutri._pendingObjective) },
+    { text: "Annuler", class: "btn-modal-cancel", onClick: () => {} }
+  ]);
+},
+
+  pickObjective: (o) => {
+  nutri._pendingObjective = o;
+  // on rouvre le modal pour rafraîchir la coloration + ✅
+  nutri.openObjectiveModal();
+},
+
 
   setObjective: (o) => {
     normalizeData();
@@ -2960,16 +3003,19 @@ const nutri = {
   },
 
   // ✅ Barèmes de base (Protéines > Légumes > Fruits > Eau)
-  base: {
-    protein:    { S:+6, M:+10, L:+14 },
-    vegetables: { S:+4, M:+7,  L:+10 },
-    fruits:     { S:+3, M:+5,  L:+7  },
-    water:      { S:+1, M:+2,  L:+3  },
+base: {
+  // Ressources
+  protein:    { S:+7,  M:+11, L:+15 },   // base solide
+  vegetables: { S:+4,  M:+7,  L:+10 },   // densité + fibres
+  fruits:     { ONE:+3 },                // portion unique (seuil géré ailleurs)
+  water: { S:+1, M:+2, L:+3 }
 
-    sugar:    { S:-5, M:-9,  L:-13 },
-    junk:     { S:-6, M:-11, L:-16 },
-    alcohol:  { S:-7, M:-12, L:-18 }
-  },
+  // Interférences
+  sugar:    { S:-6,  M:-10, L:-14 },     // sucré / desserts / sodas
+  junk:     { S:-7,  M:-12, L:-17 },     // ultra-transformé, friture, fast-food
+  alcohol:  { S:-8,  M:-13, L:-18 }      // alcool pénalise bien (sommeil/compensation)
+},
+
 
   // Rendement décroissant général (anti-spam)
   // 1-3 actions/jour => 100%, 4-5 => 50%, 6+ => 20%
@@ -2981,32 +3027,21 @@ const nutri = {
     return 0.2;
   },
 
-  // ✅ Fruits : décroissance PLUS rapide + peut devenir négatif
-  // Ici : facteur = 1 - 0.18*(c-1), min = -0.35
-  // => vers ~7-8 clics/jour, ça passe négatif = "trop sucré"
-  fruitEfficiency: () => {
-    nutri.ensureDay();
-    const c = (data.nutri.dayCounts.fruits || 0) + 1;
-    let f = 1 - 0.18 * (c - 1);
-    if(f < -0.35) f = -0.35;
-    return f;
-  },
-
   // Ajustements selon objectif (déficit/maintien/surplus léger, sans calories)
   modifyDelta: (type, delta, qty) => {
     const o = data.nutri.objective;
 
-    if(o === "cut"){
-      // favoriser légumes, pénaliser sucre/junk
-      if(type === "vegetables") delta += (qty === "S" ? 1 : qty === "M" ? 2 : 3);
-      if(type === "sugar" || type === "junk" || type === "alcohol") delta -= (qty === "S" ? 1 : qty === "M" ? 2 : 3);
-    }
+if(o === "bulk"){
+  // prise de masse : protéines toujours utiles, mais moins "sur-valorisées"
+  if(type === "protein") delta += (qty === "S" ? 0 : qty === "M" ? 1 : 1);
+  if(type === "junk") delta += 1; // un poil moins violent
+}
 
-    if(o === "bulk"){
-      // protéines ++, junk un poil moins violent (mais reste négatif)
-      if(type === "protein") delta += (qty === "S" ? 2 : qty === "M" ? 3 : 4);
-      if(type === "junk") delta += 1;
-    }
+if(o === "cut"){
+  // sèche : protéines très valorisées (satiété + maintien masse maigre)
+  if(type === "protein") delta += (qty === "S" ? 2 : qty === "M" ? 3 : 4);
+}
+
 
     // recomp : neutre
     return delta;
@@ -3029,14 +3064,33 @@ const nutri = {
     const table = nutri.base[type];
     if(!table) return;
 
-    const raw = table[qty];
+   let delta = 0;
 
-    // efficiency
-    let eff = nutri.efficiency(type);
-    if(type === "fruits") eff = nutri.fruitEfficiency();
+// ✅ FRUITS : bascule en interférences à partir d’un seuil
+if(type === "fruits"){
+  const o = data.nutri.objective;
+  const thr = nutri.fruitThreshold(o);
+  const nextCount = (data.nutri.dayCounts.fruits || 0) + 1;
 
-    let delta = Math.round(raw * eff);
-    delta = nutri.modifyDelta(type, delta, qty);
+  // base “ressource”
+  const basePos = (nutri.base.fruits.ONE || 0);
+
+  // base “interférence” (même portion mais devient négative)
+  // (valeur volontairement un peu plus punitive que le gain)
+  const baseNeg = -4;
+
+  delta = (nextCount >= thr) ? baseNeg : basePos;
+
+} else {
+  const raw = table[qty];
+
+  // efficiency anti-spam général
+  const eff = nutri.efficiency(type);
+
+  delta = Math.round(raw * eff);
+  delta = nutri.modifyDelta(type, delta, qty);
+}
+
 
     // enregistrer action pour undo
     data.nutri.lastAction = { type, qty, delta, date: data.nutri.dayISO };
@@ -3084,13 +3138,39 @@ const nutri = {
   },
 
   openQty: (type) => {
-    ui.show("Quantité", `<div class="subtle">Choisis la quantité pour <b>${nutri.label(type)}</b>.</div>`, [
-      { text:"S", class:"btn-modal-confirm", onClick: () => nutri.apply(type, "S") },
-      { text:"M", class:"btn-modal-confirm", onClick: () => nutri.apply(type, "M") },
-      { text:"L", class:"btn-modal-confirm", onClick: () => nutri.apply(type, "L") },
-      { text:"Annuler", class:"btn-modal-cancel" }
+  // ✅ Fruits : une seule action
+  if(type === "fruits"){
+    ui.show(
+      "Fruits",
+      `<div class="subtle">Ajoute <b>1 fruit</b> ou <b>1 poignée</b> (portion).</div>`,
+      [
+        { text:"✅ 1 fruit / 1 poignée", class:"btn-modal-confirm", onClick: () => nutri.apply(type, "ONE") },
+        { text:"Annuler", class:"btn-modal-cancel" }
+      ]
+    );
+    return;
+  }
+
+  // ✅ Eau : labels custom
+  if(type === "water"){
+    ui.show("Eau", `<div class="subtle">Choisis la quantité d’eau.</div>`, [
+      { text:"1 verre (20–25cl)", class:"btn-modal-confirm", onClick: () => nutri.apply(type, "S") },
+      { text:"50 cl",            class:"btn-modal-confirm", onClick: () => nutri.apply(type, "M") },
+      { text:"1 L",              class:"btn-modal-confirm", onClick: () => nutri.apply(type, "L") },
+      { text:"Annuler",          class:"btn-modal-cancel" }
     ]);
-  },
+    return;
+  }
+
+  // reste inchangé (S/M/L)
+  ui.show("Quantité", `<div class="subtle">Choisis la quantité pour <b>${nutri.label(type)}</b>.</div>`, [
+    { text:"S", class:"btn-modal-confirm", onClick: () => nutri.apply(type, "S") },
+    { text:"M", class:"btn-modal-confirm", onClick: () => nutri.apply(type, "M") },
+    { text:"L", class:"btn-modal-confirm", onClick: () => nutri.apply(type, "L") },
+    { text:"Annuler", class:"btn-modal-cancel" }
+  ]);
+},
+
 
   statusText: (p) => {
     if(p <= 20) return "Zone critique : aujourd’hui tu perds de l’énergie (qualité insuffisante). Reviens aux protéines + légumes.";
@@ -3282,18 +3362,27 @@ const nutri = {
 
     
     // --- NAV ---
-    const nav = {
-      to: (id) => {
-        document.querySelectorAll('.container, #screen-training').forEach(d => d.classList.add('hidden'));
-        const el = document.getElementById(id);
-        if(el) el.classList.remove('hidden');
+const nav = {
+  to: (id) => {
+    // hide all
+    document.querySelectorAll('.container, #screen-training').forEach(d => d.classList.add('hidden'));
+    const el = document.getElementById(id);
+    if(el) el.classList.remove('hidden');
 
-        if(id === 'screen-menu') app.updateCharacter();
-        if(id === 'screen-training') training.init();
-        if(id === 'screen-trophy') gallery.render();
-        if(id === 'screen-nutri') nutri.render();
-      }
-    };
+    // ✅ lock scroll only on main menu (prevents banner sliding behind topbar)
+    if(id === 'screen-menu') {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+
+    if(id === 'screen-menu') app.updateCharacter();
+    if(id === 'screen-training') training.init();
+    if(id === 'screen-trophy') gallery.render();
+    if(id === 'screen-nutri') nutri.render();
+  }
+};
+
 
     // --- Legend ticker ---
     const legendTicker = {
